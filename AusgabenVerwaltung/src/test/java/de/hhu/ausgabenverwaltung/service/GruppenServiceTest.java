@@ -5,23 +5,18 @@ import de.hhu.ausgabenverwaltung.domain.User;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 class GruppenServiceTest {
 
 	@Test
-	@DisplayName("person fügt Mitglieder hin ")
-	void personHinzufuegen(){
+	@DisplayName("Anzahl der Mitglieder beträgt 1, wenn die Gruppe zuerst erstellt wird")
+	void erstelle_gruppe_test_1(){
 		//Arrange
 		User user = new User("githubname", "Jens");
-		Gruppe gruppe = new Gruppe("gruppeName",new ArrayList<>(),new ArrayList<User>());
 		GruppenService gruppenService = new GruppenService();
-
 		//Act
-		gruppenService.personHinzufuegen(user,gruppe);
+		Gruppe gruppe = gruppenService.gruppeErstellen(user, "gruppenName");
 
 		//Assert
 		assertThat(gruppe.getMitglieder().size()).isEqualTo(1);

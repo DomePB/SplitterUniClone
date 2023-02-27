@@ -39,6 +39,11 @@ public class Gruppe {
         this.mitglieder = mitglieder;
     }
 
+
+    public void addMitglieger(User user){
+        mitglieder.add(user);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

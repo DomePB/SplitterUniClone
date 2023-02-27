@@ -13,4 +13,5 @@ public class UserService {
     public Gruppe gruppeErstellen(User ersteller, String name){
        return new Gruppe(name, new ArrayList<>(), List.of(ersteller));
     }
+
 }

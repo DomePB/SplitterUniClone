@@ -11,8 +11,8 @@ public class Gruppe {
 
     public Gruppe(String name, List<Ausgabe> ausgaben, List<User> mitglieder) {
         this.name = name;
-        this.ausgaben = ausgaben;
         this.mitglieder = mitglieder;
+        this.ausgaben = ausgaben;
     }
 
     public String getName() {

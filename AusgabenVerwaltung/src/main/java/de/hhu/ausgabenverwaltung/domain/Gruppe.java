@@ -1,5 +1,6 @@
 package de.hhu.ausgabenverwaltung.domain;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -40,9 +41,11 @@ public class Gruppe {
     }
 
 
-    public void addMitglieger(User user){
+    public void addMitglieder(User user){
         mitglieder.add(user);
     }
+
+    public void deleteMitglieder(User user){mitglieder.remove(0);}
 
     @Override
     public boolean equals(Object o) {

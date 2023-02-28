@@ -72,4 +72,23 @@ class GruppeTest {
         //Assert
         assertThat(isValid).isFalse();
     }
+
+    @Test
+    @DisplayName("Personen einer Transaktion müssen in einer Gruppe sein")
+    void isTransaktionValid3() {
+        //Arrange
+        User user1 = new User("githubname1", "Jens");
+        User user2 = new User("githubname2", "Bob");
+        Transaktion transaktion1 = new Transaktion(user1, user2, new BigDecimal("100"));
+
+        Gruppe gruppe = new Gruppe("gruppeName", new ArrayList<>(), new ArrayList<>(List.of(user1)),
+                new HashSet<>());
+
+        //Act
+        boolean isValid = gruppe.isTransaktionValid(transaktion1);
+
+        //Assert
+        assertThat(isValid).isFalse();
+    }
+
 }

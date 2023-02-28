@@ -61,6 +61,10 @@ public class Gruppe {
     public void deleteMitglieder(User user){mitglieder.remove(0);}
 
     public boolean isTransaktionValid(Transaktion transaktion){
+        if (!mitglieder.contains(transaktion.sender()) || !mitglieder.contains(transaktion.empfaenger())) {
+            return false;
+        }
+
         for (Transaktion t:transaktionen) {
             if (t.empfaenger().equals(transaktion.empfaenger()) && t.sender().equals(transaktion.sender()) ||
                     t.empfaenger().equals(transaktion.sender()) && t.sender().equals(transaktion.empfaenger()))

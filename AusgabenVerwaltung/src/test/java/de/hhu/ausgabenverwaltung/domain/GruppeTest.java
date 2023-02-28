@@ -47,7 +47,7 @@ class GruppeTest {
         //Arrange
         User user1 = new User("githubname", "Jens");
         Transaktion transaktion = new Transaktion(user1, user1, new BigDecimal("100.00"));
-        Gruppe gruppe = new Gruppe("gruppeName", new ArrayList<>(), new ArrayList<>(List.of(user1)), new HashSet<>(Set.of(transaktion)));
+        Gruppe gruppe = new Gruppe("gruppeName", new ArrayList<>(), new ArrayList<>(List.of(user1)), new HashSet<>());
         //Act
         boolean isValid = gruppe.isTransaktionValid(transaktion);
         //Assert
@@ -89,6 +89,24 @@ class GruppeTest {
 
         //Assert
         assertThat(isValid).isFalse();
+    }
+
+    @Test
+    @DisplayName("Gültige Transaktion wird hinzugefügt")
+    void transaktionHinzufuegenTest() {
+        // Arrange
+        User user1 = new User("githubname1", "Jens");
+        User user2 = new User("githubname2", "Bob");
+        Transaktion transaktion1 = new Transaktion(user1, user2, new BigDecimal("100"));
+
+        Gruppe gruppe = new Gruppe("gruppeName", new ArrayList<>(), new ArrayList<>(List.of(user1, user2)),
+                new HashSet<>());
+
+        // Act
+        gruppe.transaktionHinzufuegen(transaktion1);
+
+        // Assert
+        assertThat(gruppe.getTransaktionen().size()).isEqualTo(1);
     }
 
 }

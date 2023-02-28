@@ -75,6 +75,13 @@ public class Gruppe {
         }
         return true;
     }
+
+    public void transaktionHinzufuegen(Transaktion transaktion) {
+        if (isTransaktionValid(transaktion)) {
+            transaktionen.add(transaktion);
+        }
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

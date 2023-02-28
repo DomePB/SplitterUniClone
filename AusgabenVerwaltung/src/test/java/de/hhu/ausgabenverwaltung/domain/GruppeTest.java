@@ -13,44 +13,63 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class GruppeTest {
 
-	@Test
-	@DisplayName("Person zur Gruppe hinzufuegen ")
-	void personHinzufuegen() {
-		//Arrange
-		User user = new User("githubname", "Jens");
-		Gruppe gruppe = new Gruppe("gruppeName", new ArrayList<>(), new ArrayList<User>(), new HashSet<Transaktion>());
+    @Test
+    @DisplayName("Person zur Gruppe hinzufuegen")
+    void personHinzufuegen() {
+        //Arrange
+        User user = new User("githubname", "Jens");
+        Gruppe gruppe = new Gruppe("gruppeName", new ArrayList<>(), new ArrayList<User>(), new HashSet<Transaktion>());
 
 
-		//Act
-		gruppe.addMitglieder(user);
+        //Act
+        gruppe.addMitglieder(user);
 
-		//Assert
-		assertThat(gruppe.getMitglieder().size()).isEqualTo(1);
+        //Assert
+        assertThat(gruppe.getMitglieder().size()).isEqualTo(1);
+    }
 
-	}
+    @Test
+    @DisplayName("Person aus Gruppe entfernen")
+    void personEntfernen() {
+        //Arrange
+        User user = new User("githubname", "Jens");
+        Gruppe gruppe = new Gruppe("gruppeName", new ArrayList<>(), new ArrayList<>(List.of(user)), new HashSet<Transaktion>());
+        //Act
+        gruppe.deleteMitglieder(user);
+        //Assert
+        assertThat(gruppe.getMitglieder().isEmpty()).isTrue();
 
-	@Test
-	@DisplayName("Person aus Gruppe entfernen")
-	void personEntfernen(){
-		//Arrange
-		User user = new User("githubname", "Jens");
-		Gruppe gruppe = new Gruppe("gruppeName", new ArrayList<>(), new ArrayList<>(List.of(user)), new HashSet<Transaktion>());
-		//Act
-		gruppe.deleteMitglieder(user);
-		//Assert
-		assertThat(gruppe.getMitglieder().isEmpty()).isTrue();
+    }
 
-	}
-	@Test
-	@DisplayName("Absender und Empfänger sind gleich bei einer Transaktion in der gleichen Gruppe")
-	void absenderEqualsEmpfänger(){
-		//Arrange
-		User user1= new User("githubname", "Jens");
-		Transaktion transaktion = new Transaktion(user1,user1, new BigDecimal("100.00") );
-		Gruppe gruppe = new Gruppe("gruppeName", new ArrayList<>(), new ArrayList<>(List.of(user1)), new HashSet<Transaktion>(Set.of(transaktion)));
-		//Act
-		boolean isValid = gruppe.isTransaktionValid(transaktion);
-		//Assert
-		assertThat(isValid).isFalse();
-	}
+    @Test
+    @DisplayName("Absender und Empfänger sind gleich bei einer Transaktion in der gleichen Gruppe")
+    void isTransaktionValid1() {
+        //Arrange
+        User user1 = new User("githubname", "Jens");
+        Transaktion transaktion = new Transaktion(user1, user1, new BigDecimal("100.00"));
+        Gruppe gruppe = new Gruppe("gruppeName", new ArrayList<>(), new ArrayList<>(List.of(user1)), new HashSet<>(Set.of(transaktion)));
+        //Act
+        boolean isValid = gruppe.isTransaktionValid(transaktion);
+        //Assert
+        assertThat(isValid).isFalse();
+    }
+
+    @Test
+    @DisplayName("sender Und Empänger Hatten Schon Eine Transaktion In Der Selben Gruppe")
+    void isTransaktionValid2() {
+
+        //Arrange
+        User user1 = new User("githubname1", "Jens");
+        User user2 = new User("githubname2", "Bob");
+        Transaktion transaktion1 = new Transaktion(user1, user2, new BigDecimal("100"));
+        Transaktion transaktion2 = new Transaktion(user1, user2, new BigDecimal("50"));
+
+        Gruppe gruppe = new Gruppe("gruppeName", new ArrayList<>(), new ArrayList<>(List.of(user1, user2)),
+                new HashSet<>(Set.of(transaktion1)));
+        //Act
+        boolean isValid = gruppe.isTransaktionValid(transaktion2);
+
+        //Assert
+        assertThat(isValid).isFalse();
+    }
 }

@@ -4,10 +4,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -153,9 +150,10 @@ class GruppeTest {
 
         Gruppe gruppe = new Gruppe("gruppeName", new ArrayList<>(List.of(ausgabe1,ausgabe2)), new ArrayList<>(List.of(user1,user2)),
                 new HashSet<>());
+        HashMap<User, BigDecimal> gruppeMussBezahlenVon;
         //Act
-        BigDecimal summe = gruppe.mussBezahlenVonUser(user2);
+        gruppeMussBezahlenVon= gruppe.mussBezahlenVonUser(user1);
         //Assert
-        assertThat(summe).isEqualTo(new BigDecimal(5));
+        assertThat(gruppeMussBezahlenVon).containsEntry(user2, new BigDecimal(5));
     }
 }

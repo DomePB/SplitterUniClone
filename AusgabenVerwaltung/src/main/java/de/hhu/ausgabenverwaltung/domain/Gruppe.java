@@ -1,9 +1,7 @@
 package de.hhu.ausgabenverwaltung.domain;
 
 import java.math.BigDecimal;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 public class Gruppe {
 
@@ -100,16 +98,22 @@ public class Gruppe {
         return summe;
     }
 
-    public BigDecimal mussBezahlenVonUser(User user){
-        BigDecimal summe = BigDecimal.ZERO;
+    public HashMap<User, BigDecimal> mussBezahlenVonUser(User user){
+        HashMap<User, BigDecimal> schuldner = new HashMap<User, BigDecimal>();
         for (Ausgabe ausgabe : ausgaben) {
-            if (ausgabe.beteiligte().contains(user)) {
-                summe = summe.add(ausgabe.betrag()).divide(new BigDecimal(ausgabe.beteiligte().size()));
+            if(ausgabe.bezahltVon().equals(user)){
+                for (User useri: ausgabe.beteiligte()
+                     ) {
+                    BigDecimal userSumme = schuldner.getOrDefault(useri, BigDecimal.ZERO);
+                    userSumme = userSumme.add(ausgabe.betrag().divide(new BigDecimal(ausgabe.beteiligte().size())));
+                    schuldner.put(useri,userSumme);
 
+                }
             }
         }
-        return summe;
+        return schuldner;
     }
+
 
     @Override
     public boolean equals(Object o) {

@@ -42,7 +42,7 @@ class GruppeTest {
     }
 
     @Test
-    @DisplayName("Absender und Empfänger sind gleich bei einer Transaktion in der gleichen Gruppe")
+    @DisplayName("Sender = Empfaenger")
     void isTransaktionValid1() {
         //Arrange
         User user1 = new User("githubname", "Jens");

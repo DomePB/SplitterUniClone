@@ -3,6 +3,7 @@ package de.hhu.ausgabenverwaltung.domain;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 public class Gruppe {
 
@@ -10,10 +11,15 @@ public class Gruppe {
     List<Ausgabe> ausgaben;
     List<User> mitglieder;
 
-    public Gruppe(String name, List<Ausgabe> ausgaben, List<User> mitglieder) {
+
+
+    Set<Transaktion> transaktionen;
+
+    public Gruppe(String name, List<Ausgabe> ausgaben, List<User> mitglieder, Set<Transaktion> transaktionen ) {
         this.name = name;
         this.mitglieder = mitglieder;
         this.ausgaben = ausgaben;
+        this.transaktionen=transaktionen;
     }
 
     public String getName() {
@@ -40,6 +46,13 @@ public class Gruppe {
         this.mitglieder = mitglieder;
     }
 
+    public Set<Transaktion> getTransaktionen() {
+        return transaktionen;
+    }
+
+    public void setTransaktionen(Set<Transaktion> transaktionen) {
+        this.transaktionen = transaktionen;
+    }
 
     public void addMitglieder(User user){
         mitglieder.add(user);
@@ -47,6 +60,17 @@ public class Gruppe {
 
     public void deleteMitglieder(User user){mitglieder.remove(0);}
 
+    public boolean isTransaktionValid(Transaktion transaktion){
+        for (Transaktion t:transaktionen) {
+            if (t.empfaenger().equals(transaktion.empfaenger()) && t.sender().equals(transaktion.sender()) ||
+                    t.empfaenger().equals(transaktion.sender()) && t.sender().equals(transaktion.empfaenger()))
+            {
+                return false;
+            }
+
+        }
+        return true;
+    }
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

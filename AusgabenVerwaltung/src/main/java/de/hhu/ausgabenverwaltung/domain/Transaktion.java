@@ -1,5 +1,7 @@
 package de.hhu.ausgabenverwaltung.domain;
 
-public record Transaktion(User sender, User empfaenger) {
+import java.math.BigDecimal;
+
+public record Transaktion(User sender, User empfaenger, BigDecimal betrag) {
 
 }

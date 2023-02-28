@@ -13,5 +13,6 @@ public class ArchUnitTests {
     static final ArchRule useOnionArchitecture = onionArchitecture()
             .domainModels("..domain..")
             .domainServices("..service..")
-            .applicationServices("..service..");
+            .applicationServices("..service..")
+            .adapter("web", "..web..");
 }

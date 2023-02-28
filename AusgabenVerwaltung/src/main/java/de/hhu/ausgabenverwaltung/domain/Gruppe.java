@@ -1,7 +1,6 @@
 package de.hhu.ausgabenverwaltung.domain;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -96,6 +95,17 @@ public class Gruppe {
         for (Ausgabe ausgabe : ausgaben) {
             if (ausgabe.bezahltVon().equals(user)) {
                summe = summe.add(ausgabe.betrag());
+            }
+        }
+        return summe;
+    }
+
+    public BigDecimal mussBezahlenVonUser(User user){
+        BigDecimal summe = BigDecimal.ZERO;
+        for (Ausgabe ausgabe : ausgaben) {
+            if (ausgabe.beteiligte().contains(user)) {
+                summe = summe.add(ausgabe.betrag()).divide(new BigDecimal(ausgabe.beteiligte().size()));
+
             }
         }
         return summe;

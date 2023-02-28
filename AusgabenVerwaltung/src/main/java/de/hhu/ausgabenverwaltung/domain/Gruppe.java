@@ -82,6 +82,10 @@ public class Gruppe {
         }
     }
 
+    public void ausgabeHinzufuegen(Ausgabe ausgabe) {
+        ausgaben.add(ausgabe);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

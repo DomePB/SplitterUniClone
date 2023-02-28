@@ -109,4 +109,22 @@ class GruppeTest {
         assertThat(gruppe.getTransaktionen().size()).isEqualTo(1);
     }
 
+    @Test
+    @DisplayName("Ausgabe wird hinzugefügt")
+    void ausgabeHinzufuegen() {
+        // Arrange
+        User user1 = new User("githubname1", "Jens");
+        User user2 = new User("githubname2", "Bob");
+        Ausgabe ausgabe = new Ausgabe("", "", new BigDecimal("10"), user1, new ArrayList<>(List.of(user1, user2)));
+
+        Gruppe gruppe = new Gruppe("gruppeName", new ArrayList<>(), new ArrayList<>(List.of(user1, user2)),
+                new HashSet<>());
+
+        // Act
+        gruppe.ausgabeHinzufuegen(ausgabe);
+
+        // Assert
+        assertThat(gruppe.getAusgaben().size()).isEqualTo(1);
+    }
+
 }

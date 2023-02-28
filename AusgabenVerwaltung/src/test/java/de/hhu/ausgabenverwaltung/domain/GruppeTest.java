@@ -127,4 +127,19 @@ class GruppeTest {
         assertThat(gruppe.getAusgaben().size()).isEqualTo(1);
     }
 
+    @Test
+    @DisplayName("die summer von Ausgabe soll korrekt sein")
+    void ausgabensummantKorrekt() {
+        //Arrange
+        User user1 = new User("githubname1", "Jens");
+        Ausgabe ausgabe1 = new Ausgabe("", "", new BigDecimal("10"), user1, new ArrayList<>(List.of(user1)));
+        Ausgabe ausgabe2 = new Ausgabe("", "", new BigDecimal("20"), user1, new ArrayList<>(List.of(user1)));
+
+        Gruppe gruppe = new Gruppe("gruppeName", new ArrayList<>(List.of(ausgabe1,ausgabe2)), new ArrayList<>(List.of(user1)),
+                new HashSet<>());
+        //Act
+        BigDecimal summe = gruppe.summeVonUser(user1);
+        //Assert
+        assertThat(summe).isEqualTo(new BigDecimal(30));
+    }
 }

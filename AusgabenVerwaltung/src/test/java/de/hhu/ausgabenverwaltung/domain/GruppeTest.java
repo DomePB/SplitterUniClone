@@ -156,4 +156,23 @@ class GruppeTest {
         //Assert
         assertThat(gruppeMussBezahlenVon).containsEntry(user2, new BigDecimal(5));
     }
+
+    @Test
+    @DisplayName("User kann nicht an sich selber Geld schulden")
+    void keinEigenerSchuldner() {
+        //Arrange
+        User user1 = new User("githubname1", "Jens");
+        User user2 = new User("githubname2", "Bob");
+        Ausgabe ausgabe1 = new Ausgabe("", "", new BigDecimal("10"), user1, new ArrayList<>(List.of(user1,user2)));
+        Ausgabe ausgabe2 = new Ausgabe("", "", new BigDecimal("20"), user1, new ArrayList<>(List.of(user1)));
+
+        Gruppe gruppe = new Gruppe("gruppeName", new ArrayList<>(List.of(ausgabe1,ausgabe2)), new ArrayList<>(List.of(user1,user2)),
+                new HashSet<>());
+        HashMap<User, BigDecimal> gruppeMussBezahlenVon;
+        //Act
+        gruppeMussBezahlenVon= gruppe.mussBezahlenVonUser(user1);
+        //Assert
+        assertThat(gruppeMussBezahlenVon).doesNotContainKey(user1);
+    }
+
 }

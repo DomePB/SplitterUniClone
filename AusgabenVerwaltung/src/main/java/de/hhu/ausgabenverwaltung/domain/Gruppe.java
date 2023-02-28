@@ -104,6 +104,7 @@ public class Gruppe {
             if(ausgabe.bezahltVon().equals(user)){
                 for (User useri: ausgabe.beteiligte()
                      ) {
+                    if(useri.equals(user)){ continue;}
                     BigDecimal userSumme = schuldner.getOrDefault(useri, BigDecimal.ZERO);
                     userSumme = userSumme.add(ausgabe.betrag().divide(new BigDecimal(ausgabe.beteiligte().size())));
                     schuldner.put(useri,userSumme);

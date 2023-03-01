@@ -54,10 +54,11 @@ public class Gruppe {
     }
 
     public void addMitglieder(User user){
+        if(!offen){return;}
         mitglieder.add(user);
     }
 
-    public void deleteMitglieder(User user){mitglieder.remove(0);}
+    public void deleteMitglieder(User user){ if(!offen){return;} mitglieder.remove(user);}
 
     public boolean isTransaktionValid(Transaktion transaktion){
         if(transaktion.sender().equals(transaktion.empfaenger())){
@@ -80,12 +81,14 @@ public class Gruppe {
     }
 
     public void transaktionHinzufuegen(Transaktion transaktion) {
+        if(!offen){return;}
         if (isTransaktionValid(transaktion)) {
             transaktionen.add(transaktion);
         }
     }
 
     public void ausgabeHinzufuegen(Ausgabe ausgabe) {
+        if(!offen){return;}
         ausgaben.add(ausgabe);
     }
 
@@ -99,7 +102,7 @@ public class Gruppe {
         return summe;
     }
 
-    public HashMap<User, BigDecimal> mussBezahlenVonUser(User user){
+    public HashMap<User, BigDecimal> mussBezahlenVonUser(User user)  {
         HashMap<User, BigDecimal> schuldner = new HashMap<User, BigDecimal>();
         for (Ausgabe ausgabe : ausgaben) {
             if(ausgabe.bezahltVon().equals(user)){
@@ -114,6 +117,14 @@ public class Gruppe {
             }
         }
         return schuldner;
+    }
+
+    public void schliessen(){
+        offen = false;
+    }
+
+    public boolean istOffen(){
+        return offen;
     }
 
 

@@ -152,7 +152,7 @@ class GruppeTest {
                 new HashSet<>(),true);
         HashMap<User, BigDecimal> gruppeMussBezahlenVon;
         //Act
-        gruppeMussBezahlenVon= gruppe.mussBezahlenVonUser(user1);
+            gruppeMussBezahlenVon= gruppe.mussBezahlenVonUser(user1);
         //Assert
         assertThat(gruppeMussBezahlenVon).containsEntry(user2, new BigDecimal(5));
     }
@@ -174,5 +174,41 @@ class GruppeTest {
         //Assert
         assertThat(gruppeMussBezahlenVon).doesNotContainKey(user1);
     }
+
+    @Test
+    @DisplayName("keine Ausgaben hinzufuegen bei geschlossener Gruppe")
+    void keineAusgabe(){
+        //Arrange
+        User user1 = new User("githubname1", "Jens");
+        User user2 = new User("githubname2", "Bob");
+        Ausgabe ausgabe1 = new Ausgabe("", "", new BigDecimal("10"), user1, new ArrayList<>(List.of(user1,user2)));
+
+
+        Gruppe gruppe = new Gruppe("gruppeName", new ArrayList<>(), new ArrayList<>(List.of(user1,user2)),
+                new HashSet<>(),false);
+        //Act
+        gruppe.ausgabeHinzufuegen(ausgabe1);
+        //Assert
+        assertThat(gruppe.getAusgaben().size()).isEqualTo(0);
+
+    }
+    @Test
+    @DisplayName("keine Transaktionen hinzufuegen bei geschlossener Gruppe")
+    void keineTransaktionen(){
+        //Arrange
+        User user1 = new User("githubname1", "Jens");
+        User user2 = new User("githubname2", "Bob");
+        Transaktion t = new Transaktion(user1,user2,new BigDecimal(10));
+
+        Gruppe gruppe = new Gruppe("gruppeName", new ArrayList<>(), new ArrayList<>(List.of(user1,user2)),
+                new HashSet<>(),false);
+        //Act
+        gruppe.transaktionHinzufuegen(t);
+        //Assert
+        assertThat(gruppe.getTransaktionen().size()).isEqualTo(0);
+
+    }
+
+
 
 }

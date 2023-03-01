@@ -9,15 +9,16 @@ public class Gruppe {
     List<Ausgabe> ausgaben;
     List<User> mitglieder;
 
-
+    boolean offen;
 
     Set<Transaktion> transaktionen;
 
-    public Gruppe(String name, List<Ausgabe> ausgaben, List<User> mitglieder, Set<Transaktion> transaktionen ) {
+    public Gruppe(String name, List<Ausgabe> ausgaben, List<User> mitglieder, Set<Transaktion> transaktionen, boolean offen ) {
         this.name = name;
         this.mitglieder = mitglieder;
         this.ausgaben = ausgaben;
         this.transaktionen=transaktionen;
+        this.offen = offen;
     }
 
     public String getName() {

@@ -13,7 +13,7 @@ public class GruppenService {
 
 
 	public Gruppe gruppeErstellen(User ersteller, String name){
-		return new Gruppe(name, new ArrayList<>(), new ArrayList<>(List.of(ersteller)), new HashSet<>());
+		return new Gruppe(name, new ArrayList<>(), new ArrayList<>(List.of(ersteller)), new HashSet<>(),true);
 	}
 
 }

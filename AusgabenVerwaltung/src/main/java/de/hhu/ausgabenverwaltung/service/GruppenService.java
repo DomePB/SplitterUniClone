@@ -86,14 +86,28 @@ public class GruppenService {
 					continue;
 				}
 				if (saldenEntry.getValue().compareTo(BigDecimal.ZERO) > 0 && zielEntry.getValue().compareTo(BigDecimal.ZERO) < 0){
-					if (saldenEntry.getValue().compareTo(BigDecimal.ZERO) > zielEntry.getValue().compareTo(BigDecimal.ZERO)){
+					if (saldenEntry.getValue().compareTo(zielEntry.getValue().multiply(new BigDecimal(-1)))>0){
 						BigDecimal bigDecimalBetrag = zielEntry.getValue().multiply(new BigDecimal(-1));
+						transaktionen.add(new Transaktion(saldenEntry.getKey(), zielEntry.getKey(),bigDecimalBetrag));
+						salden.put(saldenEntry.getKey(), saldenEntry.getValue().add(zielEntry.getValue()));
+						salden.put(zielEntry.getKey(), zielEntry.getValue().add(bigDecimalBetrag));
+					}else{ //Zielentry<Salden
+						BigDecimal bigDecimalBetrag = saldenEntry.getValue().multiply(new BigDecimal(1));
 						transaktionen.add(new Transaktion(saldenEntry.getKey(), zielEntry.getKey(),bigDecimalBetrag));
 						salden.put(saldenEntry.getKey(), saldenEntry.getValue().add(zielEntry.getValue()));
 						salden.put(zielEntry.getKey(), zielEntry.getValue().add(bigDecimalBetrag));
 					}
 
+
+				}if (saldenEntry.getValue().compareTo(BigDecimal.ZERO) < 0 && zielEntry.getValue().compareTo(BigDecimal.ZERO) > 0){
+					if (saldenEntry.getValue().compareTo(zielEntry.getValue())>0){
+					BigDecimal bigDecimalBetrag = saldenEntry.getValue().multiply(new BigDecimal(-1));
+					transaktionen.add(new Transaktion(zielEntry.getKey(), saldenEntry.getKey(),bigDecimalBetrag));
+					salden.put(zielEntry.getKey(), zielEntry.getValue().add(saldenEntry.getValue()));
+					salden.put(saldenEntry.getKey(), saldenEntry.getValue().add(bigDecimalBetrag));
+					}
 				}
+
 			}
 		}
 		return transaktionen;

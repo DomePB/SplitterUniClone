@@ -8,7 +8,6 @@ public class Gruppe {
     String name;
     List<Ausgabe> ausgaben;
     List<User> mitglieder;
-
     boolean offen;
 
     Set<Transaktion> transaktionen;

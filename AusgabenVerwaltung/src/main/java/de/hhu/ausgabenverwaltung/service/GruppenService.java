@@ -54,8 +54,26 @@ public class GruppenService {
 
 	public Set<Transaktion> berechneTransaktionen(Gruppe gruppe) {
 		Set<Transaktion> transaktionen = new HashSet<>();
+		var salden = berechneSalden(gruppe);
+		for(var saldenEntry: salden.entrySet()){
 
+			for (var zielEntry: salden.entrySet()) {
+				if ( saldenEntry.getKey()==zielEntry.getKey()){
+					continue;
+				}
+				if (saldenEntry.getValue().add(zielEntry.getValue()) == BigDecimal.ZERO){
+					if (saldenEntry.getValue().compareTo(BigDecimal.ZERO) > 0){
 
+						transaktionen.add(new Transaktion(saldenEntry.getKey(), zielEntry.getKey(), saldenEntry.getValue()));
+					}
+					else if(saldenEntry.getValue().compareTo(BigDecimal.ZERO) < 0) {
+						transaktionen.add(new Transaktion(zielEntry.getKey(), saldenEntry.getKey(), zielEntry.getValue()));
+					}
+					salden.put(saldenEntry.getKey(), BigDecimal.ZERO);
+					salden.put(zielEntry.getKey(), BigDecimal.ZERO);
+				}
+			}
+		}
 		return transaktionen;
 	}
 

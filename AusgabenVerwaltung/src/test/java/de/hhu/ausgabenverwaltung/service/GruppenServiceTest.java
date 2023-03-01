@@ -2,6 +2,7 @@ package de.hhu.ausgabenverwaltung.service;
 
 import de.hhu.ausgabenverwaltung.domain.Ausgabe;
 import de.hhu.ausgabenverwaltung.domain.Gruppe;
+import de.hhu.ausgabenverwaltung.domain.Transaktion;
 import de.hhu.ausgabenverwaltung.domain.User;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -10,6 +11,8 @@ import java.math.BigDecimal;
 import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 class GruppenServiceTest {
 
@@ -81,4 +84,21 @@ class GruppenServiceTest {
 		assertThat(alleSalden).containsEntry(userD, new BigDecimal(-6));
 	}
 
+	@Test
+	@DisplayName("Bei ausgleichenden Zahlungen sollen diese vorramgig berechnet werden, um Transaktionen minimal zu halten.")
+	void berechneTransaktionen(){
+		//Arrange
+
+		GruppenService gruppenservice = mock(GruppenService.class);
+
+		User userA = new User("githubname1", "Jens");
+		User userB = new User("githubname2", "Bob");
+		Gruppe gruppe = new Gruppe("gruppe", new ArrayList<>(), new ArrayList<>(List.of(userA, userB)), new HashSet<>(),true);
+		when(gruppenservice.berechneSalden(gruppe)).thenReturn(new HashMap<>(Map.of(userA, new BigDecimal(5), userB, new BigDecimal(-5))));
+		when(gruppenservice.berechneTransaktionen(gruppe)).thenCallRealMethod();
+		//Act
+		var alleTransaktionen = gruppenservice.berechneTransaktionen(gruppe);
+		//Assert
+		assertThat(alleTransaktionen).isEqualTo(new HashSet<>(Set.of(new Transaktion(userA,userB ,new BigDecimal(5)))));
+	}
 }

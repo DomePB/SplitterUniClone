@@ -101,4 +101,22 @@ class GruppenServiceTest {
 		//Assert
 		assertThat(alleTransaktionen).isEqualTo(new HashSet<>(Set.of(new Transaktion(userA,userB ,new BigDecimal(5)))));
 	}
+
+	@Test
+	@DisplayName("UserA bezahlt mehr als B bekommt")
+	void berechneTransaktionen2(){
+		//Arrange
+
+		GruppenService gruppenservice = mock(GruppenService.class);
+
+		User userA = new User("githubname1", "Jens");
+		User userB = new User("githubname2", "Bob");
+		Gruppe gruppe = new Gruppe("gruppe", new ArrayList<>(), new ArrayList<>(List.of(userA, userB)), new HashSet<>(),true);
+		when(gruppenservice.berechneSalden(gruppe)).thenReturn(new HashMap<>(Map.of(userA, new BigDecimal(5), userB, new BigDecimal(-3))));
+		when(gruppenservice.berechneTransaktionen(gruppe)).thenCallRealMethod();
+		//Act
+		var alleTransaktionen = gruppenservice.berechneTransaktionen(gruppe);
+		//Assert
+		assertThat(alleTransaktionen).isEqualTo(new HashSet<>(Set.of(new Transaktion(userA,userB ,new BigDecimal(3)))));
+	}
 }

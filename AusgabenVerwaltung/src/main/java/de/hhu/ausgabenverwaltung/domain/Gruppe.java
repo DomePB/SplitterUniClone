@@ -67,14 +67,12 @@ public class Gruppe {
             return false;
         }
 
-
         for (Transaktion t:transaktionen) {
             if (t.empfaenger().equals(transaktion.empfaenger()) && t.sender().equals(transaktion.sender()) ||
                     t.empfaenger().equals(transaktion.sender()) && t.sender().equals(transaktion.empfaenger()))
             {
                 return false;
             }
-
         }
         return true;
     }
@@ -92,14 +90,12 @@ public class Gruppe {
     }
 
     public BigDecimal summeVonUser(User user) {
-        BigDecimal summe = BigDecimal.ZERO;
-        for (Ausgabe ausgabe : ausgaben) {
-            if (ausgabe.bezahltVon().equals(user)) {
-               summe = summe.add(ausgabe.betrag());
-            }
-        }
-        return summe;
+        return ausgaben.stream()
+                .filter(ausgabe -> ausgabe.bezahltVon().equals(user))
+                .map(Ausgabe::betrag)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
+
 
     public HashMap<User, BigDecimal> mussBezahlenVonUser(User user)  {
         HashMap<User, BigDecimal> schuldner = new HashMap<User, BigDecimal>();

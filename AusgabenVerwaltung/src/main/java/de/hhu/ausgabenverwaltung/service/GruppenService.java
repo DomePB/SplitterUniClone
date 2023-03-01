@@ -55,13 +55,14 @@ public class GruppenService {
 	public Set<Transaktion> berechneTransaktionen(Gruppe gruppe) {
 		Set<Transaktion> transaktionen = new HashSet<>();
 		var salden = berechneSalden(gruppe);
+
 		for(var saldenEntry: salden.entrySet()){
 
 			for (var zielEntry: salden.entrySet()) {
 				if ( saldenEntry.getKey()==zielEntry.getKey()){
 					continue;
 				}
-				if (saldenEntry.getValue().add(zielEntry.getValue()) == BigDecimal.ZERO){
+				if (saldenEntry.getValue().add(zielEntry.getValue()).equals(BigDecimal.ZERO)){
 					if (saldenEntry.getValue().compareTo(BigDecimal.ZERO) > 0){
 
 						transaktionen.add(new Transaktion(saldenEntry.getKey(), zielEntry.getKey(), saldenEntry.getValue()));
@@ -71,6 +72,27 @@ public class GruppenService {
 					}
 					salden.put(saldenEntry.getKey(), BigDecimal.ZERO);
 					salden.put(zielEntry.getKey(), BigDecimal.ZERO);
+				}
+			}
+		}
+		for(var saldenEntry: salden.entrySet()){
+
+			if (saldenEntry.getValue().equals(BigDecimal.ZERO)){
+				continue;
+			}
+
+			for (var zielEntry: salden.entrySet()) {
+				if (saldenEntry.getKey() == zielEntry.getKey()) {
+					continue;
+				}
+				if (saldenEntry.getValue().compareTo(BigDecimal.ZERO) > 0 && zielEntry.getValue().compareTo(BigDecimal.ZERO) < 0){
+					if (saldenEntry.getValue().compareTo(BigDecimal.ZERO) > zielEntry.getValue().compareTo(BigDecimal.ZERO)){
+						BigDecimal bigDecimalBetrag = zielEntry.getValue().multiply(new BigDecimal(-1));
+						transaktionen.add(new Transaktion(saldenEntry.getKey(), zielEntry.getKey(),bigDecimalBetrag));
+						salden.put(saldenEntry.getKey(), saldenEntry.getValue().add(zielEntry.getValue()));
+						salden.put(zielEntry.getKey(), zielEntry.getValue().add(bigDecimalBetrag));
+					}
+
 				}
 			}
 		}

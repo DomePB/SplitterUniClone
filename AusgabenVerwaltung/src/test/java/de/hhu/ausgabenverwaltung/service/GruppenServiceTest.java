@@ -263,4 +263,38 @@ class GruppenServiceTest {
 				new Transaktion(berta,christian,new BigDecimal(20)));
 	}
 
+	@Test
+	@DisplayName("Szenario 6: Beispiel aus der Aufgabenstellung")
+	void szenario6(){
+		//Arrange
+		GruppenService gruppenservice = new GruppenService();
+
+		User userA = new User("githubname1", "A");
+		User userB = new User("githubname2", "B");
+		User userC = new User("githubname3", "C");
+		User userD = new User("githubname4", "D");
+		User userE = new User("githubname5", "E");
+		User userF = new User("githubname6", "F");
+
+		Ausgabe ausgabe1 = new Ausgabe("ausgabe1", "Hotelzimmer", new BigDecimal("564"),userA,new ArrayList<>(List.of(userA,userB,userC,userD,userE,userF)));
+		Ausgabe ausgabe2 = new Ausgabe("ausgabe2", "Benzin(Hinweg)", new BigDecimal("38.58"),userB,new ArrayList<>(List.of(userA,userB)));
+		Ausgabe ausgabe3 = new Ausgabe("ausgabe3", "Bezin(Rückweg)", new BigDecimal("38.58"),userB,new ArrayList<>(List.of(userB,userA,userD)));
+		Ausgabe ausgabe4 = new Ausgabe("ausgabe4", "Bezin", new BigDecimal("82.11"),userC,new ArrayList<>(List.of(userC,userE,userF)));
+		Ausgabe ausgabe5 = new Ausgabe("ausgabe5", "Städtetour", new BigDecimal("96"),userD,new ArrayList<>(List.of(userA,userB,userC,userD,userE,userF)));
+		Ausgabe ausgabe6 = new Ausgabe("ausgabe6", "Theatervorstellung", new BigDecimal("95.37"),userF,new ArrayList<>(List.of(userB,userE,userF)));
+
+		Gruppe gruppe = new Gruppe("gruppe", new ArrayList<>(List.of(ausgabe1,ausgabe2,ausgabe3,ausgabe4,ausgabe5,ausgabe6)),
+				new ArrayList<>(List.of(userA,userB,userC,userD,userE,userF)), new HashSet<>(),true);
+
+		//Act
+		var alleTransaktionen = gruppenservice.berechneTransaktionen(gruppe);
+
+		//Assert
+		assertThat(alleTransaktionen).containsExactlyInAnyOrder(new Transaktion(userB,userA,new BigDecimal("96.78")),
+				new Transaktion(userC,userA,new BigDecimal("55.26")),
+				new Transaktion(userD,userA,new BigDecimal("26.86")),
+				new Transaktion(userE,userA,new BigDecimal("169.16")),
+				new Transaktion(userF,userA,new BigDecimal("73.79")));
+	}
+
 }

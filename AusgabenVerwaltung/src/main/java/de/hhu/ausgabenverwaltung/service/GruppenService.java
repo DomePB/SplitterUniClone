@@ -99,7 +99,7 @@ public class GruppenService {
 				}
 
 				// Ignoriere positive Salden
-				if (empfaengerEntry.getValue().compareTo(BigDecimal.ZERO) > 0){
+				if (empfaengerEntry.getValue().compareTo(BigDecimal.ZERO) >= 0){
 					continue;
 				}
 

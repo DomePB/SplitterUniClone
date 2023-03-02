@@ -8,16 +8,16 @@ public class Gruppe {
     String name;
     List<Ausgabe> ausgaben;
     List<User> mitglieder;
-
-
+    boolean offen;
 
     Set<Transaktion> transaktionen;
 
-    public Gruppe(String name, List<Ausgabe> ausgaben, List<User> mitglieder, Set<Transaktion> transaktionen ) {
+    public Gruppe(String name, List<Ausgabe> ausgaben, List<User> mitglieder, Set<Transaktion> transaktionen, boolean offen ) {
         this.name = name;
         this.mitglieder = mitglieder;
         this.ausgaben = ausgaben;
         this.transaktionen=transaktionen;
+        this.offen = offen;
     }
 
     public String getName() {
@@ -53,10 +53,11 @@ public class Gruppe {
     }
 
     public void addMitglieder(User user){
+        if(!offen){return;}
         mitglieder.add(user);
     }
 
-    public void deleteMitglieder(User user){mitglieder.remove(0);}
+    public void deleteMitglieder(User user){ if(!offen){return;} mitglieder.remove(user);}
 
     public boolean isTransaktionValid(Transaktion transaktion){
         if(transaktion.sender().equals(transaktion.empfaenger())){
@@ -66,39 +67,37 @@ public class Gruppe {
             return false;
         }
 
-
         for (Transaktion t:transaktionen) {
             if (t.empfaenger().equals(transaktion.empfaenger()) && t.sender().equals(transaktion.sender()) ||
                     t.empfaenger().equals(transaktion.sender()) && t.sender().equals(transaktion.empfaenger()))
             {
                 return false;
             }
-
         }
         return true;
     }
 
     public void transaktionHinzufuegen(Transaktion transaktion) {
+        if(!offen){return;}
         if (isTransaktionValid(transaktion)) {
             transaktionen.add(transaktion);
         }
     }
 
     public void ausgabeHinzufuegen(Ausgabe ausgabe) {
+        if(!offen){return;}
         ausgaben.add(ausgabe);
     }
 
     public BigDecimal summeVonUser(User user) {
-        BigDecimal summe = BigDecimal.ZERO;
-        for (Ausgabe ausgabe : ausgaben) {
-            if (ausgabe.bezahltVon().equals(user)) {
-               summe = summe.add(ausgabe.betrag());
-            }
-        }
-        return summe;
+        return ausgaben.stream()
+                .filter(ausgabe -> ausgabe.bezahltVon().equals(user))
+                .map(Ausgabe::betrag)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
-    public HashMap<User, BigDecimal> mussBezahlenVonUser(User user){
+
+    public HashMap<User, BigDecimal> mussBezahlenVonUser(User user)  {
         HashMap<User, BigDecimal> schuldner = new HashMap<User, BigDecimal>();
         for (Ausgabe ausgabe : ausgaben) {
             if(ausgabe.bezahltVon().equals(user)){
@@ -113,6 +112,14 @@ public class Gruppe {
             }
         }
         return schuldner;
+    }
+
+    public void schliessen(){
+        offen = false;
+    }
+
+    public boolean istOffen(){
+        return offen;
     }
 
 

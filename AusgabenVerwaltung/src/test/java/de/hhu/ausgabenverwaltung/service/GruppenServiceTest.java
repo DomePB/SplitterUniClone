@@ -4,6 +4,7 @@ import de.hhu.ausgabenverwaltung.domain.Ausgabe;
 import de.hhu.ausgabenverwaltung.domain.Gruppe;
 import de.hhu.ausgabenverwaltung.domain.Transaktion;
 import de.hhu.ausgabenverwaltung.domain.User;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -263,6 +264,7 @@ class GruppenServiceTest {
 				new Transaktion(berta,christian,new BigDecimal(20)));
 	}
 
+
 	@Test
 	@DisplayName("Szenario 6: Beispiel aus der Aufgabenstellung")
 	void szenario6(){
@@ -275,6 +277,7 @@ class GruppenServiceTest {
 		User userD = new User("githubname4", "D");
 		User userE = new User("githubname5", "E");
 		User userF = new User("githubname6", "F");
+		User userG = new User("githubname7", "G");
 
 		Ausgabe ausgabe1 = new Ausgabe("ausgabe1", "Hotelzimmer", new BigDecimal("564"),userA,new ArrayList<>(List.of(userA,userB,userC,userD,userE,userF)));
 		Ausgabe ausgabe2 = new Ausgabe("ausgabe2", "Benzin(Hinweg)", new BigDecimal("38.58"),userB,new ArrayList<>(List.of(userA,userB)));
@@ -295,6 +298,44 @@ class GruppenServiceTest {
 				new Transaktion(userD,userA,new BigDecimal("26.86")),
 				new Transaktion(userE,userA,new BigDecimal("169.16")),
 				new Transaktion(userF,userA,new BigDecimal("73.79")));
+	}
+
+	@Test
+	@Disabled
+	@DisplayName("Szenario 7: Minimierung")
+	void szenario7(){
+		//Arrange
+		GruppenService gruppenservice = new GruppenService();
+
+		User userA = new User("githubname1", "A");
+		User userB = new User("githubname2", "B");
+		User userC = new User("githubname3", "C");
+		User userD = new User("githubname4", "D");
+		User userE = new User("githubname5", "E");
+		User userF = new User("githubname6", "F");
+		User userG = new User("githubname7", "G");
+
+		Ausgabe ausgabe1 = new Ausgabe("ausgabe1", "Ausgabe1", new BigDecimal("20"),userD,new ArrayList<>(List.of(userD,userF)));
+		Ausgabe ausgabe2 = new Ausgabe("ausgabe2", "Ausgabe2", new BigDecimal("10"),userG,new ArrayList<>(List.of(userB)));
+		Ausgabe ausgabe3 = new Ausgabe("ausgabe3", "Ausgabe3", new BigDecimal("75"),userE,new ArrayList<>(List.of(userA,userC,userE)));
+		Ausgabe ausgabe4 = new Ausgabe("ausgabe4", "Ausgabe4", new BigDecimal("50"),userF,new ArrayList<>(List.of(userA,userF)));
+		Ausgabe ausgabe5 = new Ausgabe("ausgabe5", "Ausgabe5", new BigDecimal("40"),userE,new ArrayList<>(List.of(userD)));
+		Ausgabe ausgabe6 = new Ausgabe("ausgabe6", "Ausgabe6", new BigDecimal("40"),userF,new ArrayList<>(List.of(userB,userF)));
+		Ausgabe ausgabe7 = new Ausgabe("ausgabe7", "Ausgabe7", new BigDecimal("5"),userF,new ArrayList<>(List.of(userC)));
+		Ausgabe ausgabe8 = new Ausgabe("ausgabe8", "Ausgabe8", new BigDecimal("30"),userG,new ArrayList<>(List.of(userA)));
+
+		Gruppe gruppe = new Gruppe("gruppe", new ArrayList<>(List.of(ausgabe1,ausgabe2,ausgabe3,ausgabe4,ausgabe5,ausgabe6,ausgabe7,ausgabe8)),
+				new ArrayList<>(List.of(userA,userB,userC,userD,userE,userF,userG)), new HashSet<>(),true);
+
+		//Act
+		var alleTransaktionen = gruppenservice.berechneTransaktionen(gruppe);
+
+		//Assert
+		assertThat(alleTransaktionen).containsExactlyInAnyOrder(new Transaktion(userA,userF,new BigDecimal("40")),
+				new Transaktion(userA,userG,new BigDecimal("40")),
+				new Transaktion(userB,userE,new BigDecimal("30")),
+				new Transaktion(userC,userE,new BigDecimal("30")),
+				new Transaktion(userD,userE,new BigDecimal("30")));
 	}
 
 }

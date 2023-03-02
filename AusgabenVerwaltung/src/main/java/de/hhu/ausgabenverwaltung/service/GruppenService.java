@@ -87,12 +87,12 @@ public class GruppenService {
 				continue;
 			}
 
-			// Null-Salden werden ignoriert
-			if (senderEntry.getValue().equals(BigDecimal.ZERO)) {
-				continue;
-			}
-
 			for (var empfaengerEntry: salden.entrySet()) {
+				// Null-Salden werden ignoriert
+				if (senderEntry.getValue().equals(BigDecimal.ZERO)) {
+					break;
+				}
+
 				// Nicht mit dem aktuellen User ausgleichen
 				if (senderEntry.getKey().equals(empfaengerEntry.getKey())) {
 					continue;

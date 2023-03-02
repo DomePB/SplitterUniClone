@@ -15,7 +15,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 class GruppenServiceTest {
-
 	@Test
 	@DisplayName("Anzahl der Mitglieder beträgt 1, wenn die Gruppe zuerst erstellt wird")
 	void erstelleGruppeTest(){
@@ -78,10 +77,10 @@ class GruppenServiceTest {
 		var alleSalden =  gruppenService.berechneSalden(gruppe);
 
 		// Assert
-		assertThat(alleSalden).containsEntry(userA, new BigDecimal(-2));
-		assertThat(alleSalden).containsEntry(userB, new BigDecimal(7));
-		assertThat(alleSalden).containsEntry(userC, new BigDecimal(1));
-		assertThat(alleSalden).containsEntry(userD, new BigDecimal(-6));
+		assertThat(alleSalden).containsEntry(userA, new BigDecimal(2));
+		assertThat(alleSalden).containsEntry(userB, new BigDecimal(-7));
+		assertThat(alleSalden).containsEntry(userC, new BigDecimal(-1));
+		assertThat(alleSalden).containsEntry(userD, new BigDecimal(6));
 	}
 
 	@Test
@@ -169,5 +168,23 @@ class GruppenServiceTest {
 		var alleTransaktionen = gruppenservice.berechneTransaktionen(gruppe);
 		//Assert
 		assertThat(alleTransaktionen).isEqualTo(new HashSet<>(Set.of(new Transaktion(userA,userB ,new BigDecimal(3)))));
+	}
+
+	@Test
+	@DisplayName("Szenario 1")
+	void szenario1(){
+		//Arrange
+		GruppenService gruppenservice = new GruppenService();
+		User userA = new User("githubname1", "A");
+		User userB = new User("githubname2", "B");
+
+		Ausgabe ausgabe1 = new Ausgabe("ausgabe1", "Ausgabe1", new BigDecimal(10),userA,new ArrayList<>(List.of(userA, userB)));
+		Ausgabe ausgabe2 = new Ausgabe("ausgabe2", "Ausgabe2", new BigDecimal(20),userA,new ArrayList<>(List.of(userA, userB)));
+
+		Gruppe gruppe = new Gruppe("gruppe", new ArrayList<>(List.of(ausgabe1,ausgabe2)), new ArrayList<>(List.of(userA, userB)), new HashSet<>(),true);
+		//Act
+		var alleTransaktionen = gruppenservice.berechneTransaktionen(gruppe);
+		//Assert
+		assertThat(alleTransaktionen).isEqualTo(new HashSet<>(Set.of(new Transaktion(userB,userA ,new BigDecimal(15)))));
 	}
 }

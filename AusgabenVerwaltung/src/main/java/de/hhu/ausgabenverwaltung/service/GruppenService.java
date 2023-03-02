@@ -10,9 +10,13 @@ import java.util.*;
 
 @Service
 public class GruppenService {
+	private final List<Gruppe> gruppen = new ArrayList<>();
+
 
 	public Gruppe gruppeErstellen(User ersteller, String name){
-		return new Gruppe(name, new ArrayList<>(), new ArrayList<>(List.of(ersteller)), new HashSet<>(),true);
+		 Gruppe gruppe = new Gruppe(name, new ArrayList<>(), new ArrayList<>(List.of(ersteller)), new HashSet<>(),true);
+		gruppen.add(gruppe);
+		 return gruppe;
 	}
 
 	public HashMap<User, HashMap<User, BigDecimal>> alleSchuldenBerechnen(Gruppe gruppe){

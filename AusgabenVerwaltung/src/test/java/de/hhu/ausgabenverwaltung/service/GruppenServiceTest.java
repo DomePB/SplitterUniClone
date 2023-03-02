@@ -242,4 +242,25 @@ class GruppenServiceTest {
 		assertThat(alleTransaktionen).isEmpty();
 	}
 
+	@Test
+	@DisplayName("Szenario 5: ABC Beispiel aus der Einführung")
+	void szenario5(){
+		//Arrange
+		GruppenService gruppenservice = new GruppenService();
+		User anton = new User("githubname1", "Anton");
+		User berta = new User("githubname2", "Berta");
+		User christian = new User("githubname3", "Christian");
+
+		Ausgabe ausgabe1 = new Ausgabe("ausgabe1", "Ausgabe1", new BigDecimal(60),anton,new ArrayList<>(List.of(anton,berta,christian)));
+		Ausgabe ausgabe2 = new Ausgabe("ausgabe2", "Ausgabe2", new BigDecimal(30),berta,new ArrayList<>(List.of(anton,berta,christian)));
+		Ausgabe ausgabe3 = new Ausgabe("ausgabe3", "Ausgabe3", new BigDecimal(100),christian,new ArrayList<>(List.of(berta, christian)));
+
+		Gruppe gruppe = new Gruppe("gruppe", new ArrayList<>(List.of(ausgabe1,ausgabe2,ausgabe3)), new ArrayList<>(List.of(anton,berta,christian)), new HashSet<>(),true);
+		//Act
+		var alleTransaktionen = gruppenservice.berechneTransaktionen(gruppe);
+		//Assert
+		assertThat(alleTransaktionen).containsExactly(new Transaktion(berta,anton,new BigDecimal(30)),
+				new Transaktion(berta,christian,new BigDecimal(20)));
+	}
+
 }

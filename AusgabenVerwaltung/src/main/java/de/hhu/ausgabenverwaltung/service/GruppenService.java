@@ -61,7 +61,6 @@ public class GruppenService {
 		var salden = berechneSalden(gruppe);
 
 		for(var saldenEntry: salden.entrySet()){
-
 			for (var zielEntry: salden.entrySet()) {
 				if ( saldenEntry.getKey()==zielEntry.getKey()){
 					continue;

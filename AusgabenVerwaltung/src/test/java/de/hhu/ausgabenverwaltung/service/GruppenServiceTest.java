@@ -221,4 +221,25 @@ class GruppenServiceTest {
 		//Assert
 		assertThat(alleTransaktionen).isEqualTo(new HashSet<>(Set.of(new Transaktion(userB,userA ,new BigDecimal(20)))));
 	}
+
+	@Test
+	@DisplayName("Szenario 4: Ringausgleich")
+	void szenario4(){
+		//Arrange
+		GruppenService gruppenservice = new GruppenService();
+		User userA = new User("githubname1", "A");
+		User userB = new User("githubname2", "B");
+		User userC = new User("githubname3", "C");
+
+		Ausgabe ausgabe1 = new Ausgabe("ausgabe1", "Ausgabe1", new BigDecimal(10),userA,new ArrayList<>(List.of(userA, userB)));
+		Ausgabe ausgabe2 = new Ausgabe("ausgabe2", "Ausgabe2", new BigDecimal(10),userB,new ArrayList<>(List.of(userB, userC)));
+		Ausgabe ausgabe3 = new Ausgabe("ausgabe3", "Ausgabe3", new BigDecimal(10),userC,new ArrayList<>(List.of(userA, userC)));
+
+		Gruppe gruppe = new Gruppe("gruppe", new ArrayList<>(List.of(ausgabe1,ausgabe2,ausgabe3)), new ArrayList<>(List.of(userA, userB, userC)), new HashSet<>(),true);
+		//Act
+		var alleTransaktionen = gruppenservice.berechneTransaktionen(gruppe);
+		//Assert
+		assertThat(alleTransaktionen).isEmpty();
+	}
+
 }

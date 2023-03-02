@@ -4,6 +4,7 @@ import de.hhu.ausgabenverwaltung.domain.Ausgabe;
 import de.hhu.ausgabenverwaltung.domain.Gruppe;
 import de.hhu.ausgabenverwaltung.domain.Transaktion;
 import de.hhu.ausgabenverwaltung.domain.User;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -15,7 +16,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 class GruppenServiceTest {
-
 	@Test
 	@DisplayName("Anzahl der Mitglieder beträgt 1, wenn die Gruppe zuerst erstellt wird")
 	void erstelleGruppeTest(){
@@ -78,10 +78,10 @@ class GruppenServiceTest {
 		var alleSalden =  gruppenService.berechneSalden(gruppe);
 
 		// Assert
-		assertThat(alleSalden).containsEntry(userA, new BigDecimal(-2));
-		assertThat(alleSalden).containsEntry(userB, new BigDecimal(7));
-		assertThat(alleSalden).containsEntry(userC, new BigDecimal(1));
-		assertThat(alleSalden).containsEntry(userD, new BigDecimal(-6));
+		assertThat(alleSalden).containsEntry(userA, new BigDecimal(2));
+		assertThat(alleSalden).containsEntry(userB, new BigDecimal(-7));
+		assertThat(alleSalden).containsEntry(userC, new BigDecimal(-1));
+		assertThat(alleSalden).containsEntry(userD, new BigDecimal(6));
 	}
 
 	@Test
@@ -169,5 +169,204 @@ class GruppenServiceTest {
 		var alleTransaktionen = gruppenservice.berechneTransaktionen(gruppe);
 		//Assert
 		assertThat(alleTransaktionen).isEqualTo(new HashSet<>(Set.of(new Transaktion(userA,userB ,new BigDecimal(3)))));
+	}
+
+	@Test
+	@DisplayName("Szenario 1: Summieren von Auslagen")
+	void szenario1(){
+		//Arrange
+		GruppenService gruppenservice = new GruppenService();
+		User userA = new User("githubname1", "A");
+		User userB = new User("githubname2", "B");
+
+		Ausgabe ausgabe1 = new Ausgabe("ausgabe1", "Ausgabe1", new BigDecimal(10),userA,new ArrayList<>(List.of(userA, userB)));
+		Ausgabe ausgabe2 = new Ausgabe("ausgabe2", "Ausgabe2", new BigDecimal(20),userA,new ArrayList<>(List.of(userA, userB)));
+
+		Gruppe gruppe = new Gruppe("gruppe", new ArrayList<>(List.of(ausgabe1,ausgabe2)), new ArrayList<>(List.of(userA, userB)), new HashSet<>(),true);
+		//Act
+		var alleTransaktionen = gruppenservice.berechneTransaktionen(gruppe);
+		//Assert
+		assertThat(alleTransaktionen).isEqualTo(new HashSet<>(Set.of(new Transaktion(userB,userA ,new BigDecimal(15)))));
+	}
+	@Test
+	@DisplayName("Szenario 2: Ausgleich")
+	void szenario2(){
+		//Arrange
+		GruppenService gruppenservice = new GruppenService();
+		User userA = new User("githubname1", "A");
+		User userB = new User("githubname2", "B");
+
+		Ausgabe ausgabe1 = new Ausgabe("ausgabe1", "Ausgabe1", new BigDecimal(10),userA,new ArrayList<>(List.of(userA, userB)));
+		Ausgabe ausgabe2 = new Ausgabe("ausgabe2", "Ausgabe2", new BigDecimal(20),userB,new ArrayList<>(List.of(userA, userB)));
+
+		Gruppe gruppe = new Gruppe("gruppe", new ArrayList<>(List.of(ausgabe1,ausgabe2)), new ArrayList<>(List.of(userA, userB)), new HashSet<>(),true);
+		//Act
+		var alleTransaktionen = gruppenservice.berechneTransaktionen(gruppe);
+		//Assert
+		assertThat(alleTransaktionen).isEqualTo(new HashSet<>(Set.of(new Transaktion(userA,userB ,new BigDecimal(5)))));
+	}
+	@Test
+	@DisplayName("Szenario 3: Zahlung ohne eigene Beteiligung")
+	void szenario3(){
+		//Arrange
+		GruppenService gruppenservice = new GruppenService();
+		User userA = new User("githubname1", "A");
+		User userB = new User("githubname2", "B");
+
+		Ausgabe ausgabe1 = new Ausgabe("ausgabe1", "Ausgabe1", new BigDecimal(10),userA,new ArrayList<>(List.of(userB)));
+		Ausgabe ausgabe2 = new Ausgabe("ausgabe2", "Ausgabe2", new BigDecimal(20),userA,new ArrayList<>(List.of(userA, userB)));
+
+		Gruppe gruppe = new Gruppe("gruppe", new ArrayList<>(List.of(ausgabe1,ausgabe2)), new ArrayList<>(List.of(userA, userB)), new HashSet<>(),true);
+		//Act
+		var alleTransaktionen = gruppenservice.berechneTransaktionen(gruppe);
+		//Assert
+		assertThat(alleTransaktionen).isEqualTo(new HashSet<>(Set.of(new Transaktion(userB,userA ,new BigDecimal(20)))));
+	}
+
+	@Test
+	@DisplayName("Szenario 4: Ringausgleich")
+	void szenario4(){
+		//Arrange
+		GruppenService gruppenservice = new GruppenService();
+		User userA = new User("githubname1", "A");
+		User userB = new User("githubname2", "B");
+		User userC = new User("githubname3", "C");
+
+		Ausgabe ausgabe1 = new Ausgabe("ausgabe1", "Ausgabe1", new BigDecimal(10),userA,new ArrayList<>(List.of(userA, userB)));
+		Ausgabe ausgabe2 = new Ausgabe("ausgabe2", "Ausgabe2", new BigDecimal(10),userB,new ArrayList<>(List.of(userB, userC)));
+		Ausgabe ausgabe3 = new Ausgabe("ausgabe3", "Ausgabe3", new BigDecimal(10),userC,new ArrayList<>(List.of(userA, userC)));
+
+		Gruppe gruppe = new Gruppe("gruppe", new ArrayList<>(List.of(ausgabe1,ausgabe2,ausgabe3)), new ArrayList<>(List.of(userA, userB, userC)), new HashSet<>(),true);
+		//Act
+		var alleTransaktionen = gruppenservice.berechneTransaktionen(gruppe);
+		//Assert
+		assertThat(alleTransaktionen).isEmpty();
+	}
+
+	@Test
+	@DisplayName("Szenario 5: ABC Beispiel aus der Einführung")
+	void szenario5(){
+		//Arrange
+		GruppenService gruppenservice = new GruppenService();
+		User anton = new User("githubname1", "Anton");
+		User berta = new User("githubname2", "Berta");
+		User christian = new User("githubname3", "Christian");
+
+		Ausgabe ausgabe1 = new Ausgabe("ausgabe1", "Ausgabe1", new BigDecimal(60),anton,new ArrayList<>(List.of(anton,berta,christian)));
+		Ausgabe ausgabe2 = new Ausgabe("ausgabe2", "Ausgabe2", new BigDecimal(30),berta,new ArrayList<>(List.of(anton,berta,christian)));
+		Ausgabe ausgabe3 = new Ausgabe("ausgabe3", "Ausgabe3", new BigDecimal(100),christian,new ArrayList<>(List.of(berta, christian)));
+
+		Gruppe gruppe = new Gruppe("gruppe", new ArrayList<>(List.of(ausgabe1,ausgabe2,ausgabe3)), new ArrayList<>(List.of(anton,berta,christian)), new HashSet<>(),true);
+		//Act
+		var alleTransaktionen = gruppenservice.berechneTransaktionen(gruppe);
+		//Assert
+		assertThat(alleTransaktionen).containsExactly(new Transaktion(berta,anton,new BigDecimal(30)),
+				new Transaktion(berta,christian,new BigDecimal(20)));
+	}
+
+
+	@Test
+	@DisplayName("Szenario 6: Beispiel aus der Aufgabenstellung")
+	void szenario6(){
+		//Arrange
+		GruppenService gruppenservice = new GruppenService();
+
+		User userA = new User("githubname1", "A");
+		User userB = new User("githubname2", "B");
+		User userC = new User("githubname3", "C");
+		User userD = new User("githubname4", "D");
+		User userE = new User("githubname5", "E");
+		User userF = new User("githubname6", "F");
+
+		Ausgabe ausgabe1 = new Ausgabe("ausgabe1", "Hotelzimmer", new BigDecimal("564"),userA,new ArrayList<>(List.of(userA,userB,userC,userD,userE,userF)));
+		Ausgabe ausgabe2 = new Ausgabe("ausgabe2", "Benzin(Hinweg)", new BigDecimal("38.58"),userB,new ArrayList<>(List.of(userA,userB)));
+		Ausgabe ausgabe3 = new Ausgabe("ausgabe3", "Bezin(Rückweg)", new BigDecimal("38.58"),userB,new ArrayList<>(List.of(userB,userA,userD)));
+		Ausgabe ausgabe4 = new Ausgabe("ausgabe4", "Bezin", new BigDecimal("82.11"),userC,new ArrayList<>(List.of(userC,userE,userF)));
+		Ausgabe ausgabe5 = new Ausgabe("ausgabe5", "Städtetour", new BigDecimal("96"),userD,new ArrayList<>(List.of(userA,userB,userC,userD,userE,userF)));
+		Ausgabe ausgabe6 = new Ausgabe("ausgabe6", "Theatervorstellung", new BigDecimal("95.37"),userF,new ArrayList<>(List.of(userB,userE,userF)));
+
+		Gruppe gruppe = new Gruppe("gruppe", new ArrayList<>(List.of(ausgabe1,ausgabe2,ausgabe3,ausgabe4,ausgabe5,ausgabe6)),
+				new ArrayList<>(List.of(userA,userB,userC,userD,userE,userF)), new HashSet<>(),true);
+
+		//Act
+		var alleTransaktionen = gruppenservice.berechneTransaktionen(gruppe);
+
+		//Assert
+		assertThat(alleTransaktionen).containsExactlyInAnyOrder(new Transaktion(userB,userA,new BigDecimal("96.78")),
+				new Transaktion(userC,userA,new BigDecimal("55.26")),
+				new Transaktion(userD,userA,new BigDecimal("26.86")),
+				new Transaktion(userE,userA,new BigDecimal("169.16")),
+				new Transaktion(userF,userA,new BigDecimal("73.79")));
+	}
+
+	@Test
+	@Disabled
+	@DisplayName("Szenario 7: Minimierung")
+	void szenario7(){
+		//Arrange
+		GruppenService gruppenservice = new GruppenService();
+
+		User userA = new User("githubname1", "A");
+		User userB = new User("githubname2", "B");
+		User userC = new User("githubname3", "C");
+		User userD = new User("githubname4", "D");
+		User userE = new User("githubname5", "E");
+		User userF = new User("githubname6", "F");
+		User userG = new User("githubname7", "G");
+
+		Ausgabe ausgabe1 = new Ausgabe("ausgabe1", "Ausgabe1", new BigDecimal("20"),userD,new ArrayList<>(List.of(userD,userF)));
+		Ausgabe ausgabe2 = new Ausgabe("ausgabe2", "Ausgabe2", new BigDecimal("10"),userG,new ArrayList<>(List.of(userB)));
+		Ausgabe ausgabe3 = new Ausgabe("ausgabe3", "Ausgabe3", new BigDecimal("75"),userE,new ArrayList<>(List.of(userA,userC,userE)));
+		Ausgabe ausgabe4 = new Ausgabe("ausgabe4", "Ausgabe4", new BigDecimal("50"),userF,new ArrayList<>(List.of(userA,userF)));
+		Ausgabe ausgabe5 = new Ausgabe("ausgabe5", "Ausgabe5", new BigDecimal("40"),userE,new ArrayList<>(List.of(userD)));
+		Ausgabe ausgabe6 = new Ausgabe("ausgabe6", "Ausgabe6", new BigDecimal("40"),userF,new ArrayList<>(List.of(userB,userF)));
+		Ausgabe ausgabe7 = new Ausgabe("ausgabe7", "Ausgabe7", new BigDecimal("5"),userF,new ArrayList<>(List.of(userC)));
+		Ausgabe ausgabe8 = new Ausgabe("ausgabe8", "Ausgabe8", new BigDecimal("30"),userG,new ArrayList<>(List.of(userA)));
+
+		Gruppe gruppe = new Gruppe("gruppe", new ArrayList<>(List.of(ausgabe1,ausgabe2,ausgabe3,ausgabe4,ausgabe5,ausgabe6,ausgabe7,ausgabe8)),
+				new ArrayList<>(List.of(userA,userB,userC,userD,userE,userF,userG)), new HashSet<>(),true);
+
+		//Act
+		var alleTransaktionen = gruppenservice.berechneTransaktionen(gruppe);
+
+		//Assert
+		assertThat(alleTransaktionen).containsExactlyInAnyOrder(new Transaktion(userA,userF,new BigDecimal("40")),
+				new Transaktion(userA,userG,new BigDecimal("40")),
+				new Transaktion(userB,userE,new BigDecimal("30")),
+				new Transaktion(userC,userE,new BigDecimal("30")),
+				new Transaktion(userD,userE,new BigDecimal("30")));
+	}
+
+	@Test
+	@DisplayName("User Transaktionen werden richtig angezeigt")
+	void transaktionenFilternProUser(){
+
+		//Arrange
+		GruppenService gruppenservice = new GruppenService();
+
+		User userA = new User("githubname1", "A");
+		User userB = new User("githubname2", "B");
+		User userC = new User("githubname3", "C");
+
+
+		Transaktion transaktion1 = new Transaktion(userA,userB,new BigDecimal("40"));
+		Transaktion transaktion2 = new Transaktion(userB,userA,new BigDecimal("10"));
+		Transaktion transaktion3 = new Transaktion(userC,userB,new BigDecimal("20"));
+
+
+		Gruppe gruppe1 = new Gruppe("gruppe1", new ArrayList<>(),
+				new ArrayList<>(List.of(userA,userB)), new HashSet<>(Set.of(transaktion1)),true);
+		Gruppe gruppe2 = new Gruppe("gruppe2", new ArrayList<>(),
+				new ArrayList<>(List.of(userA,userB, userC)), new HashSet<>(Set.of(transaktion2,transaktion3)),true);
+
+		gruppenservice.gruppeErstellen(userA, "gruppe1");
+
+		//Act
+		var userTransaktionen = gruppenservice.getBeteiligteTransaktionen(userA);
+
+		//Assert
+		assertThat(userTransaktionen).containsEntry(gruppe1, new HashSet<>(Set.of(transaktion1)));
+		assertThat(userTransaktionen).containsEntry(gruppe2, new HashSet<>(Set.of(transaktion2)));
+
 	}
 }

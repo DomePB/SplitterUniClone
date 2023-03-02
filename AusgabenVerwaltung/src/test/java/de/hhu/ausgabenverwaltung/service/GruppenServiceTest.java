@@ -171,7 +171,7 @@ class GruppenServiceTest {
 	}
 
 	@Test
-	@DisplayName("Szenario 1")
+	@DisplayName("Szenario 1: Summieren von Auslagen")
 	void szenario1(){
 		//Arrange
 		GruppenService gruppenservice = new GruppenService();
@@ -186,5 +186,22 @@ class GruppenServiceTest {
 		var alleTransaktionen = gruppenservice.berechneTransaktionen(gruppe);
 		//Assert
 		assertThat(alleTransaktionen).isEqualTo(new HashSet<>(Set.of(new Transaktion(userB,userA ,new BigDecimal(15)))));
+	}
+	@Test
+	@DisplayName("Szenario 2: Ausgleich")
+	void szenario2(){
+		//Arrange
+		GruppenService gruppenservice = new GruppenService();
+		User userA = new User("githubname1", "A");
+		User userB = new User("githubname2", "B");
+
+		Ausgabe ausgabe1 = new Ausgabe("ausgabe1", "Ausgabe1", new BigDecimal(10),userA,new ArrayList<>(List.of(userA, userB)));
+		Ausgabe ausgabe2 = new Ausgabe("ausgabe2", "Ausgabe2", new BigDecimal(20),userB,new ArrayList<>(List.of(userA, userB)));
+
+		Gruppe gruppe = new Gruppe("gruppe", new ArrayList<>(List.of(ausgabe1,ausgabe2)), new ArrayList<>(List.of(userA, userB)), new HashSet<>(),true);
+		//Act
+		var alleTransaktionen = gruppenservice.berechneTransaktionen(gruppe);
+		//Assert
+		assertThat(alleTransaktionen).isEqualTo(new HashSet<>(Set.of(new Transaktion(userA,userB ,new BigDecimal(5)))));
 	}
 }

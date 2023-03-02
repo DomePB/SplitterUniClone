@@ -277,7 +277,6 @@ class GruppenServiceTest {
 		User userD = new User("githubname4", "D");
 		User userE = new User("githubname5", "E");
 		User userF = new User("githubname6", "F");
-		User userG = new User("githubname7", "G");
 
 		Ausgabe ausgabe1 = new Ausgabe("ausgabe1", "Hotelzimmer", new BigDecimal("564"),userA,new ArrayList<>(List.of(userA,userB,userC,userD,userE,userF)));
 		Ausgabe ausgabe2 = new Ausgabe("ausgabe2", "Benzin(Hinweg)", new BigDecimal("38.58"),userB,new ArrayList<>(List.of(userA,userB)));
@@ -338,4 +337,36 @@ class GruppenServiceTest {
 				new Transaktion(userD,userE,new BigDecimal("30")));
 	}
 
+	@Test
+	@DisplayName("User Transaktionen werden richtig angezeigt")
+	void transaktionenFilternProUser(){
+
+		//Arrange
+		GruppenService gruppenservice = new GruppenService();
+
+		User userA = new User("githubname1", "A");
+		User userB = new User("githubname2", "B");
+		User userC = new User("githubname3", "C");
+
+
+		Transaktion transaktion1 = new Transaktion(userA,userB,new BigDecimal("40"));
+		Transaktion transaktion2 = new Transaktion(userB,userA,new BigDecimal("10"));
+		Transaktion transaktion3 = new Transaktion(userC,userB,new BigDecimal("20"));
+
+
+		Gruppe gruppe1 = new Gruppe("gruppe1", new ArrayList<>(),
+				new ArrayList<>(List.of(userA,userB)), new HashSet<>(Set.of(transaktion1)),true);
+		Gruppe gruppe2 = new Gruppe("gruppe2", new ArrayList<>(),
+				new ArrayList<>(List.of(userA,userB, userC)), new HashSet<>(Set.of(transaktion2,transaktion3)),true);
+
+		gruppenservice.gruppeErstellen(userA, "gruppe1");
+
+		//Act
+		var userTransaktionen = gruppenservice.getBeteiligteTransaktionen(userA);
+
+		//Assert
+		assertThat(userTransaktionen).containsEntry(gruppe1, new HashSet<>(Set.of(transaktion1)));
+		assertThat(userTransaktionen).containsEntry(gruppe2, new HashSet<>(Set.of(transaktion2)));
+
+	}
 }

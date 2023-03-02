@@ -114,6 +114,7 @@ public class Gruppe {
         return schuldner;
     }
 
+
     public void schliessen(){
         offen = false;
     }

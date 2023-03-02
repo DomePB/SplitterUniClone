@@ -77,10 +77,10 @@ class GruppenServiceTest {
 		var alleSalden =  gruppenService.berechneSalden(gruppe);
 
 		// Assert
-		assertThat(alleSalden).containsEntry(userA, new BigDecimal(-2));
-		assertThat(alleSalden).containsEntry(userB, new BigDecimal(7));
-		assertThat(alleSalden).containsEntry(userC, new BigDecimal(1));
-		assertThat(alleSalden).containsEntry(userD, new BigDecimal(-6));
+		assertThat(alleSalden).containsEntry(userA, new BigDecimal(2));
+		assertThat(alleSalden).containsEntry(userB, new BigDecimal(-7));
+		assertThat(alleSalden).containsEntry(userC, new BigDecimal(-1));
+		assertThat(alleSalden).containsEntry(userD, new BigDecimal(6));
 	}
 
 	@Test

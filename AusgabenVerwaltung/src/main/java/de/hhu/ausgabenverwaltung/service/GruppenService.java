@@ -14,16 +14,16 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class GruppenService {
-    private final List<Gruppe> gruppen = new ArrayList<>();
+    private final GruppenListe gruppen = new GruppenListe();
 
     public List<Gruppe> getGruppen() {
-        return gruppen;
+        return gruppen.getList();
     }
 
     public Gruppe gruppeErstellen(User ersteller, String name) {
         Gruppe gruppe = new Gruppe(name, new ArrayList<>(), new ArrayList<>(List.of(ersteller)),
                 new HashSet<>(), true);
-        gruppen.add(gruppe);
+        gruppen.getList().add(gruppe);
         return gruppe;
     }
 
@@ -35,7 +35,7 @@ public class GruppenService {
     public List<Gruppe> gruppenVonUser(User user) {
         List<Gruppe> gruppenVonUser = new ArrayList<>();
 
-        for (Gruppe gruppe : gruppen) {
+        for (Gruppe gruppe : gruppen.getList()) {
             if (gruppe.getMitglieder().contains(user)) {
                 gruppenVonUser.add(gruppe);
             }

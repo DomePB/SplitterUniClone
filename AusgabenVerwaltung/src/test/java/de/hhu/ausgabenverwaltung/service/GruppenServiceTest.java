@@ -50,6 +50,23 @@ class GruppenServiceTest {
 	}
 
 	@Test
+	@DisplayName("Alle Gruppen eines Users werden zurückgegeben")
+	void gruppenVonUserTest() {
+		//Arrange
+		GruppenService gruppenService = new GruppenService();
+		User userA = new User("githubname1", "Alpha");
+		User userB = new User("githubname2", "Beta");
+		Gruppe gruppe1 = gruppenService.gruppeErstellen(userA, "Gruppe 1");
+		Gruppe gruppe2 = gruppenService.gruppeErstellen(userB, "Gruppe 2");
+
+		// Act
+		List<Gruppe> gruppenVonA = gruppenService.gruppenVonUser(userA);
+
+		// Assert
+		assertThat(gruppenVonA).containsExactly(gruppe1);
+	}
+
+	@Test
 	@DisplayName("Alle Schulden einer Gruppe korrekt berechnet")
 	void schuldenEinerGruppe() {
 		//Arrange

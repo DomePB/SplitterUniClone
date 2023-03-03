@@ -5,8 +5,8 @@ import de.hhu.ausgabenverwaltung.service.GruppenService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.ResponseBody;
+
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 
 @Controller
 public class WebController {
@@ -18,10 +18,13 @@ public class WebController {
     }
 
     @GetMapping("/")
-    public String index(Model model)
+    public String index(Model model, OAuth2AuthenticationToken token )
     {
-        service.gruppeErstellen(new User("test","test"),"Testgruppe");
-        model.addAttribute("gruppenListe", service.getGruppen());
+        User user = new User( token.getPrincipal().getAttribute("login"), token.getName());
+        service.gruppeErstellen(user,"Testgruppe");
+        service.gruppeErstellen(new User("test", "test"), "gruppe2");
+        model.addAttribute("user", user);
+        model.addAttribute("gruppenListe", service.gruppenVonUser(user));
         return "index";
     }
 

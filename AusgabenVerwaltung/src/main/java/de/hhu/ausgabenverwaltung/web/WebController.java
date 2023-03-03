@@ -8,6 +8,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class WebController {
@@ -23,12 +26,19 @@ public class WebController {
     {
         User user = new User( token.getPrincipal().getAttribute("login"), token.getName());
         GruppenListe gruppen = service.getGruppenListe().vonUser(user);
-        service.gruppeErstellen(user,"Testgruppe");
-        service.gruppeErstellen(new User("test", "test"), "gruppe2");
+        //service.gruppeErstellen(user,"Testgruppe");
+        //service.gruppeErstellen(new User("test", "test"), "gruppe2");
         model.addAttribute("user", user);
         model.addAttribute("offeneGruppen", gruppen.istOffen(true).getList());
         model.addAttribute("geschlosseneGruppen", gruppen.istOffen(false).getList());
         return "index";
+    }
+
+    @PostMapping("/")
+    public String gruppeErstellen(@RequestParam(name = "gruppenName") String gruppenName, OAuth2AuthenticationToken token){
+        User user = new User( token.getPrincipal().getAttribute("login"), token.getName());
+        service.gruppeErstellen(user, gruppenName);
+        return "redirect:/";
     }
 
 }

@@ -10,12 +10,41 @@
 <span th:text="${user.githubHandle} "></span>
 <h2> Offene Gruppen:</h2>
 <ul class="list-group" th:remove="all-but-first">
-    <li class="list-group-item" th:each="gruppe:${offeneGruppen}"><a th:href="@{/gruppe(id=${gruppe.name})}" th:text="${gruppe.name}"> Gruppenname</a></li>
+    <li class="list-group-item" th:each="gruppe:${offeneGruppen}"><a th:href="@{/gruppe(id=${gruppe.name})}"
+                                                                     th:text="${gruppe.name}"> Gruppenname</a></li>
 </ul>
 <h2> Geschlossene Gruppen: </h2>
 <ul class="list-group" th:remove="all-but-first">
-    <li class="list-group-item" th:each="gruppe:${geschlosseneGruppen}"><a th:href="@{/gruppe(id=${gruppe.name})}" th:text="${gruppe.name}"> Gruppenname</a></li>
+    <li class="list-group-item" th:each="gruppe:${geschlosseneGruppen}"><a th:href="@{/gruppe(id=${gruppe.name})}"
+                                                                           th:text="${gruppe.name}"> Gruppenname</a>
+    </li>
 </ul>
 
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#gruppenErstellenModal">Gruppe
+    Erstellen
+</button>
+
+<div class="modal fade" id="gruppenErstellenModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="post" th:action="@{/}">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Gruppe erstellen</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="gruppenName" class="col-form-label">Name:</label>
+                        <input type="text" name="gruppenName" class="form-control" id="gruppenName">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Abbrechen</button>
+                    <button type="submit" class="btn btn-primary">Erstellen</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 </body>
 </html>

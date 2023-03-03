@@ -3,17 +3,26 @@ package de.hhu.ausgabenverwaltung.service;
 import de.hhu.ausgabenverwaltung.domain.Gruppe;
 import de.hhu.ausgabenverwaltung.domain.Transaktion;
 import de.hhu.ausgabenverwaltung.domain.User;
-import org.springframework.stereotype.Service;
-
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import org.springframework.stereotype.Service;
 
 @Service
 public class GruppenService {
     private final List<Gruppe> gruppen = new ArrayList<>();
 
+    public List<Gruppe> getGruppen() {
+        return gruppen;
+    }
+
     public Gruppe gruppeErstellen(User ersteller, String name) {
-        Gruppe gruppe = new Gruppe(name, new ArrayList<>(), new ArrayList<>(List.of(ersteller)), new HashSet<>(), true);
+        Gruppe gruppe = new Gruppe(name, new ArrayList<>(), new ArrayList<>(List.of(ersteller)),
+                new HashSet<>(), true);
         gruppen.add(gruppe);
         return gruppe;
     }
@@ -51,17 +60,17 @@ public class GruppenService {
 
 	public Map<Gruppe, Set<Transaktion>> getBeteiligteTransaktionen(User user){
 		Map<Gruppe, Set<Transaktion>> userTransaktinen = new HashMap<>();
-		for (Gruppe gruppe: gruppen) {
-			Set<Transaktion> temp = new HashSet<>();
-			if(gruppe.getMitglieder().contains(user)){
-				Set<Transaktion> groupeTransaktionen = berechneTransaktionen(gruppe);
-				for (Transaktion t: groupeTransaktionen) {
-					if(t.sender().equals(user) || t.empfaenger().equals(user)){
-						temp.add(t);
-					}
-				}
-				userTransaktinen.put(gruppe, temp);
-			}
+        for (Gruppe gruppe : getGruppen()) {
+            Set<Transaktion> temp = new HashSet<>();
+            if (gruppe.getMitglieder().contains(user)) {
+                Set<Transaktion> groupeTransaktionen = berechneTransaktionen(gruppe);
+                for (Transaktion t : groupeTransaktionen) {
+                    if (t.sender().equals(user) || t.empfaenger().equals(user)) {
+                        temp.add(t);
+                    }
+                }
+                userTransaktinen.put(gruppe, temp);
+            }
 		}
 		return userTransaktinen;
 	}

@@ -1,19 +1,23 @@
 package de.hhu.ausgabenverwaltung.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import de.hhu.ausgabenverwaltung.domain.Ausgabe;
 import de.hhu.ausgabenverwaltung.domain.Gruppe;
 import de.hhu.ausgabenverwaltung.domain.Transaktion;
 import de.hhu.ausgabenverwaltung.domain.User;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import java.math.BigDecimal;
-import java.util.*;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 class GruppenServiceTest {
 	@Test
@@ -342,31 +346,35 @@ class GruppenServiceTest {
 	void transaktionenFilternProUser(){
 
 		//Arrange
-		GruppenService gruppenservice = new GruppenService();
+		GruppenService gruppenservice = mock(GruppenService.class);
 
 		User userA = new User("githubname1", "A");
 		User userB = new User("githubname2", "B");
 		User userC = new User("githubname3", "C");
 
 
-		Transaktion transaktion1 = new Transaktion(userA,userB,new BigDecimal("40"));
-		Transaktion transaktion2 = new Transaktion(userB,userA,new BigDecimal("10"));
-		Transaktion transaktion3 = new Transaktion(userC,userB,new BigDecimal("20"));
+		Transaktion transaktion1 = new Transaktion(userA, userB, new BigDecimal("40"));
+		Transaktion transaktion2 = new Transaktion(userB, userA, new BigDecimal("10"));
+		Transaktion transaktion3 = new Transaktion(userC, userB, new BigDecimal("20"));
 
 
 		Gruppe gruppe1 = new Gruppe("gruppe1", new ArrayList<>(),
-				new ArrayList<>(List.of(userA,userB)), new HashSet<>(Set.of(transaktion1)),true);
+				new ArrayList<>(List.of(userA, userB)), new HashSet<>(Set.of(transaktion1)), true);
 		Gruppe gruppe2 = new Gruppe("gruppe2", new ArrayList<>(),
-				new ArrayList<>(List.of(userA,userB, userC)), new HashSet<>(Set.of(transaktion2,transaktion3)),true);
+				new ArrayList<>(List.of(userA, userB, userC)),
+				new HashSet<>(Set.of(transaktion2, transaktion3)), true);
 
-		gruppenservice.gruppeErstellen(userA, "gruppe1");
+		when(gruppenservice.getGruppen()).thenReturn(List.of(gruppe1, gruppe2));
+		when(gruppenservice.getBeteiligteTransaktionen(userA)).thenCallRealMethod();
+		when(gruppenservice.berechneTransaktionen(gruppe1)).thenReturn(gruppe1.getTransaktionen());
+		when(gruppenservice.berechneTransaktionen(gruppe2)).thenReturn(gruppe2.getTransaktionen());
 
 		//Act
 		var userTransaktionen = gruppenservice.getBeteiligteTransaktionen(userA);
 
 		//Assert
-		assertThat(userTransaktionen).containsEntry(gruppe1, new HashSet<>(Set.of(transaktion1)));
-		assertThat(userTransaktionen).containsEntry(gruppe2, new HashSet<>(Set.of(transaktion2)));
-
+		assertThat(userTransaktionen.size()).isEqualTo(2);
+		assertThat(userTransaktionen).containsEntry(gruppe1, Set.of(transaktion1));
+		assertThat(userTransaktionen).containsEntry(gruppe2, Set.of(transaktion2));
 	}
 }

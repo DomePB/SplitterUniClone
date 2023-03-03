@@ -57,7 +57,7 @@ public class Gruppe {
     }
 
     public void addMitglieder(User user) {
-        if (!offen) {
+        if (!offen || mitglieder.contains(user) || !ausgaben.isEmpty()) {
             return;
         }
         mitglieder.add(user);
@@ -115,7 +115,7 @@ public class Gruppe {
 
 
     public HashMap<User, BigDecimal> mussBezahlenVonUser(User user) {
-        HashMap<User, BigDecimal> schuldner = new HashMap<User, BigDecimal>();
+        HashMap<User, BigDecimal> schuldner = new HashMap<>();
         for (Ausgabe ausgabe : ausgaben) {
             if (ausgabe.bezahltVon().equals(user)) {
                 for (User useri : ausgabe.beteiligte()

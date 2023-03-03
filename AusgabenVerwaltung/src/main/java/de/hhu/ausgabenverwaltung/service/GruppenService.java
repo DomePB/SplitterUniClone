@@ -44,6 +44,8 @@ public class GruppenService {
         return gruppenVonUser;
     }
 
+
+
     public HashMap<User, HashMap<User, BigDecimal>> alleSchuldenBerechnen(Gruppe gruppe) {
         HashMap<User, HashMap<User, BigDecimal>> schulden = new HashMap<>();
         for (User mitglied : gruppe.getMitglieder()) {

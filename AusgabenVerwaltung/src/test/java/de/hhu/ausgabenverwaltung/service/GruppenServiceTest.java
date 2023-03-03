@@ -26,22 +26,40 @@ class GruppenServiceTest {
 		//Arrange
 		User user = new User("githubname", "Jens");
 		GruppenService gruppenService = new GruppenService();
+
 		//Act
 		Gruppe gruppe = gruppenService.gruppeErstellen(user, "gruppenName");
 
 		//Assert
 		assertThat(gruppe.getMitglieder().size()).isEqualTo(1);
-
 	}
+
+	@Test
+	@DisplayName("Wird eine Gruppe korrekt geschlossen?")
+	void gruppeSchliessenTest() {
+		//Arrange
+		GruppenService gruppenService = new GruppenService();
+		Gruppe gruppe =
+				new Gruppe("gruppe1", new ArrayList<>(), new ArrayList<>(), new HashSet<>(), true);
+
+		//Act
+		gruppenService.gruppeSchliessen(gruppe);
+
+		//Assert
+		assertThat(gruppe.istOffen()).isFalse();
+	}
+
 	@Test
 	@DisplayName("Alle Schulden einer Gruppe korrekt berechnet")
-	void schuldenEinerGruppe(){
+	void schuldenEinerGruppe() {
 		//Arrange
 		GruppenService gruppenService = new GruppenService();
 		User user1 = new User("githubname1", "Jens");
 		User user2 = new User("githubname2", "Bob");
-		Ausgabe ausgabe1 = new Ausgabe("ausgabe1", "Essen", new BigDecimal(10),user1,new ArrayList<>(List.of(user1,user2)));
-		Ausgabe ausgabe2 = new Ausgabe("ausgabe1", "Kino", new BigDecimal(30),user2,new ArrayList<>(List.of(user1,user2)));
+		Ausgabe ausgabe1 = new Ausgabe("ausgabe1", "Essen", new BigDecimal(10), user1,
+				new ArrayList<>(List.of(user1, user2)));
+		Ausgabe ausgabe2 = new Ausgabe("ausgabe1", "Kino", new BigDecimal(30), user2,
+				new ArrayList<>(List.of(user1, user2)));
 		Gruppe gruppe = new Gruppe("gruppe", new ArrayList<>(List.of(ausgabe1,ausgabe2)), new ArrayList<>(List.of(user1, user2)), new HashSet<>(),true);
 
 		//Act

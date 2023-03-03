@@ -27,6 +27,11 @@ public class GruppenService {
         return gruppe;
     }
 
+    public void gruppeSchliessen(Gruppe gruppe) {
+        berechneTransaktionen(gruppe);
+        gruppe.schliessen();
+    }
+
     public HashMap<User, HashMap<User, BigDecimal>> alleSchuldenBerechnen(Gruppe gruppe) {
         HashMap<User, HashMap<User, BigDecimal>> schulden = new HashMap<>();
         for (User mitglied : gruppe.getMitglieder()) {
@@ -148,7 +153,11 @@ public class GruppenService {
                 }
             }
         }
-        //gruppe.setTransaktionen(transaktionen);
+
+        if (gruppe.istOffen()) {
+            gruppe.setTransaktionen(transaktionen);
+        }
+
         return transaktionen;
     }
 

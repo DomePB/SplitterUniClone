@@ -20,6 +20,10 @@ public class GruppenService {
         return gruppen.getList();
     }
 
+    public GruppenListe getGruppenListe(){
+        return gruppen;
+    }
+
     public Gruppe gruppeErstellen(User ersteller, String name) {
         Gruppe gruppe = new Gruppe(name, new ArrayList<>(), new ArrayList<>(List.of(ersteller)),
                 new HashSet<>(), true);

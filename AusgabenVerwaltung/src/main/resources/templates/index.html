@@ -9,7 +9,7 @@
 <h1>Hallo index.html</h1>
 <span th:text="${user.githubHandle} "></span>
 <ul class="list-group" th:remove="all-but-first">
-    <li class="list-group-item" th:each="gruppe:${gruppenListe}"><a th:href="@{/gruppe(id=${gruppe.name})}" th:text="${gruppe.name}"> Gruppenname</a></li>
+    <li class="list-group-item" th:each="gruppe:${offeneGruppen}"><a th:href="@{/gruppe(id=${gruppe.name})}" th:text="${gruppe.name}"> Gruppenname</a></li>
 </ul>
 
 </body>

@@ -27,6 +27,7 @@ public class WebController {
         service.gruppeErstellen(new User("test", "test"), "gruppe2");
         model.addAttribute("user", user);
         model.addAttribute("offeneGruppen", gruppen.offen().getList());
+        model.addAttribute("geschlosseneGruppen", gruppen.geschlossen().getList());
         return "index";
     }
 

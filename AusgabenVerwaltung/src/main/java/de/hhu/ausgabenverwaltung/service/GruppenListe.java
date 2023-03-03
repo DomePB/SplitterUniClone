@@ -29,29 +29,18 @@ public class GruppenListe {
         return new GruppenListe(gruppenVonUser);
     }
 
-    public GruppenListe offen(){
+    public GruppenListe istOffen(boolean status){
 
         List<Gruppe> offeneGruppen = new ArrayList<>();
 
         for (Gruppe gruppe : gruppen) {
-            if (gruppe.istOffen()) {
+            if (gruppe.istOffen() == status) {
                 offeneGruppen.add(gruppe);
             }
         }
         return new GruppenListe(offeneGruppen);
     }
 
-    public GruppenListe geschlossen(){
-
-        List<Gruppe> geschlosseneGruppen = new ArrayList<>();
-
-        for (Gruppe gruppe : gruppen) {
-            if (!gruppe.istOffen()) {
-                geschlosseneGruppen.add(gruppe);
-            }
-        }
-        return new GruppenListe(geschlosseneGruppen);
-    }
 
     public List<Gruppe> getList(){
         return gruppen;

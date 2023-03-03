@@ -27,4 +27,18 @@ public class GruppenListeTests {
         // Assert
         assertThat(gruppenVonA).containsExactly(gruppe1);
     }
+
+    @Test
+    @DisplayName("Filtern nach offen und geschlossene Gruppen")
+    void gruppenFiltern() {
+        //Arrange
+        Gruppe gruppe1 = new Gruppe("gruppe1", new ArrayList<>(), new ArrayList<>(), new HashSet<>(),true);
+        Gruppe gruppe2 = new Gruppe("gruppe2", new ArrayList<>(), new ArrayList<>(), new HashSet<>(),false);
+        GruppenListe gruppenListe = new GruppenListe(List.of(gruppe1,gruppe2));
+        // Act
+        List<Gruppe> offeneGruppen = gruppenListe.istOffen(true).getList();
+
+        // Assert
+        assertThat(offeneGruppen).containsExactly(gruppe1);
+    }
 }

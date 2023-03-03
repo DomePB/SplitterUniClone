@@ -58,8 +58,8 @@ public class GruppenService {
         return schuldenSumme;
     }
 
-	public Map<Gruppe, Set<Transaktion>> getBeteiligteTransaktionen(User user){
-		Map<Gruppe, Set<Transaktion>> userTransaktinen = new HashMap<>();
+    public Map<Gruppe, Set<Transaktion>> getBeteiligteTransaktionen(User user) {
+        Map<Gruppe, Set<Transaktion>> userTransaktinen = new HashMap<>();
         for (Gruppe gruppe : getGruppen()) {
             Set<Transaktion> temp = new HashSet<>();
             if (gruppe.getMitglieder().contains(user)) {
@@ -71,9 +71,9 @@ public class GruppenService {
                 }
                 userTransaktinen.put(gruppe, temp);
             }
-		}
-		return userTransaktinen;
-	}
+        }
+        return userTransaktinen;
+    }
 
     public Set<Transaktion> berechneTransaktionen(Gruppe gruppe) {
         Set<Transaktion> transaktionen = new HashSet<>();
@@ -87,11 +87,16 @@ public class GruppenService {
                 }
 
                 // Sind Empfänger und Sender gleich?
-                if (empfaengerEntry.getValue().add(senderEntry.getValue()).equals(BigDecimal.ZERO)) {
+                if (empfaengerEntry.getValue().add(senderEntry.getValue())
+                        .equals(BigDecimal.ZERO)) {
                     if (empfaengerEntry.getValue().compareTo(BigDecimal.ZERO) < 0) {
-                        transaktionen.add(new Transaktion(senderEntry.getKey(), empfaengerEntry.getKey(), empfaengerEntry.getValue().multiply(new BigDecimal(-1))));
+                        transaktionen.add(
+                                new Transaktion(senderEntry.getKey(), empfaengerEntry.getKey(),
+                                        empfaengerEntry.getValue().multiply(new BigDecimal(-1))));
                     } else if (empfaengerEntry.getValue().compareTo(BigDecimal.ZERO) > 0) {
-                        transaktionen.add(new Transaktion(empfaengerEntry.getKey(), senderEntry.getKey(), senderEntry.getValue().multiply(new BigDecimal(-1))));
+                        transaktionen.add(
+                                new Transaktion(empfaengerEntry.getKey(), senderEntry.getKey(),
+                                        senderEntry.getValue().multiply(new BigDecimal(-1))));
                     }
 
                     salden.put(empfaengerEntry.getKey(), BigDecimal.ZERO);
@@ -123,15 +128,22 @@ public class GruppenService {
                 }
 
                 // Fälle behandeln
-                if (senderEntry.getValue().add(empfaengerEntry.getValue()).compareTo(BigDecimal.ZERO) < 0) {
+                if (senderEntry.getValue().add(empfaengerEntry.getValue())
+                        .compareTo(BigDecimal.ZERO) < 0) {
                     // Schulden von sender sind kleiner als Einnahmen von empfaenger
-                    transaktionen.add(new Transaktion(senderEntry.getKey(), empfaengerEntry.getKey(), senderEntry.getValue()));
-                    salden.put(empfaengerEntry.getKey(), senderEntry.getValue().add(empfaengerEntry.getValue()));
+                    transaktionen.add(
+                            new Transaktion(senderEntry.getKey(), empfaengerEntry.getKey(),
+                                    senderEntry.getValue()));
+                    salden.put(empfaengerEntry.getKey(),
+                            senderEntry.getValue().add(empfaengerEntry.getValue()));
                     salden.put(senderEntry.getKey(), BigDecimal.ZERO);
                 } else {
                     // Schulden von sender sind größer als Einnahmen von empfaenger
-                    transaktionen.add(new Transaktion(senderEntry.getKey(), empfaengerEntry.getKey(), empfaengerEntry.getValue().multiply(new BigDecimal(-1))));
-                    salden.put(senderEntry.getKey(), senderEntry.getValue().add(empfaengerEntry.getValue()));
+                    transaktionen.add(
+                            new Transaktion(senderEntry.getKey(), empfaengerEntry.getKey(),
+                                    empfaengerEntry.getValue().multiply(new BigDecimal(-1))));
+                    salden.put(senderEntry.getKey(),
+                            senderEntry.getValue().add(empfaengerEntry.getValue()));
                     salden.put(empfaengerEntry.getKey(), BigDecimal.ZERO);
                 }
             }

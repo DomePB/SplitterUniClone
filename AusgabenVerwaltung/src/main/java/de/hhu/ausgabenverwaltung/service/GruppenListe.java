@@ -6,19 +6,20 @@ import de.hhu.ausgabenverwaltung.domain.User;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GruppenListe {
+public class GruppenListe implements GruppenRepository {
 
-    List<Gruppe> gruppen = new ArrayList<>();
+    List<Gruppe> gruppen;
 
     public GruppenListe(){
-        this.gruppen=new ArrayList<>();
+        this.gruppen = new ArrayList<>();
     }
 
     public GruppenListe(List<Gruppe> gruppen) {
         this.gruppen = gruppen;
     }
 
-    public GruppenListe vonUser(User user){
+    @Override
+    public List<Gruppe> vonUser(User user){
         List<Gruppe> gruppenVonUser = new ArrayList<>();
 
         for (Gruppe gruppe : gruppen) {
@@ -26,23 +27,45 @@ public class GruppenListe {
                 gruppenVonUser.add(gruppe);
             }
         }
-        return new GruppenListe(gruppenVonUser);
+        return gruppenVonUser;
     }
 
-    public GruppenListe istOffen(boolean status){
-
+    @Override
+    public List<Gruppe> offenVonUser(User user) {
         List<Gruppe> offeneGruppen = new ArrayList<>();
 
-        for (Gruppe gruppe : gruppen) {
-            if (gruppe.istOffen() == status) {
+        for (Gruppe gruppe : vonUser(user)) {
+            if (gruppe.istOffen()) {
                 offeneGruppen.add(gruppe);
             }
         }
-        return new GruppenListe(offeneGruppen);
+        return offeneGruppen;
     }
 
+    @Override
+    public List<Gruppe> geschlossenVonUser(User user) {
+        List<Gruppe> offeneGruppen = new ArrayList<>();
 
-    public List<Gruppe> getList(){
+        for (Gruppe gruppe : vonUser(user)) {
+            if (!gruppe.istOffen()) {
+                offeneGruppen.add(gruppe);
+            }
+        }
+        return offeneGruppen;
+    }
+
+    @Override
+    public List<Gruppe> findAll() {
         return gruppen;
+    }
+
+    @Override
+    public Gruppe findById(Long id) throws Exception{
+        for (Gruppe gruppe: gruppen) {
+            if(gruppe.getId().equals(id)){
+                return gruppe;
+            }
+        }
+        throw new Exception("Gruppe existiert nicht");
     }
 }

@@ -1,18 +1,14 @@
 package de.hhu.ausgabenverwaltung.domain;
 
 import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
-
+import java.util.*;
 public class Gruppe {
 
-    String name;
-    List<Ausgabe> ausgaben;
-    List<User> mitglieder;
+    private Long id;
+    private String name;
+    private List<Ausgabe> ausgaben;
+    private List<User> mitglieder;
     boolean offen;
-
     Set<Transaktion> transaktionen;
 
     public Gruppe(String name, List<Ausgabe> ausgaben, List<User> mitglieder,
@@ -23,7 +19,9 @@ public class Gruppe {
         this.transaktionen = transaktionen;
         this.offen = offen;
     }
-
+    public Long getId() {
+        return id;
+    }
     public String getName() {
         return name;
     }

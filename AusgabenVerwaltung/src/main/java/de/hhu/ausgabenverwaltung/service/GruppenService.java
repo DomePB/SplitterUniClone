@@ -4,12 +4,8 @@ import de.hhu.ausgabenverwaltung.domain.Gruppe;
 import de.hhu.ausgabenverwaltung.domain.Transaktion;
 import de.hhu.ausgabenverwaltung.domain.User;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+
 import org.springframework.stereotype.Service;
 
 @Service
@@ -17,7 +13,7 @@ public class GruppenService {
     private final GruppenListe gruppen = new GruppenListe();
 
     public List<Gruppe> getGruppen() {
-        return gruppen.getList();
+        return gruppen.findAll();
     }
 
     public GruppenListe getGruppenListe(){
@@ -27,7 +23,7 @@ public class GruppenService {
     public Gruppe gruppeErstellen(User ersteller, String name) {
         Gruppe gruppe = new Gruppe(name, new ArrayList<>(), new ArrayList<>(List.of(ersteller)),
                 new HashSet<>(), true);
-        gruppen.getList().add(gruppe);
+        gruppen.findAll().add(gruppe);
         return gruppe;
     }
 
@@ -164,5 +160,7 @@ public class GruppenService {
 
         return transaktionen;
     }
+
+
 
 }

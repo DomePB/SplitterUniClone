@@ -69,7 +69,7 @@
 <div class="modal fade" id="ausgabehinzufuegenModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form method="post" th:action="@{/gruppe}">
+            <form method="post" th:action="@{/gruppe(id=${gruppe.getId()})}">
                 <div class="modal-header">
                     <h1 class="modal-title fs-5" id="exampleModalLabel">Ausgabe hinzufügen</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>

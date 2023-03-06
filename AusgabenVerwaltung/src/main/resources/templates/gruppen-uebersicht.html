@@ -33,6 +33,27 @@
 <div class="tab-content" id="pills-tabContent">
     <div class="tab-pane fade show active" id="pills-ausgaben" role="tabpanel" aria-labelledby="pills-ausgaben-tab"
          tabindex="0"><h3>Ausgaben</h3>
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#ausgabehinzufuegenModal">
+            Ausgabe hinzufügen
+        </button>
+        <table class="table">
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Bezahlt von</th>
+            <th>Betrag</th>
+            <th></th>
+        </tr>
+        </thead>
+            <tbody th:remove="all-but-first">
+            <tr th:each="ausgabe, iterStat: ${gruppe.getAusgaben()}">
+                <td th:text="${ausgabe.name}"></td>
+                <td th:text="${ausgabe.bezahltVon.githubHandle}"></td>
+                <td th:text="${ausgabe.betrag}"></td>
+                <td th:text=""></td>
+            </tr>
+            </tbody>
+        </table>
     </div>
     <div class="tab-pane fade" id="pills-salden" role="tabpanel" aria-labelledby="pills-salden-tab" tabindex="0">
         <h3>Salden</h3>
@@ -42,6 +63,29 @@
     </div>
     <div class="tab-pane fade" id="pills-mitglieder" role="tabpanel" aria-labelledby="pills-mitglieder-tab" tabindex="0">
         <h3>Mitglieder</h3>
+    </div>
+</div>
+
+<div class="modal fade" id="ausgabehinzufuegenModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="post" th:action="@{/gruppe}">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Ausgabe hinzufügen</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="gruppenName" class="col-form-label">Name:</label>
+                        <input type="text" name="gruppenName" class="form-control" id="gruppenName">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Abbrechen</button>
+                    <button type="submit" class="btn btn-primary">Erstellen</button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 </body>

@@ -49,4 +49,10 @@ public class WebController {
             return "redirect:/";
         }
     }
+
+    @PostMapping("/gruppe/${/ausgaben")
+    public String ausgabenHinzufuegen(@RequestParam UUID id, @RequestParam String name){
+
+        return "redirect:/gruppe";
+    }
 }

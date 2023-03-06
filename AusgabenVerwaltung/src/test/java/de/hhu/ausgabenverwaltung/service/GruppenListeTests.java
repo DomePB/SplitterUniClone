@@ -18,27 +18,29 @@ public class GruppenListeTests {
         //Arrange
         User userA = new User("githubname1", "Alpha");
         User userB = new User("githubname2", "Beta");
-        Gruppe gruppe1 = new Gruppe("gruppe1", new ArrayList<>(), new ArrayList<>(List.of(userA)), new HashSet<>(),true);
-        Gruppe gruppe2 = new Gruppe("gruppe2", new ArrayList<>(), new ArrayList<>(List.of(userB)), new HashSet<>(),true);
-        GruppenListe gruppenListe = new GruppenListe(List.of(gruppe1,gruppe2));
+        Gruppe gruppe1 = new Gruppe("gruppe1", new ArrayList<>(), new ArrayList<>(List.of(userA)), new HashSet<>(), true);
+        Gruppe gruppe2 = new Gruppe("gruppe2", new ArrayList<>(), new ArrayList<>(List.of(userB)), new HashSet<>(), true);
+        GruppenListe gruppenListe = new GruppenListe(List.of(gruppe1, gruppe2));
         // Act
-        List<Gruppe> gruppenVonA = gruppenListe.vonUser(userA).getList();
-
+        List<Gruppe> gruppenVonA = gruppenListe.vonUser(userA);
         // Assert
         assertThat(gruppenVonA).containsExactly(gruppe1);
     }
 
     @Test
-    @DisplayName("Filtern nach offen und geschlossene Gruppen")
+    @DisplayName("Filtern nach offen und geschlossene Gruppen von User")
     void gruppenFiltern() {
         //Arrange
-        Gruppe gruppe1 = new Gruppe("gruppe1", new ArrayList<>(), new ArrayList<>(), new HashSet<>(),true);
-        Gruppe gruppe2 = new Gruppe("gruppe2", new ArrayList<>(), new ArrayList<>(), new HashSet<>(),false);
-        GruppenListe gruppenListe = new GruppenListe(List.of(gruppe1,gruppe2));
-        // Act
-        List<Gruppe> offeneGruppen = gruppenListe.istOffen(true).getList();
+        User user = new User("githubname", "user");
 
+        Gruppe gruppe1 = new Gruppe("gruppe1", new ArrayList<>(), List.of(user), new HashSet<>(), true);
+        Gruppe gruppe2 = new Gruppe("gruppe2", new ArrayList<>(), List.of(user), new HashSet<>(), false);
+        GruppenListe gruppenListe = new GruppenListe(List.of(gruppe1, gruppe2));
+        // Act
+        List<Gruppe> offeneGruppen = gruppenListe.offenVonUser(user);
+        List<Gruppe> geschlosseneGruppen = gruppenListe.geschlossenVonUser(user);
         // Assert
         assertThat(offeneGruppen).containsExactly(gruppe1);
+        assertThat(geschlosseneGruppen).containsExactly(gruppe2);
     }
 }

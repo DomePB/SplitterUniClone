@@ -2,6 +2,7 @@ package de.hhu.ausgabenverwaltung.domain;
 
 import java.math.BigDecimal;
 import java.util.*;
+
 public class Gruppe {
 
     private Long id;
@@ -19,9 +20,11 @@ public class Gruppe {
         this.transaktionen = transaktionen;
         this.offen = offen;
     }
+
     public Long getId() {
         return id;
     }
+
     public String getName() {
         return name;
     }

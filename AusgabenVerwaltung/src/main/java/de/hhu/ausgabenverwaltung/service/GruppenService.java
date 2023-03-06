@@ -3,6 +3,7 @@ package de.hhu.ausgabenverwaltung.service;
 import de.hhu.ausgabenverwaltung.domain.Gruppe;
 import de.hhu.ausgabenverwaltung.domain.Transaktion;
 import de.hhu.ausgabenverwaltung.domain.User;
+
 import java.math.BigDecimal;
 import java.util.*;
 
@@ -16,7 +17,7 @@ public class GruppenService {
         return gruppen.findAll();
     }
 
-    public GruppenListe getGruppenListe(){
+    public GruppenListe getGruppenListe() {
         return gruppen;
     }
 
@@ -160,7 +161,6 @@ public class GruppenService {
 
         return transaktionen;
     }
-
 
 
 }

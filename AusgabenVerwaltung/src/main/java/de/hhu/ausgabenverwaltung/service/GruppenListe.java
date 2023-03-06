@@ -2,6 +2,7 @@ package de.hhu.ausgabenverwaltung.service;
 
 import de.hhu.ausgabenverwaltung.domain.Gruppe;
 import de.hhu.ausgabenverwaltung.domain.User;
+import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +11,7 @@ public class GruppenListe implements GruppenRepository {
 
     List<Gruppe> gruppen;
 
-    public GruppenListe(){
+    public GruppenListe() {
         this.gruppen = new ArrayList<>();
     }
 
@@ -19,7 +20,7 @@ public class GruppenListe implements GruppenRepository {
     }
 
     @Override
-    public List<Gruppe> vonUser(User user){
+    public List<Gruppe> vonUser(User user) {
         List<Gruppe> gruppenVonUser = new ArrayList<>();
 
         for (Gruppe gruppe : gruppen) {
@@ -60,9 +61,9 @@ public class GruppenListe implements GruppenRepository {
     }
 
     @Override
-    public Gruppe findById(Long id) throws Exception{
-        for (Gruppe gruppe: gruppen) {
-            if(gruppe.getId().equals(id)){
+    public Gruppe findById(Long id) throws Exception {
+        for (Gruppe gruppe : gruppen) {
+            if (gruppe.getId().equals(id)) {
                 return gruppe;
             }
         }

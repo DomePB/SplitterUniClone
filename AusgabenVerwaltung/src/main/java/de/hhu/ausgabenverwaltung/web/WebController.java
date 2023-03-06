@@ -23,9 +23,8 @@ public class WebController {
     }
 
     @GetMapping("/")
-    public String index(Model model, OAuth2AuthenticationToken token )
-    {
-        User user = new User( token.getPrincipal().getAttribute("login"), token.getName());
+    public String index(Model model, OAuth2AuthenticationToken token) {
+        User user = new User(token.getPrincipal().getAttribute("login"), token.getName());
         //service.gruppeErstellen(user,"Testgruppe");
         //service.gruppeErstellen(new User("test", "test"), "gruppe2");
         model.addAttribute("user", user);
@@ -35,8 +34,8 @@ public class WebController {
     }
 
     @PostMapping("/")
-    public String gruppeErstellen(@RequestParam(name = "gruppenName") String gruppenName, OAuth2AuthenticationToken token){
-        User user = new User( token.getPrincipal().getAttribute("login"), token.getName());
+    public String gruppeErstellen(@RequestParam(name = "gruppenName") String gruppenName, OAuth2AuthenticationToken token) {
+        User user = new User(token.getPrincipal().getAttribute("login"), token.getName());
         service.gruppeErstellen(user, gruppenName);
         return "redirect:/";
     }
@@ -51,5 +50,4 @@ public class WebController {
             return "redirect:/";
         }
     }
-
 }

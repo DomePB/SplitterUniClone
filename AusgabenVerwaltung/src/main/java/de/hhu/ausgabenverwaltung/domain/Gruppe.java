@@ -5,7 +5,7 @@ import java.util.*;
 
 public class Gruppe {
 
-    private Long id;
+    private final UUID id;
     private String name;
     private List<Ausgabe> ausgaben;
     private List<User> mitglieder;
@@ -13,15 +13,20 @@ public class Gruppe {
     Set<Transaktion> transaktionen;
 
     public Gruppe(String name, List<Ausgabe> ausgaben, List<User> mitglieder,
-                  Set<Transaktion> transaktionen, boolean offen) {
+                  Set<Transaktion> transaktionen, boolean offen, UUID id) {
         this.name = name;
         this.mitglieder = mitglieder;
         this.ausgaben = ausgaben;
         this.transaktionen = transaktionen;
         this.offen = offen;
+        this.id = id;
     }
 
-    public Long getId() {
+    public static Gruppe gruppeErstellen(String name,User user){
+        return new Gruppe(name,new ArrayList<>(),new ArrayList<>(List.of(user)),new HashSet<>(),true,UUID.randomUUID());
+    }
+
+    public UUID getId() {
         return id;
     }
 

@@ -19,8 +19,8 @@ public class GruppenRepositoryImpTests {
         //Arrange
         User userA = new User("githubname1");
         User userB = new User("githubname2");
-        Gruppe gruppe1 = new Gruppe("gruppe1", new ArrayList<>(), new ArrayList<>(List.of(userA)), new HashSet<>(), true);
-        Gruppe gruppe2 = new Gruppe("gruppe2", new ArrayList<>(), new ArrayList<>(List.of(userB)), new HashSet<>(), true);
+        Gruppe gruppe1 = Gruppe.gruppeErstellen("gruppe1",userA);
+        Gruppe gruppe2 = Gruppe.gruppeErstellen("gruppe2",userB);
         GruppenRepositoryImp gruppenRepositoryImp = new GruppenRepositoryImp(List.of(gruppe1, gruppe2));
         // Act
         List<Gruppe> gruppenVonA = gruppenRepositoryImp.vonUser(userA);
@@ -34,8 +34,9 @@ public class GruppenRepositoryImpTests {
         //Arrange
         User user = new User("githubname");
 
-        Gruppe gruppe1 = new Gruppe("gruppe1", new ArrayList<>(), List.of(user), new HashSet<>(), true);
-        Gruppe gruppe2 = new Gruppe("gruppe2", new ArrayList<>(), List.of(user), new HashSet<>(), false);
+        Gruppe gruppe1 = Gruppe.gruppeErstellen("gruppe1",user);
+        Gruppe gruppe2 = Gruppe.gruppeErstellen("gruppe2", user);
+        gruppe2.schliessen();
         GruppenRepositoryImp gruppenRepositoryImp = new GruppenRepositoryImp(List.of(gruppe1, gruppe2));
         // Act
         List<Gruppe> offeneGruppen = gruppenRepositoryImp.offenVonUser(user);

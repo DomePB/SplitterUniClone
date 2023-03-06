@@ -24,17 +24,17 @@ public class GruppenService {
 
     public Gruppe gruppeErstellen(User ersteller, String name) {
         Gruppe gruppe = new Gruppe(name, new ArrayList<>(), new ArrayList<>(List.of(ersteller)),
-                new HashSet<>(), true);
+                new HashSet<>(), true,UUID.randomUUID());
         gruppen.findAll().add(gruppe);
         return gruppe;
-    }
+    } //Application Service
 
     public void gruppeSchliessen(Gruppe gruppe) {
         berechneTransaktionen(gruppe);
         gruppe.schliessen();
     }
 
-    public HashMap<User, HashMap<User, BigDecimal>> alleSchuldenBerechnen(Gruppe gruppe) {
+    public HashMap<User, HashMap<User, BigDecimal>> alleSchuldenBerechnen(Gruppe gruppe) { // in Gruppe
         HashMap<User, HashMap<User, BigDecimal>> schulden = new HashMap<>();
         for (User mitglied : gruppe.getMitglieder()) {
             schulden.put(mitglied, gruppe.mussBezahlenVonUser(mitglied));
@@ -43,7 +43,7 @@ public class GruppenService {
     }
 
     public HashMap<User, BigDecimal> berechneSalden(Gruppe gruppe) {
-        var alleSchulden = alleSchuldenBerechnen(gruppe);
+        var alleSchulden = alleSchuldenBerechnen(gruppe); //Alles Schulden uebergeben
         HashMap<User, BigDecimal> schuldenSumme = new HashMap<>();
         // Iteriere durch alle Spalten der Tabelle
         for (var entry : alleSchulden.entrySet()) {
@@ -84,7 +84,7 @@ public class GruppenService {
 
     public Set<Transaktion> berechneTransaktionen(Gruppe gruppe) {
         Set<Transaktion> transaktionen = new HashSet<>();
-        var salden = berechneSalden(gruppe);
+        var salden = berechneSalden(gruppe); //salden uebergeben
 
         for (var empfaengerEntry : salden.entrySet()) {
 
@@ -166,13 +166,13 @@ public class GruppenService {
 
     public List<Gruppe> geschlossenVonUser(User user) {
         return gruppen.geschlossenVonUser(user);
-    }
+    } //Application service
 
     public List<Gruppe> offenVonUser(User user) {
         return gruppen.offenVonUser(user);
-    }
+    } //Application service
 
-    public Gruppe findById(Long gruppenId) throws Exception {
+    public Gruppe findById(Long gruppenId) throws Exception { //Application Service
         return gruppen.findById(gruppenId);
     }
 }

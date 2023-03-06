@@ -16,8 +16,8 @@ public class GruppenListeTests {
     @DisplayName("Alle Gruppen eines Users werden zurückgegeben")
     void gruppenVonUserTest() {
         //Arrange
-        User userA = new User("githubname1", "Alpha");
-        User userB = new User("githubname2", "Beta");
+        User userA = new User("githubname1");
+        User userB = new User("githubname2");
         Gruppe gruppe1 = new Gruppe("gruppe1", new ArrayList<>(), new ArrayList<>(List.of(userA)), new HashSet<>(), true);
         Gruppe gruppe2 = new Gruppe("gruppe2", new ArrayList<>(), new ArrayList<>(List.of(userB)), new HashSet<>(), true);
         GruppenListe gruppenListe = new GruppenListe(List.of(gruppe1, gruppe2));
@@ -31,7 +31,7 @@ public class GruppenListeTests {
     @DisplayName("Filtern nach offen und geschlossene Gruppen von User")
     void gruppenFiltern() {
         //Arrange
-        User user = new User("githubname", "user");
+        User user = new User("githubname");
 
         Gruppe gruppe1 = new Gruppe("gruppe1", new ArrayList<>(), List.of(user), new HashSet<>(), true);
         Gruppe gruppe2 = new Gruppe("gruppe2", new ArrayList<>(), List.of(user), new HashSet<>(), false);

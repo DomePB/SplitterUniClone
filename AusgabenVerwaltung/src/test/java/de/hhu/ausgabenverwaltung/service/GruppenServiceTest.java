@@ -26,7 +26,7 @@ class GruppenServiceTest {
     @DisplayName("Anzahl der Mitglieder beträgt 1, wenn die Gruppe zuerst erstellt wird")
     void erstelleGruppeTest() {
         //Arrange
-        User user = new User("githubname", "Jens");
+        User user = new User("githubname");
         GruppenService gruppenService = new GruppenService();
 
         //Act
@@ -56,8 +56,8 @@ class GruppenServiceTest {
     void schuldenEinerGruppe() {
         //Arrange
         GruppenService gruppenService = new GruppenService();
-        User user1 = new User("githubname1", "Jens");
-        User user2 = new User("githubname2", "Bob");
+        User user1 = new User("githubname1");
+        User user2 = new User("githubname2");
         Ausgabe ausgabe1 = new Ausgabe("ausgabe1", "Essen", new BigDecimal(10), user1,
                 new ArrayList<>(List.of(user1, user2)));
         Ausgabe ausgabe2 = new Ausgabe("ausgabe1", "Kino", new BigDecimal(30), user2,
@@ -77,10 +77,10 @@ class GruppenServiceTest {
     void berechneSalden() {
         //Arrange
         GruppenService gruppenService = new GruppenService();
-        User userA = new User("githubname1", "Jens");
-        User userB = new User("githubname2", "Bob");
-        User userC = new User("githubname3", "Peter");
-        User userD = new User("githubname4", "Heinz");
+        User userA = new User("githubname1");
+        User userB = new User("githubname2");
+        User userC = new User("githubname3");
+        User userD = new User("githubname4");
 
         Ausgabe ausgabe1 = new Ausgabe("ausgabe1", "Ausgabe1", new BigDecimal(8), userA, new ArrayList<>(List.of(userB)));
         Ausgabe ausgabe2 = new Ausgabe("ausgabe2", "Ausgabe2", new BigDecimal(5), userA, new ArrayList<>(List.of(userC)));
@@ -115,8 +115,8 @@ class GruppenServiceTest {
 
         GruppenService gruppenservice = mock(GruppenService.class);
 
-        User userA = new User("githubname1", "Jens");
-        User userB = new User("githubname2", "Bob");
+        User userA = new User("githubname1");
+        User userB = new User("githubname2");
         Gruppe gruppe = new Gruppe("gruppe", new ArrayList<>(), new ArrayList<>(List.of(userA, userB)), new HashSet<>(), true);
         when(gruppenservice.berechneSalden(gruppe)).thenReturn(new HashMap<>(Map.of(userA, new BigDecimal(5), userB, new BigDecimal(-5))));
         when(gruppenservice.berechneTransaktionen(gruppe)).thenCallRealMethod();
@@ -133,8 +133,8 @@ class GruppenServiceTest {
 
         GruppenService gruppenservice = mock(GruppenService.class);
 
-        User userA = new User("githubname1", "Jens");
-        User userB = new User("githubname2", "Bob");
+        User userA = new User("githubname1");
+        User userB = new User("githubname2");
         Gruppe gruppe = new Gruppe("gruppe", new ArrayList<>(), new ArrayList<>(List.of(userA, userB)), new HashSet<>(), true);
         when(gruppenservice.berechneSalden(gruppe)).thenReturn(new HashMap<>(Map.of(userA, new BigDecimal(5), userB, new BigDecimal(-3))));
         when(gruppenservice.berechneTransaktionen(gruppe)).thenCallRealMethod();
@@ -151,8 +151,8 @@ class GruppenServiceTest {
 
         GruppenService gruppenservice = mock(GruppenService.class);
 
-        User userA = new User("githubname1", "Jens");
-        User userB = new User("githubname2", "Bob");
+        User userA = new User("githubname1");
+        User userB = new User("githubname2");
         Gruppe gruppe = new Gruppe("gruppe", new ArrayList<>(), new ArrayList<>(List.of(userA, userB)), new HashSet<>(), true);
         when(gruppenservice.berechneSalden(gruppe)).thenReturn(new HashMap<>(Map.of(userA, new BigDecimal(-5), userB, new BigDecimal(6))));
         when(gruppenservice.berechneTransaktionen(gruppe)).thenCallRealMethod();
@@ -169,8 +169,8 @@ class GruppenServiceTest {
 
         GruppenService gruppenservice = mock(GruppenService.class);
 
-        User userA = new User("githubname1", "Jens");
-        User userB = new User("githubname2", "Bob");
+        User userA = new User("githubname1");
+        User userB = new User("githubname2");
         Gruppe gruppe = new Gruppe("gruppe", new ArrayList<>(), new ArrayList<>(List.of(userA, userB)), new HashSet<>(), true);
         when(gruppenservice.berechneSalden(gruppe)).thenReturn(new HashMap<>(Map.of(userA, new BigDecimal(-5), userB, new BigDecimal(3))));
         when(gruppenservice.berechneTransaktionen(gruppe)).thenCallRealMethod();
@@ -187,8 +187,8 @@ class GruppenServiceTest {
 
         GruppenService gruppenservice = mock(GruppenService.class);
 
-        User userA = new User("githubname1", "Jens");
-        User userB = new User("githubname2", "Bob");
+        User userA = new User("A");
+        User userB = new User("B");
         Gruppe gruppe = new Gruppe("gruppe", new ArrayList<>(), new ArrayList<>(List.of(userA, userB)), new HashSet<>(), true);
         when(gruppenservice.berechneSalden(gruppe)).thenReturn(new HashMap<>(Map.of(userA, new BigDecimal(3), userB, new BigDecimal(-5))));
         when(gruppenservice.berechneTransaktionen(gruppe)).thenCallRealMethod();
@@ -203,8 +203,8 @@ class GruppenServiceTest {
     void szenario1() {
         //Arrange
         GruppenService gruppenservice = new GruppenService();
-        User userA = new User("githubname1", "A");
-        User userB = new User("githubname2", "B");
+        User userA = new User("A");
+        User userB = new User("B");
 
         Ausgabe ausgabe1 = new Ausgabe("ausgabe1", "Ausgabe1", new BigDecimal(10), userA, new ArrayList<>(List.of(userA, userB)));
         Ausgabe ausgabe2 = new Ausgabe("ausgabe2", "Ausgabe2", new BigDecimal(20), userA, new ArrayList<>(List.of(userA, userB)));
@@ -221,8 +221,8 @@ class GruppenServiceTest {
     void szenario2() {
         //Arrange
         GruppenService gruppenservice = new GruppenService();
-        User userA = new User("githubname1", "A");
-        User userB = new User("githubname2", "B");
+        User userA = new User("A");
+        User userB = new User("B");
 
         Ausgabe ausgabe1 = new Ausgabe("ausgabe1", "Ausgabe1", new BigDecimal(10), userA, new ArrayList<>(List.of(userA, userB)));
         Ausgabe ausgabe2 = new Ausgabe("ausgabe2", "Ausgabe2", new BigDecimal(20), userB, new ArrayList<>(List.of(userA, userB)));
@@ -239,8 +239,8 @@ class GruppenServiceTest {
     void szenario3() {
         //Arrange
         GruppenService gruppenservice = new GruppenService();
-        User userA = new User("githubname1", "A");
-        User userB = new User("githubname2", "B");
+        User userA = new User("A");
+        User userB = new User("B");
 
         Ausgabe ausgabe1 = new Ausgabe("ausgabe1", "Ausgabe1", new BigDecimal(10), userA, new ArrayList<>(List.of(userB)));
         Ausgabe ausgabe2 = new Ausgabe("ausgabe2", "Ausgabe2", new BigDecimal(20), userA, new ArrayList<>(List.of(userA, userB)));
@@ -257,9 +257,9 @@ class GruppenServiceTest {
     void szenario4() {
         //Arrange
         GruppenService gruppenservice = new GruppenService();
-        User userA = new User("githubname1", "A");
-        User userB = new User("githubname2", "B");
-        User userC = new User("githubname3", "C");
+        User userA = new User("A");
+        User userB = new User("B");
+        User userC = new User("C");
 
         Ausgabe ausgabe1 = new Ausgabe("ausgabe1", "Ausgabe1", new BigDecimal(10), userA, new ArrayList<>(List.of(userA, userB)));
         Ausgabe ausgabe2 = new Ausgabe("ausgabe2", "Ausgabe2", new BigDecimal(10), userB, new ArrayList<>(List.of(userB, userC)));
@@ -277,9 +277,9 @@ class GruppenServiceTest {
     void szenario5() {
         //Arrange
         GruppenService gruppenservice = new GruppenService();
-        User anton = new User("githubname1", "Anton");
-        User berta = new User("githubname2", "Berta");
-        User christian = new User("githubname3", "Christian");
+        User anton = new User("Anton");
+        User berta = new User("Berta");
+        User christian = new User("Christian");
 
         Ausgabe ausgabe1 = new Ausgabe("ausgabe1", "Ausgabe1", new BigDecimal(60), anton, new ArrayList<>(List.of(anton, berta, christian)));
         Ausgabe ausgabe2 = new Ausgabe("ausgabe2", "Ausgabe2", new BigDecimal(30), berta, new ArrayList<>(List.of(anton, berta, christian)));
@@ -289,7 +289,7 @@ class GruppenServiceTest {
         //Act
         var alleTransaktionen = gruppenservice.berechneTransaktionen(gruppe);
         //Assert
-        assertThat(alleTransaktionen).containsExactly(new Transaktion(berta, anton, new BigDecimal(30)),
+        assertThat(alleTransaktionen).containsExactlyInAnyOrder(new Transaktion(berta, anton, new BigDecimal(30)),
                 new Transaktion(berta, christian, new BigDecimal(20)));
     }
 
@@ -300,12 +300,12 @@ class GruppenServiceTest {
         //Arrange
         GruppenService gruppenservice = new GruppenService();
 
-        User userA = new User("githubname1", "A");
-        User userB = new User("githubname2", "B");
-        User userC = new User("githubname3", "C");
-        User userD = new User("githubname4", "D");
-        User userE = new User("githubname5", "E");
-        User userF = new User("githubname6", "F");
+        User userA = new User("A");
+        User userB = new User("B");
+        User userC = new User("C");
+        User userD = new User("D");
+        User userE = new User("E");
+        User userF = new User("F");
 
         Ausgabe ausgabe1 = new Ausgabe("ausgabe1", "Hotelzimmer", new BigDecimal("564"), userA, new ArrayList<>(List.of(userA, userB, userC, userD, userE, userF)));
         Ausgabe ausgabe2 = new Ausgabe("ausgabe2", "Benzin(Hinweg)", new BigDecimal("38.58"), userB, new ArrayList<>(List.of(userA, userB)));
@@ -335,13 +335,13 @@ class GruppenServiceTest {
         //Arrange
         GruppenService gruppenservice = new GruppenService();
 
-        User userA = new User("githubname1", "A");
-        User userB = new User("githubname2", "B");
-        User userC = new User("githubname3", "C");
-        User userD = new User("githubname4", "D");
-        User userE = new User("githubname5", "E");
-        User userF = new User("githubname6", "F");
-        User userG = new User("githubname7", "G");
+        User userA = new User("A");
+        User userB = new User("B");
+        User userC = new User("C");
+        User userD = new User("D");
+        User userE = new User("E");
+        User userF = new User("F");
+        User userG = new User("G");
 
         Ausgabe ausgabe1 = new Ausgabe("ausgabe1", "Ausgabe1", new BigDecimal("20"), userD, new ArrayList<>(List.of(userD, userF)));
         Ausgabe ausgabe2 = new Ausgabe("ausgabe2", "Ausgabe2", new BigDecimal("10"), userG, new ArrayList<>(List.of(userB)));
@@ -373,9 +373,9 @@ class GruppenServiceTest {
         //Arrange
         GruppenService gruppenservice = mock(GruppenService.class);
 
-        User userA = new User("githubname1", "A");
-        User userB = new User("githubname2", "B");
-        User userC = new User("githubname3", "C");
+        User userA = new User("githubname1");
+        User userB = new User("githubname2");
+        User userC = new User("githubname3");
 
 
         Transaktion transaktion1 = new Transaktion(userA, userB, new BigDecimal("40"));

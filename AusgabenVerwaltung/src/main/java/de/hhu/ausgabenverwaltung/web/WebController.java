@@ -1,6 +1,5 @@
 package de.hhu.ausgabenverwaltung.web;
 
-import de.hhu.ausgabenverwaltung.database.dto.GruppeDto;
 import de.hhu.ausgabenverwaltung.domain.Gruppe;
 import de.hhu.ausgabenverwaltung.domain.User;
 import de.hhu.ausgabenverwaltung.service.GruppenService;
@@ -11,6 +10,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.UUID;
 
 @Controller
 public class WebController {
@@ -39,7 +40,7 @@ public class WebController {
     }
 
     @GetMapping("/gruppe")
-    public String gruppenUebersicht(@RequestParam Long id, Model model) {
+    public String gruppenUebersicht(@RequestParam UUID id, Model model) {
         try {
            Gruppe gruppe = service.findById(id);
             model.addAttribute("gruppe", gruppe);

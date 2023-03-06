@@ -172,7 +172,7 @@ public class GruppenService {
         return gruppen.offenVonUser(user);
     } //Application service
 
-    public Gruppe findById(Long gruppenId) throws Exception { //Application Service
+    public Gruppe findById(UUID gruppenId) throws Exception { //Application Service
         return gruppen.findById(gruppenId);
     }
 }

@@ -2,9 +2,10 @@ package de.hhu.ausgabenverwaltung.service;
 
 import de.hhu.ausgabenverwaltung.domain.Gruppe;
 import de.hhu.ausgabenverwaltung.domain.User;
-import org.springframework.stereotype.Repository;
+
 
 import java.util.List;
+import java.util.UUID;
 
 
 public interface GruppenRepository {
@@ -17,5 +18,5 @@ public interface GruppenRepository {
 
     List<Gruppe> findAll();
 
-    Gruppe findById(Long id) throws Exception;
+    Gruppe findById(UUID id) throws Exception;
 }

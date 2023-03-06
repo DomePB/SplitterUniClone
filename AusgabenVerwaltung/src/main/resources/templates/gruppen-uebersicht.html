@@ -3,40 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <title>Gruppen Übersicht</title>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
+<h2 th:text="${gruppe.getName()}"></h2>
 <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
     <li class="nav-item" role="presentation">
-        <button class="nav-link active" id="pills-home-tab" data-bs-toggle="pill" data-bs-target="#pills-home"
-                type="button" role="tab" aria-controls="pills-home" aria-selected="true">Home
+        <button class="nav-link active" id="pills-ausgaben-tab" data-bs-toggle="pill" data-bs-target="#pills-ausgaben"
+                type="button" role="tab" aria-controls="pills-ausgaben" aria-selected="true">Ausgaben
         </button>
     </li>
     <li class="nav-item" role="presentation">
-        <button class="nav-link" id="pills-profile-tab" data-bs-toggle="pill" data-bs-target="#pills-profile"
-                type="button" role="tab" aria-controls="pills-profile" aria-selected="false">Profile
+        <button class="nav-link" id="pills-salden-tab" data-bs-toggle="pill" data-bs-target="#pills-salden"
+                type="button" role="tab" aria-controls="pills-salden" aria-selected="false">Salden
         </button>
     </li>
     <li class="nav-item" role="presentation">
-        <button class="nav-link" id="pills-contact-tab" data-bs-toggle="pill" data-bs-target="#pills-contact"
-                type="button" role="tab" aria-controls="pills-contact" aria-selected="false">Contact
+        <button class="nav-link" id="pills-transaktion-tab" data-bs-toggle="pill" data-bs-target="#pills-transaktion"
+                type="button" role="tab" aria-controls="pills-transaktion" aria-selected="false">Transaktionen
         </button>
     </li>
     <li class="nav-item" role="presentation">
-        <button class="nav-link" id="pills-disabled-tab" data-bs-toggle="pill" data-bs-target="#pills-disabled"
-                type="button" role="tab" aria-controls="pills-disabled" aria-selected="false" disabled>Disabled
+        <button class="nav-link" id="pills-mitglieder-tab" data-bs-toggle="pill" data-bs-target="#pills-mitglieder"
+                type="button" role="tab" aria-controls="pills-mitglieder" aria-selected="false">Mitglieder
         </button>
     </li>
 </ul>
 <div class="tab-content" id="pills-tabContent">
-    <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab"
-         tabindex="0">...
+    <div class="tab-pane fade show active" id="pills-ausgaben" role="tabpanel" aria-labelledby="pills-ausgaben-tab"
+         tabindex="0"><h3>Ausgaben</h3>
     </div>
-    <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab" tabindex="0">...
+    <div class="tab-pane fade" id="pills-salden" role="tabpanel" aria-labelledby="pills-salden-tab" tabindex="0">
+        <h3>Salden</h3>
     </div>
-    <div class="tab-pane fade" id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab" tabindex="0">...
+    <div class="tab-pane fade" id="pills-transaktion" role="tabpanel" aria-labelledby="pills-transaktion-tab" tabindex="0">
+        <h3>Transaktionen</h3>
     </div>
-    <div class="tab-pane fade" id="pills-disabled" role="tabpanel" aria-labelledby="pills-disabled-tab" tabindex="0">
-        ...
+    <div class="tab-pane fade" id="pills-mitglieder" role="tabpanel" aria-labelledby="pills-mitglieder-tab" tabindex="0">
+        <h3>Mitglieder</h3>
     </div>
 </div>
 </body>

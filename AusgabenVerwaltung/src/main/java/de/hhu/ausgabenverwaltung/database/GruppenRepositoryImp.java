@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Repository
 public class GruppenRepositoryImp implements GruppenRepository {
@@ -63,7 +64,7 @@ public class GruppenRepositoryImp implements GruppenRepository {
     }
 
     @Override
-    public Gruppe findById(Long id) throws Exception {
+    public Gruppe findById(UUID id) throws Exception {
         for (Gruppe gruppe : gruppen) {
             if (gruppe.getId().equals(id)) {
                 return gruppe;

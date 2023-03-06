@@ -1,5 +1,6 @@
 package de.hhu.ausgabenverwaltung.service;
 
+import de.hhu.ausgabenverwaltung.database.GruppenRepositoryImp;
 import de.hhu.ausgabenverwaltung.domain.Gruppe;
 import de.hhu.ausgabenverwaltung.domain.User;
 import org.junit.jupiter.api.DisplayName;
@@ -11,7 +12,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class GruppenListeTests {
+public class GruppenRepositoryImpTests {
     @Test
     @DisplayName("Alle Gruppen eines Users werden zurückgegeben")
     void gruppenVonUserTest() {
@@ -20,9 +21,9 @@ public class GruppenListeTests {
         User userB = new User("githubname2");
         Gruppe gruppe1 = new Gruppe("gruppe1", new ArrayList<>(), new ArrayList<>(List.of(userA)), new HashSet<>(), true);
         Gruppe gruppe2 = new Gruppe("gruppe2", new ArrayList<>(), new ArrayList<>(List.of(userB)), new HashSet<>(), true);
-        GruppenListe gruppenListe = new GruppenListe(List.of(gruppe1, gruppe2));
+        GruppenRepositoryImp gruppenRepositoryImp = new GruppenRepositoryImp(List.of(gruppe1, gruppe2));
         // Act
-        List<Gruppe> gruppenVonA = gruppenListe.vonUser(userA);
+        List<Gruppe> gruppenVonA = gruppenRepositoryImp.vonUser(userA);
         // Assert
         assertThat(gruppenVonA).containsExactly(gruppe1);
     }
@@ -35,10 +36,10 @@ public class GruppenListeTests {
 
         Gruppe gruppe1 = new Gruppe("gruppe1", new ArrayList<>(), List.of(user), new HashSet<>(), true);
         Gruppe gruppe2 = new Gruppe("gruppe2", new ArrayList<>(), List.of(user), new HashSet<>(), false);
-        GruppenListe gruppenListe = new GruppenListe(List.of(gruppe1, gruppe2));
+        GruppenRepositoryImp gruppenRepositoryImp = new GruppenRepositoryImp(List.of(gruppe1, gruppe2));
         // Act
-        List<Gruppe> offeneGruppen = gruppenListe.offenVonUser(user);
-        List<Gruppe> geschlosseneGruppen = gruppenListe.geschlossenVonUser(user);
+        List<Gruppe> offeneGruppen = gruppenRepositoryImp.offenVonUser(user);
+        List<Gruppe> geschlosseneGruppen = gruppenRepositoryImp.geschlossenVonUser(user);
         // Assert
         assertThat(offeneGruppen).containsExactly(gruppe1);
         assertThat(geschlosseneGruppen).containsExactly(gruppe2);

@@ -20,15 +20,29 @@ import java.util.Set;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 
+@ExtendWith(MockitoExtension.class)
 class GruppenServiceTest {
+
+    @Mock
+    GruppenRepository repository;
+
+    @InjectMocks
+    GruppenService gruppenService;
+
+    @Mock
+    GruppenService gruppenServiceMock;
+
     @Test
     @DisplayName("Anzahl der Mitglieder beträgt 1, wenn die Gruppe zuerst erstellt wird")
     void erstelleGruppeTest() {
         //Arrange
         User user = new User("githubname");
-        GruppenService gruppenService = new GruppenService();
-
         //Act
         Gruppe gruppe = gruppenService.gruppeErstellen(user, "gruppenName");
 
@@ -40,7 +54,6 @@ class GruppenServiceTest {
     @DisplayName("Wird eine Gruppe korrekt geschlossen?")
     void gruppeSchliessenTest() {
         //Arrange
-        GruppenService gruppenService = new GruppenService();
         Gruppe gruppe =
                 new Gruppe("gruppe1", new ArrayList<>(), new ArrayList<>(), new HashSet<>(), true);
 
@@ -55,7 +68,6 @@ class GruppenServiceTest {
     @DisplayName("Alle Schulden einer Gruppe korrekt berechnet")
     void schuldenEinerGruppe() {
         //Arrange
-        GruppenService gruppenService = new GruppenService();
         User user1 = new User("githubname1");
         User user2 = new User("githubname2");
         Ausgabe ausgabe1 = new Ausgabe("ausgabe1", "Essen", new BigDecimal(10), user1,
@@ -76,7 +88,6 @@ class GruppenServiceTest {
     @DisplayName("Salden werden korrekt berechnet")
     void berechneSalden() {
         //Arrange
-        GruppenService gruppenService = new GruppenService();
         User userA = new User("githubname1");
         User userB = new User("githubname2");
         User userC = new User("githubname3");
@@ -148,16 +159,13 @@ class GruppenServiceTest {
     @DisplayName("UserB bezahlt mehr als A bekommt")
     void berechneTransaktionen3() {
         //Arrange
-
-        GruppenService gruppenservice = mock(GruppenService.class);
-
         User userA = new User("githubname1");
         User userB = new User("githubname2");
         Gruppe gruppe = new Gruppe("gruppe", new ArrayList<>(), new ArrayList<>(List.of(userA, userB)), new HashSet<>(), true);
-        when(gruppenservice.berechneSalden(gruppe)).thenReturn(new HashMap<>(Map.of(userA, new BigDecimal(-5), userB, new BigDecimal(6))));
-        when(gruppenservice.berechneTransaktionen(gruppe)).thenCallRealMethod();
+        when(gruppenServiceMock.berechneSalden(gruppe)).thenReturn(new HashMap<>(Map.of(userA, new BigDecimal(-5), userB, new BigDecimal(6))));
+        when(gruppenServiceMock.berechneTransaktionen(gruppe)).thenCallRealMethod();
         //Act
-        var alleTransaktionen = gruppenservice.berechneTransaktionen(gruppe);
+        var alleTransaktionen = gruppenServiceMock.berechneTransaktionen(gruppe);
         //Assert
         assertThat(alleTransaktionen).isEqualTo(new HashSet<>(Set.of(new Transaktion(userB, userA, new BigDecimal(5)))));
     }
@@ -166,16 +174,13 @@ class GruppenServiceTest {
     @DisplayName("UserB bezahlt weniger als A bekommt")
     void berechneTransaktionen4() {
         //Arrange
-
-        GruppenService gruppenservice = mock(GruppenService.class);
-
         User userA = new User("githubname1");
         User userB = new User("githubname2");
         Gruppe gruppe = new Gruppe("gruppe", new ArrayList<>(), new ArrayList<>(List.of(userA, userB)), new HashSet<>(), true);
-        when(gruppenservice.berechneSalden(gruppe)).thenReturn(new HashMap<>(Map.of(userA, new BigDecimal(-5), userB, new BigDecimal(3))));
-        when(gruppenservice.berechneTransaktionen(gruppe)).thenCallRealMethod();
+        when(gruppenServiceMock.berechneSalden(gruppe)).thenReturn(new HashMap<>(Map.of(userA, new BigDecimal(-5), userB, new BigDecimal(3))));
+        when(gruppenServiceMock.berechneTransaktionen(gruppe)).thenCallRealMethod();
         //Act
-        var alleTransaktionen = gruppenservice.berechneTransaktionen(gruppe);
+        var alleTransaktionen = gruppenServiceMock.berechneTransaktionen(gruppe);
         //Assert
         assertThat(alleTransaktionen).isEqualTo(new HashSet<>(Set.of(new Transaktion(userB, userA, new BigDecimal(3)))));
     }
@@ -184,16 +189,13 @@ class GruppenServiceTest {
     @DisplayName("UserA bezahlt weniger als B bekommt")
     void berechneTransaktionen5() {
         //Arrange
-
-        GruppenService gruppenservice = mock(GruppenService.class);
-
         User userA = new User("A");
         User userB = new User("B");
         Gruppe gruppe = new Gruppe("gruppe", new ArrayList<>(), new ArrayList<>(List.of(userA, userB)), new HashSet<>(), true);
-        when(gruppenservice.berechneSalden(gruppe)).thenReturn(new HashMap<>(Map.of(userA, new BigDecimal(3), userB, new BigDecimal(-5))));
-        when(gruppenservice.berechneTransaktionen(gruppe)).thenCallRealMethod();
+        when(gruppenServiceMock.berechneSalden(gruppe)).thenReturn(new HashMap<>(Map.of(userA, new BigDecimal(3), userB, new BigDecimal(-5))));
+        when(gruppenServiceMock.berechneTransaktionen(gruppe)).thenCallRealMethod();
         //Act
-        var alleTransaktionen = gruppenservice.berechneTransaktionen(gruppe);
+        var alleTransaktionen = gruppenServiceMock.berechneTransaktionen(gruppe);
         //Assert
         assertThat(alleTransaktionen).isEqualTo(new HashSet<>(Set.of(new Transaktion(userA, userB, new BigDecimal(3)))));
     }
@@ -202,7 +204,6 @@ class GruppenServiceTest {
     @DisplayName("Szenario 1: Summieren von Auslagen")
     void szenario1() {
         //Arrange
-        GruppenService gruppenservice = new GruppenService();
         User userA = new User("A");
         User userB = new User("B");
 
@@ -211,7 +212,7 @@ class GruppenServiceTest {
 
         Gruppe gruppe = new Gruppe("gruppe", new ArrayList<>(List.of(ausgabe1, ausgabe2)), new ArrayList<>(List.of(userA, userB)), new HashSet<>(), true);
         //Act
-        var alleTransaktionen = gruppenservice.berechneTransaktionen(gruppe);
+        var alleTransaktionen = gruppenService.berechneTransaktionen(gruppe);
         //Assert
         assertThat(alleTransaktionen).isEqualTo(new HashSet<>(Set.of(new Transaktion(userB, userA, new BigDecimal(15)))));
     }
@@ -220,7 +221,6 @@ class GruppenServiceTest {
     @DisplayName("Szenario 2: Ausgleich")
     void szenario2() {
         //Arrange
-        GruppenService gruppenservice = new GruppenService();
         User userA = new User("A");
         User userB = new User("B");
 
@@ -229,7 +229,7 @@ class GruppenServiceTest {
 
         Gruppe gruppe = new Gruppe("gruppe", new ArrayList<>(List.of(ausgabe1, ausgabe2)), new ArrayList<>(List.of(userA, userB)), new HashSet<>(), true);
         //Act
-        var alleTransaktionen = gruppenservice.berechneTransaktionen(gruppe);
+        var alleTransaktionen = gruppenService.berechneTransaktionen(gruppe);
         //Assert
         assertThat(alleTransaktionen).isEqualTo(new HashSet<>(Set.of(new Transaktion(userA, userB, new BigDecimal(5)))));
     }
@@ -238,7 +238,6 @@ class GruppenServiceTest {
     @DisplayName("Szenario 3: Zahlung ohne eigene Beteiligung")
     void szenario3() {
         //Arrange
-        GruppenService gruppenservice = new GruppenService();
         User userA = new User("A");
         User userB = new User("B");
 
@@ -247,7 +246,7 @@ class GruppenServiceTest {
 
         Gruppe gruppe = new Gruppe("gruppe", new ArrayList<>(List.of(ausgabe1, ausgabe2)), new ArrayList<>(List.of(userA, userB)), new HashSet<>(), true);
         //Act
-        var alleTransaktionen = gruppenservice.berechneTransaktionen(gruppe);
+        var alleTransaktionen = gruppenService.berechneTransaktionen(gruppe);
         //Assert
         assertThat(alleTransaktionen).isEqualTo(new HashSet<>(Set.of(new Transaktion(userB, userA, new BigDecimal(20)))));
     }
@@ -256,7 +255,6 @@ class GruppenServiceTest {
     @DisplayName("Szenario 4: Ringausgleich")
     void szenario4() {
         //Arrange
-        GruppenService gruppenservice = new GruppenService();
         User userA = new User("A");
         User userB = new User("B");
         User userC = new User("C");
@@ -267,7 +265,7 @@ class GruppenServiceTest {
 
         Gruppe gruppe = new Gruppe("gruppe", new ArrayList<>(List.of(ausgabe1, ausgabe2, ausgabe3)), new ArrayList<>(List.of(userA, userB, userC)), new HashSet<>(), true);
         //Act
-        var alleTransaktionen = gruppenservice.berechneTransaktionen(gruppe);
+        var alleTransaktionen = gruppenService.berechneTransaktionen(gruppe);
         //Assert
         assertThat(alleTransaktionen).isEmpty();
     }
@@ -276,7 +274,6 @@ class GruppenServiceTest {
     @DisplayName("Szenario 5: ABC Beispiel aus der Einführung")
     void szenario5() {
         //Arrange
-        GruppenService gruppenservice = new GruppenService();
         User anton = new User("Anton");
         User berta = new User("Berta");
         User christian = new User("Christian");
@@ -287,7 +284,7 @@ class GruppenServiceTest {
 
         Gruppe gruppe = new Gruppe("gruppe", new ArrayList<>(List.of(ausgabe1, ausgabe2, ausgabe3)), new ArrayList<>(List.of(anton, berta, christian)), new HashSet<>(), true);
         //Act
-        var alleTransaktionen = gruppenservice.berechneTransaktionen(gruppe);
+        var alleTransaktionen = gruppenService.berechneTransaktionen(gruppe);
         //Assert
         assertThat(alleTransaktionen).containsExactlyInAnyOrder(new Transaktion(berta, anton, new BigDecimal(30)),
                 new Transaktion(berta, christian, new BigDecimal(20)));
@@ -298,8 +295,6 @@ class GruppenServiceTest {
     @DisplayName("Szenario 6: Beispiel aus der Aufgabenstellung")
     void szenario6() {
         //Arrange
-        GruppenService gruppenservice = new GruppenService();
-
         User userA = new User("A");
         User userB = new User("B");
         User userC = new User("C");
@@ -318,7 +313,7 @@ class GruppenServiceTest {
                 new ArrayList<>(List.of(userA, userB, userC, userD, userE, userF)), new HashSet<>(), true);
 
         //Act
-        var alleTransaktionen = gruppenservice.berechneTransaktionen(gruppe);
+        var alleTransaktionen = gruppenService.berechneTransaktionen(gruppe);
 
         //Assert
         assertThat(alleTransaktionen).containsExactlyInAnyOrder(new Transaktion(userB, userA, new BigDecimal("96.78")),
@@ -333,8 +328,6 @@ class GruppenServiceTest {
     @DisplayName("Szenario 7: Minimierung")
     void szenario7() {
         //Arrange
-        GruppenService gruppenservice = new GruppenService();
-
         User userA = new User("A");
         User userB = new User("B");
         User userC = new User("C");
@@ -356,7 +349,7 @@ class GruppenServiceTest {
                 new ArrayList<>(List.of(userA, userB, userC, userD, userE, userF, userG)), new HashSet<>(), true);
 
         //Act
-        var alleTransaktionen = gruppenservice.berechneTransaktionen(gruppe);
+        var alleTransaktionen = gruppenService.berechneTransaktionen(gruppe);
 
         //Assert
         assertThat(alleTransaktionen).containsExactlyInAnyOrder(new Transaktion(userA, userF, new BigDecimal("40")),

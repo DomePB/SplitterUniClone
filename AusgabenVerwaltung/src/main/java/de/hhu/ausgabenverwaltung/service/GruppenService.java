@@ -11,15 +11,16 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class GruppenService {
-    private final GruppenListe gruppen = new GruppenListe();
+    private final GruppenRepository gruppen;
+
+    public GruppenService(GruppenRepository gruppen){
+        this.gruppen =  gruppen;
+    }
 
     public List<Gruppe> getGruppen() {
         return gruppen.findAll();
     }
 
-    public GruppenListe getGruppenListe() {
-        return gruppen;
-    }
 
     public Gruppe gruppeErstellen(User ersteller, String name) {
         Gruppe gruppe = new Gruppe(name, new ArrayList<>(), new ArrayList<>(List.of(ersteller)),
@@ -163,4 +164,15 @@ public class GruppenService {
     }
 
 
+    public List<Gruppe> geschlossenVonUser(User user) {
+        return gruppen.geschlossenVonUser(user);
+    }
+
+    public List<Gruppe> offenVonUser(User user) {
+        return gruppen.offenVonUser(user);
+    }
+
+    public Gruppe findById(Long gruppenId) throws Exception {
+        return gruppen.findById(gruppenId);
+    }
 }

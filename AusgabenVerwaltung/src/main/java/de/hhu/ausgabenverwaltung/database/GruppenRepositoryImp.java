@@ -1,21 +1,23 @@
-package de.hhu.ausgabenverwaltung.service;
+package de.hhu.ausgabenverwaltung.database;
 
 import de.hhu.ausgabenverwaltung.domain.Gruppe;
 import de.hhu.ausgabenverwaltung.domain.User;
+import de.hhu.ausgabenverwaltung.service.GruppenRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class GruppenListe implements GruppenRepository {
+@Repository
+public class GruppenRepositoryImp implements GruppenRepository {
 
     List<Gruppe> gruppen;
 
-    public GruppenListe() {
+    public GruppenRepositoryImp() {
         this.gruppen = new ArrayList<>();
     }
 
-    public GruppenListe(List<Gruppe> gruppen) {
+    public GruppenRepositoryImp(List<Gruppe> gruppen) {
         this.gruppen = gruppen;
     }
 

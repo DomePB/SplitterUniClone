@@ -1,5 +1,6 @@
 package de.hhu.ausgabenverwaltung.web;
 
+import de.hhu.ausgabenverwaltung.domain.Ausgabe;
 import de.hhu.ausgabenverwaltung.domain.Gruppe;
 import de.hhu.ausgabenverwaltung.domain.User;
 import de.hhu.ausgabenverwaltung.service.GruppenService;
@@ -8,6 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -50,9 +52,4 @@ public class WebController {
         }
     }
 
-    @PostMapping("/gruppe/${/ausgaben")
-    public String ausgabenHinzufuegen(@RequestParam UUID id, @RequestParam String name){
-
-        return "redirect:/gruppe";
-    }
 }

@@ -14,8 +14,8 @@ class GruppeTest {
     @DisplayName("Person zur Gruppe hinzufuegen")
     void personHinzufuegen() {
         //Arrange
-        User user = new User("githubname", "Jens");
-        Gruppe gruppe = new Gruppe("gruppeName", new ArrayList<>(), new ArrayList<User>(), new HashSet<Transaktion>(),true);
+        User user = new User("githubname");
+        Gruppe gruppe = new Gruppe("gruppeName", new ArrayList<>(), new ArrayList<>(), new HashSet<>(), true,UUID.randomUUID());
 
 
         //Act
@@ -29,8 +29,8 @@ class GruppeTest {
     @DisplayName("Person aus Gruppe entfernen")
     void personEntfernen() {
         //Arrange
-        User user = new User("githubname", "Jens");
-        Gruppe gruppe = new Gruppe("gruppeName", new ArrayList<>(), new ArrayList<>(List.of(user)), new HashSet<Transaktion>(),true);
+        User user = new User("githubname");
+        Gruppe gruppe = new Gruppe("gruppeName", new ArrayList<>(), new ArrayList<>(List.of(user)), new HashSet<>(), true,UUID.randomUUID());
         //Act
         gruppe.deleteMitglieder(user);
         //Assert
@@ -39,12 +39,29 @@ class GruppeTest {
     }
 
     @Test
+    @DisplayName("User und Ausgabe sind schon drin")
+    void addMitglieder() {
+        //Arrange
+        User user = new User("githubname");
+        Ausgabe ausgabe1 = new Ausgabe("ausgabe1", "Ausgabe", new BigDecimal("10"), user, List.of(user));
+        List<Ausgabe> ausgabe = List.of(ausgabe1);
+        Gruppe gruppe = new Gruppe("gruppeName", ausgabe, new ArrayList<>(List.of(user)), new HashSet<>(), true,UUID.randomUUID());
+
+        //Act
+        gruppe.addMitglieder(user);
+
+        //Assert
+        assertThat(gruppe.getMitglieder().size()).isOne();
+
+    }
+
+    @Test
     @DisplayName("Sender = Empfaenger")
     void isTransaktionValid1() {
         //Arrange
-        User user1 = new User("githubname", "Jens");
+        User user1 = new User("githubname");
         Transaktion transaktion = new Transaktion(user1, user1, new BigDecimal("100.00"));
-        Gruppe gruppe = new Gruppe("gruppeName", new ArrayList<>(), new ArrayList<>(List.of(user1)), new HashSet<>(),true);
+        Gruppe gruppe = new Gruppe("gruppeName", new ArrayList<>(), new ArrayList<>(List.of(user1)), new HashSet<>(), true,UUID.randomUUID());
         //Act
         boolean isValid = gruppe.isTransaktionValid(transaktion);
         //Assert
@@ -56,13 +73,13 @@ class GruppeTest {
     void isTransaktionValid2() {
 
         //Arrange
-        User user1 = new User("githubname1", "Jens");
-        User user2 = new User("githubname2", "Bob");
+        User user1 = new User("githubname1");
+        User user2 = new User("githubname2");
         Transaktion transaktion1 = new Transaktion(user1, user2, new BigDecimal("100"));
         Transaktion transaktion2 = new Transaktion(user1, user2, new BigDecimal("50"));
 
         Gruppe gruppe = new Gruppe("gruppeName", new ArrayList<>(), new ArrayList<>(List.of(user1, user2)),
-                new HashSet<>(Set.of(transaktion1)),true);
+                new HashSet<>(Set.of(transaktion1)), true,UUID.randomUUID());
         //Act
         boolean isValid = gruppe.isTransaktionValid(transaktion2);
 
@@ -74,12 +91,12 @@ class GruppeTest {
     @DisplayName("Personen einer Transaktion müssen in einer Gruppe sein")
     void isTransaktionValid3() {
         //Arrange
-        User user1 = new User("githubname1", "Jens");
-        User user2 = new User("githubname2", "Bob");
+        User user1 = new User("githubname1");
+        User user2 = new User("githubname2");
         Transaktion transaktion1 = new Transaktion(user1, user2, new BigDecimal("100"));
 
         Gruppe gruppe = new Gruppe("gruppeName", new ArrayList<>(), new ArrayList<>(List.of(user1)),
-                new HashSet<>(),true);
+                new HashSet<>(), true,UUID.randomUUID());
 
         //Act
         boolean isValid = gruppe.isTransaktionValid(transaktion1);
@@ -92,12 +109,12 @@ class GruppeTest {
     @DisplayName("Gültige Transaktion wird hinzugefügt")
     void transaktionHinzufuegenTest() {
         // Arrange
-        User user1 = new User("githubname1", "Jens");
-        User user2 = new User("githubname2", "Bob");
+        User user1 = new User("githubname1");
+        User user2 = new User("githubname2");
         Transaktion transaktion1 = new Transaktion(user1, user2, new BigDecimal("100"));
 
         Gruppe gruppe = new Gruppe("gruppeName", new ArrayList<>(), new ArrayList<>(List.of(user1, user2)),
-                new HashSet<>(),true);
+                new HashSet<>(), true,UUID.randomUUID());
 
         // Act
         gruppe.transaktionHinzufuegen(transaktion1);
@@ -110,12 +127,12 @@ class GruppeTest {
     @DisplayName("Ausgabe wird hinzugefügt")
     void ausgabeHinzufuegen() {
         // Arrange
-        User user1 = new User("githubname1", "Jens");
-        User user2 = new User("githubname2", "Bob");
+        User user1 = new User("githubname1");
+        User user2 = new User("githubname2");
         Ausgabe ausgabe = new Ausgabe("", "", new BigDecimal("10"), user1, new ArrayList<>(List.of(user1, user2)));
 
         Gruppe gruppe = new Gruppe("gruppeName", new ArrayList<>(), new ArrayList<>(List.of(user1, user2)),
-                new HashSet<>(),true);
+                new HashSet<>(), true,UUID.randomUUID());
 
         // Act
         gruppe.ausgabeHinzufuegen(ausgabe);
@@ -128,31 +145,32 @@ class GruppeTest {
     @DisplayName("die summer von Ausgabe soll korrekt sein")
     void ausgabensummantKorrekt() {
         //Arrange
-        User user1 = new User("githubname1", "Jens");
+        User user1 = new User("githubname1");
         Ausgabe ausgabe1 = new Ausgabe("", "", new BigDecimal("10"), user1, new ArrayList<>(List.of(user1)));
         Ausgabe ausgabe2 = new Ausgabe("", "", new BigDecimal("20"), user1, new ArrayList<>(List.of(user1)));
 
-        Gruppe gruppe = new Gruppe("gruppeName", new ArrayList<>(List.of(ausgabe1,ausgabe2)), new ArrayList<>(List.of(user1)),
-                new HashSet<>(),true);
+        Gruppe gruppe = new Gruppe("gruppeName", new ArrayList<>(List.of(ausgabe1, ausgabe2)), new ArrayList<>(List.of(user1)),
+                new HashSet<>(), true,UUID.randomUUID());
         //Act
         BigDecimal summe = gruppe.summeVonUser(user1);
         //Assert
         assertThat(summe).isEqualTo(new BigDecimal(30));
     }
+
     @Test
     @DisplayName("Die Summe von noch zu bezahlenden Sachen einer Person")
     void ausgabenBeiteiligtKorrekt() {
         //Arrange
-        User user1 = new User("githubname1", "Jens");
-        User user2 = new User("githubname2", "Bob");
-        Ausgabe ausgabe1 = new Ausgabe("", "", new BigDecimal("10"), user1, new ArrayList<>(List.of(user1,user2)));
+        User user1 = new User("githubname1");
+        User user2 = new User("githubname2");
+        Ausgabe ausgabe1 = new Ausgabe("", "", new BigDecimal("10"), user1, new ArrayList<>(List.of(user1, user2)));
         Ausgabe ausgabe2 = new Ausgabe("", "", new BigDecimal("20"), user1, new ArrayList<>(List.of(user1)));
 
-        Gruppe gruppe = new Gruppe("gruppeName", new ArrayList<>(List.of(ausgabe1,ausgabe2)), new ArrayList<>(List.of(user1,user2)),
-                new HashSet<>(),true);
+        Gruppe gruppe = new Gruppe("gruppeName", new ArrayList<>(List.of(ausgabe1, ausgabe2)), new ArrayList<>(List.of(user1, user2)),
+                new HashSet<>(), true,UUID.randomUUID());
         HashMap<User, BigDecimal> gruppeMussBezahlenVon;
         //Act
-            gruppeMussBezahlenVon= gruppe.mussBezahlenVonUser(user1);
+        gruppeMussBezahlenVon = gruppe.mussBezahlenVonUser(user1);
         //Assert
         assertThat(gruppeMussBezahlenVon).containsEntry(user2, new BigDecimal(5));
     }
@@ -161,54 +179,54 @@ class GruppeTest {
     @DisplayName("User kann nicht an sich selber Geld schulden")
     void keinEigenerSchuldner() {
         //Arrange
-        User user1 = new User("githubname1", "Jens");
-        User user2 = new User("githubname2", "Bob");
-        Ausgabe ausgabe1 = new Ausgabe("", "", new BigDecimal("10"), user1, new ArrayList<>(List.of(user1,user2)));
+        User user1 = new User("githubname1");
+        User user2 = new User("githubname2");
+        Ausgabe ausgabe1 = new Ausgabe("", "", new BigDecimal("10"), user1, new ArrayList<>(List.of(user1, user2)));
         Ausgabe ausgabe2 = new Ausgabe("", "", new BigDecimal("20"), user1, new ArrayList<>(List.of(user1)));
 
-        Gruppe gruppe = new Gruppe("gruppeName", new ArrayList<>(List.of(ausgabe1,ausgabe2)), new ArrayList<>(List.of(user1,user2)),
-                new HashSet<>(),true);
+        Gruppe gruppe = new Gruppe("gruppeName", new ArrayList<>(List.of(ausgabe1, ausgabe2)), new ArrayList<>(List.of(user1, user2)),
+                new HashSet<>(), true,UUID.randomUUID());
         HashMap<User, BigDecimal> gruppeMussBezahlenVon;
         //Act
-        gruppeMussBezahlenVon= gruppe.mussBezahlenVonUser(user1);
+        gruppeMussBezahlenVon = gruppe.mussBezahlenVonUser(user1);
         //Assert
         assertThat(gruppeMussBezahlenVon).doesNotContainKey(user1);
     }
 
     @Test
     @DisplayName("keine Ausgaben hinzufuegen bei geschlossener Gruppe")
-    void keineAusgabe(){
+    void keineAusgabe() {
         //Arrange
-        User user1 = new User("githubname1", "Jens");
-        User user2 = new User("githubname2", "Bob");
-        Ausgabe ausgabe1 = new Ausgabe("", "", new BigDecimal("10"), user1, new ArrayList<>(List.of(user1,user2)));
+        User user1 = new User("githubname1");
+        User user2 = new User("githubname2");
+        Ausgabe ausgabe1 = new Ausgabe("", "", new BigDecimal("10"), user1, new ArrayList<>(List.of(user1, user2)));
 
 
-        Gruppe gruppe = new Gruppe("gruppeName", new ArrayList<>(), new ArrayList<>(List.of(user1,user2)),
-                new HashSet<>(),false);
+        Gruppe gruppe = new Gruppe("gruppeName", new ArrayList<>(), new ArrayList<>(List.of(user1, user2)),
+                new HashSet<>(), false,UUID.randomUUID());
         //Act
         gruppe.ausgabeHinzufuegen(ausgabe1);
         //Assert
         assertThat(gruppe.getAusgaben().size()).isEqualTo(0);
 
     }
+
     @Test
     @DisplayName("keine Transaktionen hinzufuegen bei geschlossener Gruppe")
-    void keineTransaktionen(){
+    void keineTransaktionen() {
         //Arrange
-        User user1 = new User("githubname1", "Jens");
-        User user2 = new User("githubname2", "Bob");
-        Transaktion t = new Transaktion(user1,user2,new BigDecimal(10));
+        User user1 = new User("githubname1");
+        User user2 = new User("githubname2");
+        Transaktion t = new Transaktion(user1, user2, new BigDecimal(10));
 
-        Gruppe gruppe = new Gruppe("gruppeName", new ArrayList<>(), new ArrayList<>(List.of(user1,user2)),
-                new HashSet<>(),false);
+        Gruppe gruppe = new Gruppe("gruppeName", new ArrayList<>(), new ArrayList<>(List.of(user1, user2)),
+                new HashSet<>(), false,UUID.randomUUID());
         //Act
         gruppe.transaktionHinzufuegen(t);
         //Assert
         assertThat(gruppe.getTransaktionen().size()).isEqualTo(0);
 
     }
-
 
 
 }

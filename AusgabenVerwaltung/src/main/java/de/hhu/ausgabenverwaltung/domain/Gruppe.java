@@ -5,19 +5,29 @@ import java.util.*;
 
 public class Gruppe {
 
-    String name;
-    List<Ausgabe> ausgaben;
-    List<User> mitglieder;
+    private final UUID id;
+    private String name;
+    private List<Ausgabe> ausgaben;
+    private List<User> mitglieder;
     boolean offen;
-
     Set<Transaktion> transaktionen;
 
-    public Gruppe(String name, List<Ausgabe> ausgaben, List<User> mitglieder, Set<Transaktion> transaktionen, boolean offen ) {
+    public Gruppe(String name, List<Ausgabe> ausgaben, List<User> mitglieder,
+                  Set<Transaktion> transaktionen, boolean offen, UUID id) {
         this.name = name;
         this.mitglieder = mitglieder;
         this.ausgaben = ausgaben;
-        this.transaktionen=transaktionen;
+        this.transaktionen = transaktionen;
         this.offen = offen;
+        this.id = id;
+    }
+
+    public static Gruppe gruppeErstellen(String name,User user){
+        return new Gruppe(name,new ArrayList<>(),new ArrayList<>(List.of(user)),new HashSet<>(),true,UUID.randomUUID());
+    }
+
+    public UUID getId() {
+        return id;
     }
 
     public String getName() {
@@ -52,25 +62,34 @@ public class Gruppe {
         this.transaktionen = transaktionen;
     }
 
-    public void addMitglieder(User user){
-        if(!offen){return;}
+    public void addMitglieder(User user) {
+        if (!offen || mitglieder.contains(user) || !ausgaben.isEmpty()) {
+            return;
+        }
         mitglieder.add(user);
     }
 
-    public void deleteMitglieder(User user){ if(!offen){return;} mitglieder.remove(user);}
+    public void deleteMitglieder(User user) {
+        if (!offen) {
+            return;
+        }
+        mitglieder.remove(user);
+    }
 
-    public boolean isTransaktionValid(Transaktion transaktion){
-        if(transaktion.sender().equals(transaktion.empfaenger())){
+    public boolean isTransaktionValid(Transaktion transaktion) {
+        if (transaktion.sender().equals(transaktion.empfaenger())) {
             return false;
         }
-        if (!mitglieder.contains(transaktion.sender()) || !mitglieder.contains(transaktion.empfaenger())) {
+        if (!mitglieder.contains(transaktion.sender()) ||
+                !mitglieder.contains(transaktion.empfaenger())) {
             return false;
         }
 
-        for (Transaktion t:transaktionen) {
-            if (t.empfaenger().equals(transaktion.empfaenger()) && t.sender().equals(transaktion.sender()) ||
-                    t.empfaenger().equals(transaktion.sender()) && t.sender().equals(transaktion.empfaenger()))
-            {
+        for (Transaktion t : transaktionen) {
+            if (t.empfaenger().equals(transaktion.empfaenger()) &&
+                    t.sender().equals(transaktion.sender()) ||
+                    t.empfaenger().equals(transaktion.sender()) &&
+                            t.sender().equals(transaktion.empfaenger())) {
                 return false;
             }
         }
@@ -78,14 +97,18 @@ public class Gruppe {
     }
 
     public void transaktionHinzufuegen(Transaktion transaktion) {
-        if(!offen){return;}
+        if (!offen) {
+            return;
+        }
         if (isTransaktionValid(transaktion)) {
             transaktionen.add(transaktion);
         }
     }
 
     public void ausgabeHinzufuegen(Ausgabe ausgabe) {
-        if(!offen){return;}
+        if (!offen) {
+            return;
+        }
         ausgaben.add(ausgabe);
     }
 
@@ -97,16 +120,19 @@ public class Gruppe {
     }
 
 
-    public HashMap<User, BigDecimal> mussBezahlenVonUser(User user)  {
-        HashMap<User, BigDecimal> schuldner = new HashMap<User, BigDecimal>();
+    public HashMap<User, BigDecimal> mussBezahlenVonUser(User user) {
+        HashMap<User, BigDecimal> schuldner = new HashMap<>();
         for (Ausgabe ausgabe : ausgaben) {
-            if(ausgabe.bezahltVon().equals(user)){
-                for (User useri: ausgabe.beteiligte()
-                     ) {
-                    if(useri.equals(user)){ continue;}
+            if (ausgabe.bezahltVon().equals(user)) {
+                for (User useri : ausgabe.beteiligte()
+                ) {
+                    if (useri.equals(user)) {
+                        continue;
+                    }
                     BigDecimal userSumme = schuldner.getOrDefault(useri, BigDecimal.ZERO);
-                    userSumme = userSumme.add(ausgabe.betrag().divide(new BigDecimal(ausgabe.beteiligte().size())));
-                    schuldner.put(useri,userSumme);
+                    userSumme = userSumme.add(
+                            ausgabe.betrag().divide(new BigDecimal(ausgabe.beteiligte().size())));
+                    schuldner.put(useri, userSumme);
 
                 }
             }
@@ -115,21 +141,26 @@ public class Gruppe {
     }
 
 
-    public void schliessen(){
+    public void schliessen() {
         offen = false;
     }
 
-    public boolean istOffen(){
+    public boolean istOffen() {
         return offen;
     }
 
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         Gruppe gruppe = (Gruppe) o;
-        return name.equals(gruppe.name) && ausgaben.equals(gruppe.ausgaben) && mitglieder.equals(gruppe.mitglieder);
+        return name.equals(gruppe.name) && ausgaben.equals(gruppe.ausgaben) &&
+                mitglieder.equals(gruppe.mitglieder);
     }
 
     @Override

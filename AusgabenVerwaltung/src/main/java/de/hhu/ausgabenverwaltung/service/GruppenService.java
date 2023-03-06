@@ -3,22 +3,38 @@ package de.hhu.ausgabenverwaltung.service;
 import de.hhu.ausgabenverwaltung.domain.Gruppe;
 import de.hhu.ausgabenverwaltung.domain.Transaktion;
 import de.hhu.ausgabenverwaltung.domain.User;
-import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.*;
 
+import org.springframework.stereotype.Service;
+
 @Service
 public class GruppenService {
-    private final List<Gruppe> gruppen = new ArrayList<>();
+    private final GruppenRepository gruppen;
 
-    public Gruppe gruppeErstellen(User ersteller, String name) {
-        Gruppe gruppe = new Gruppe(name, new ArrayList<>(), new ArrayList<>(List.of(ersteller)), new HashSet<>(), true);
-        gruppen.add(gruppe);
-        return gruppe;
+    public GruppenService(GruppenRepository gruppen){
+        this.gruppen =  gruppen;
     }
 
-    public HashMap<User, HashMap<User, BigDecimal>> alleSchuldenBerechnen(Gruppe gruppe) {
+    public List<Gruppe> getGruppen() {
+        return gruppen.findAll();
+    }
+
+
+    public Gruppe gruppeErstellen(User ersteller, String name) {
+        Gruppe gruppe = new Gruppe(name, new ArrayList<>(), new ArrayList<>(List.of(ersteller)),
+                new HashSet<>(), true,UUID.randomUUID());
+        gruppen.findAll().add(gruppe);
+        return gruppe;
+    } //Application Service
+
+    public void gruppeSchliessen(Gruppe gruppe) {
+        berechneTransaktionen(gruppe);
+        gruppe.schliessen();
+    }
+
+    public HashMap<User, HashMap<User, BigDecimal>> alleSchuldenBerechnen(Gruppe gruppe) { // in Gruppe
         HashMap<User, HashMap<User, BigDecimal>> schulden = new HashMap<>();
         for (User mitglied : gruppe.getMitglieder()) {
             schulden.put(mitglied, gruppe.mussBezahlenVonUser(mitglied));
@@ -27,7 +43,7 @@ public class GruppenService {
     }
 
     public HashMap<User, BigDecimal> berechneSalden(Gruppe gruppe) {
-        var alleSchulden = alleSchuldenBerechnen(gruppe);
+        var alleSchulden = alleSchuldenBerechnen(gruppe); //Alles Schulden uebergeben
         HashMap<User, BigDecimal> schuldenSumme = new HashMap<>();
         // Iteriere durch alle Spalten der Tabelle
         for (var entry : alleSchulden.entrySet()) {
@@ -49,26 +65,26 @@ public class GruppenService {
         return schuldenSumme;
     }
 
-	public Map<Gruppe, Set<Transaktion>> getBeteiligteTransaktionen(User user){
-		Map<Gruppe, Set<Transaktion>> userTransaktinen = new HashMap<>();
-		for (Gruppe gruppe: gruppen) {
-			Set<Transaktion> temp = new HashSet<>();
-			if(gruppe.getMitglieder().contains(user)){
-				Set<Transaktion> groupeTransaktionen = berechneTransaktionen(gruppe);
-				for (Transaktion t: groupeTransaktionen) {
-					if(t.sender().equals(user) || t.empfaenger().equals(user)){
-						temp.add(t);
-					}
-				}
-				userTransaktinen.put(gruppe, temp);
-			}
-		}
-		return userTransaktinen;
-	}
+    public Map<Gruppe, Set<Transaktion>> getBeteiligteTransaktionen(User user) {
+        Map<Gruppe, Set<Transaktion>> userTransaktinen = new HashMap<>();
+        for (Gruppe gruppe : getGruppen()) {
+            Set<Transaktion> temp = new HashSet<>();
+            if (gruppe.getMitglieder().contains(user)) {
+                Set<Transaktion> groupeTransaktionen = berechneTransaktionen(gruppe);
+                for (Transaktion t : groupeTransaktionen) {
+                    if (t.sender().equals(user) || t.empfaenger().equals(user)) {
+                        temp.add(t);
+                    }
+                }
+                userTransaktinen.put(gruppe, temp);
+            }
+        }
+        return userTransaktinen;
+    }
 
     public Set<Transaktion> berechneTransaktionen(Gruppe gruppe) {
         Set<Transaktion> transaktionen = new HashSet<>();
-        var salden = berechneSalden(gruppe);
+        var salden = berechneSalden(gruppe); //salden uebergeben
 
         for (var empfaengerEntry : salden.entrySet()) {
 
@@ -78,11 +94,16 @@ public class GruppenService {
                 }
 
                 // Sind Empfänger und Sender gleich?
-                if (empfaengerEntry.getValue().add(senderEntry.getValue()).equals(BigDecimal.ZERO)) {
+                if (empfaengerEntry.getValue().add(senderEntry.getValue())
+                        .equals(BigDecimal.ZERO)) {
                     if (empfaengerEntry.getValue().compareTo(BigDecimal.ZERO) < 0) {
-                        transaktionen.add(new Transaktion(senderEntry.getKey(), empfaengerEntry.getKey(), empfaengerEntry.getValue().multiply(new BigDecimal(-1))));
+                        transaktionen.add(
+                                new Transaktion(senderEntry.getKey(), empfaengerEntry.getKey(),
+                                        empfaengerEntry.getValue().multiply(new BigDecimal(-1))));
                     } else if (empfaengerEntry.getValue().compareTo(BigDecimal.ZERO) > 0) {
-                        transaktionen.add(new Transaktion(empfaengerEntry.getKey(), senderEntry.getKey(), senderEntry.getValue().multiply(new BigDecimal(-1))));
+                        transaktionen.add(
+                                new Transaktion(empfaengerEntry.getKey(), senderEntry.getKey(),
+                                        senderEntry.getValue().multiply(new BigDecimal(-1))));
                     }
 
                     salden.put(empfaengerEntry.getKey(), BigDecimal.ZERO);
@@ -114,21 +135,44 @@ public class GruppenService {
                 }
 
                 // Fälle behandeln
-                if (senderEntry.getValue().add(empfaengerEntry.getValue()).compareTo(BigDecimal.ZERO) < 0) {
+                if (senderEntry.getValue().add(empfaengerEntry.getValue())
+                        .compareTo(BigDecimal.ZERO) < 0) {
                     // Schulden von sender sind kleiner als Einnahmen von empfaenger
-                    transaktionen.add(new Transaktion(senderEntry.getKey(), empfaengerEntry.getKey(), senderEntry.getValue()));
-                    salden.put(empfaengerEntry.getKey(), senderEntry.getValue().add(empfaengerEntry.getValue()));
+                    transaktionen.add(
+                            new Transaktion(senderEntry.getKey(), empfaengerEntry.getKey(),
+                                    senderEntry.getValue()));
+                    salden.put(empfaengerEntry.getKey(),
+                            senderEntry.getValue().add(empfaengerEntry.getValue()));
                     salden.put(senderEntry.getKey(), BigDecimal.ZERO);
                 } else {
                     // Schulden von sender sind größer als Einnahmen von empfaenger
-                    transaktionen.add(new Transaktion(senderEntry.getKey(), empfaengerEntry.getKey(), empfaengerEntry.getValue().multiply(new BigDecimal(-1))));
-                    salden.put(senderEntry.getKey(), senderEntry.getValue().add(empfaengerEntry.getValue()));
+                    transaktionen.add(
+                            new Transaktion(senderEntry.getKey(), empfaengerEntry.getKey(),
+                                    empfaengerEntry.getValue().multiply(new BigDecimal(-1))));
+                    salden.put(senderEntry.getKey(),
+                            senderEntry.getValue().add(empfaengerEntry.getValue()));
                     salden.put(empfaengerEntry.getKey(), BigDecimal.ZERO);
                 }
             }
         }
-        //gruppe.setTransaktionen(transaktionen);
+
+        if (gruppe.istOffen()) {
+            gruppe.setTransaktionen(transaktionen);
+        }
+
         return transaktionen;
     }
 
+
+    public List<Gruppe> geschlossenVonUser(User user) {
+        return gruppen.geschlossenVonUser(user);
+    } //Application service
+
+    public List<Gruppe> offenVonUser(User user) {
+        return gruppen.offenVonUser(user);
+    } //Application service
+
+    public Gruppe findById(UUID gruppenId) throws Exception { //Application Service
+        return gruppen.findById(gruppenId);
+    }
 }

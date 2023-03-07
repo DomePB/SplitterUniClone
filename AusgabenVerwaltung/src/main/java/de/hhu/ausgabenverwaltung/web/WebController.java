@@ -29,6 +29,7 @@ public class WebController {
     }
 
     @GetMapping("/")
+
     public String index(Model model,@AuthenticationPrincipal OAuth2User token) {
         User user = new User(token.getAttribute("login"));
         //Gruppe g = service.gruppeErstellen(new User("test"), "gruppe2");
@@ -72,6 +73,19 @@ public class WebController {
                     List.of()));
             attrs.addAttribute("id", gruppe.getId());
 
+            return "redirect:/gruppe";
+        } catch (Exception e) {
+            return "redirect:/gruppe";
+        }
+    }
+    @PostMapping("/gruppe/Mitglieder")
+    public String userHinzufuegen(@RequestParam UUID id,
+                                     @RequestParam(name = "MitgliedName") String name,
+                                     RedirectAttributes attrs) {
+        try {
+            Gruppe gruppe = service.findById(id);
+            gruppe.addMitglieder(new User(name));
+            attrs.addAttribute("id", gruppe.getId());
             return "redirect:/gruppe";
         } catch (Exception e) {
             return "redirect:/gruppe";

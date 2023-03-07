@@ -57,12 +57,30 @@
     </div>
     <div class="tab-pane fade" id="pills-salden" role="tabpanel" aria-labelledby="pills-salden-tab" tabindex="0">
         <h3>Salden</h3>
+        <table class ="table">
+            <tbody th:remove="all-but-first">
+           <!-- <tr th:each="key :${gruppe.berechneSalden().keySet()}">
+                <td th:text="${key}"> </td>
+                <td th:text="${gruppe.berechneSalden().get(key)}"></td>
+            </tr> -->
+            </tbody>
+        </table>
     </div>
     <div class="tab-pane fade" id="pills-transaktion" role="tabpanel" aria-labelledby="pills-transaktion-tab" tabindex="0">
         <h3>Transaktionen</h3>
     </div>
     <div class="tab-pane fade" id="pills-mitglieder" role="tabpanel" aria-labelledby="pills-mitglieder-tab" tabindex="0">
         <h3>Mitglieder</h3>
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#mitgliedhinzufuegenModal">
+            User hinzufügen
+        </button>
+        <table class="table mx-auto">
+        <tbody th:remove="all-but-first">
+        <tr th:each="mitglied: ${gruppe.getMitglieder()}">
+            <td th:text="${mitglied.githubHandle}"></td>
+        </tr>
+        </tbody>
+        </table>
     </div>
 </div>
 
@@ -126,6 +144,27 @@
 
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Abbrechen</button>
+                    <button type="submit" class="btn btn-primary">Erstellen</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="mitgliedhinzufuegenModal" tabindex="-1" aria-labelledby="mitgliedModal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="post" th:action="@{/gruppe/Mitglieder(id=${gruppe.getId()})}">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="MitgliedLabel">Mitglied hinzufügen</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="MitgliedName" class="col-form-label">Name:</label>
+                        <input type="text" name="MitgliedName" class="form-control" id="MitgliedName">
+                    </div>
+                </div>
+                <div class="modal-footer">
                     <button type="submit" class="btn btn-primary">Erstellen</button>
                 </div>
             </form>

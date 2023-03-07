@@ -59,10 +59,10 @@
         <h3>Salden</h3>
         <table class ="table">
             <tbody th:remove="all-but-first">
-           <!-- <tr th:each="key :${gruppe.berechneSalden().keySet()}">
-                <td th:text="${key}"> </td>
-                <td th:text="${gruppe.berechneSalden().get(key)}"></td>
-            </tr> -->
+           <tr th:each="entry :${gruppe.berechneSalden(gruppe.alleSchuldenBerechnen())}">
+                <td th:text="${entry.key.githubHandle}"> </td>
+                <td th:text ="${entry.value}"></td>
+            </tr>
             </tbody>
         </table>
     </div>

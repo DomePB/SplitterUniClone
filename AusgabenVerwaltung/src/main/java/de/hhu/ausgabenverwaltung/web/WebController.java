@@ -32,9 +32,9 @@ public class WebController {
 
     public String index(Model model,@AuthenticationPrincipal OAuth2User token) {
         User user = new User(token.getAttribute("login"));
-        //Gruppe g = service.gruppeErstellen(new User("test"), "gruppe2");
-        //g.addMitglieder(new User("myUser"));
-        //g.addMitglieder(new User("lnx00"));
+        Gruppe g = service.gruppeErstellen(new User("test"), "gruppe2");
+        g.addMitglieder(new User("myUser"));
+        g.addMitglieder(new User(token.getAttribute("login")));
 
         model.addAttribute("user", user);
         model.addAttribute("offeneGruppen", service.offenVonUser(user));
@@ -69,7 +69,7 @@ public class WebController {
                                      RedirectAttributes attrs) {
         try {
             Gruppe gruppe = service.findById(id);
-            gruppe.ausgabeHinzufuegen(new Ausgabe(name, beschreibung, betrag, new User("guthub"),
+            gruppe.ausgabeHinzufuegen(new Ausgabe(name, beschreibung, betrag, new User("DomePB"),
                     List.of()));
             attrs.addAttribute("id", gruppe.getId());
 

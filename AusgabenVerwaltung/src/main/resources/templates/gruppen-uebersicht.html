@@ -50,7 +50,7 @@
                 <td th:text="${ausgabe.name}"></td>
                 <td th:text="${ausgabe.bezahltVon.githubHandle}"></td>
                 <td th:text="${ausgabe.betrag}"></td>
-                <td th:text=""></td>
+                <td></td>
             </tr>
             </tbody>
         </table>
@@ -69,15 +69,15 @@
 <div class="modal fade" id="ausgabehinzufuegenModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form method="post" th:action="@{/gruppe(id=${gruppe.getId()})}">
+            <form method="post" th:action="@{/gruppe/ausgaben(id=${gruppe.getId()})}">
                 <div class="modal-header">
                     <h1 class="modal-title fs-5" id="exampleModalLabel">Ausgabe hinzufügen</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label for="gruppenName" class="col-form-label">Name:</label>
-                        <input type="text" name="gruppenName" class="form-control" id="gruppenName">
+                        <label for="ausgabeName" class="col-form-label">Name:</label>
+                        <input type="text" name="ausgabeName" class="form-control" id="ausgabeName">
                     </div>
                 </div>
                 <div class="modal-footer">

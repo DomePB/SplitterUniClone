@@ -29,7 +29,8 @@ public class WebController {
         User user = new User(token.getPrincipal().getAttribute("login"));
         Gruppe g = service.gruppeErstellen(new User("test"), "gruppe2");
         g.addMitglieder(new User("myUser"));
-        g.addMitglieder(new User("lnx00"));
+        g.addMitglieder(new User(token.getPrincipal().getAttribute("login")));
+
 
         model.addAttribute("user", user);
         model.addAttribute("offeneGruppen", service.offenVonUser(user));
@@ -68,6 +69,19 @@ public class WebController {
                     List.of()));
             attrs.addAttribute("id", gruppe.getId());
 
+            return "redirect:/gruppe";
+        } catch (Exception e) {
+            return "redirect:/gruppe";
+        }
+    }
+    @PostMapping("/gruppe/Mitglieder")
+    public String userHinzufuegen(@RequestParam UUID id,
+                                     @RequestParam(name = "MitgliedName") String name,
+                                     RedirectAttributes attrs) {
+        try {
+            Gruppe gruppe = service.findById(id);
+            gruppe.addMitglieder(new User(name));
+            attrs.addAttribute("id", gruppe.getId());
             return "redirect:/gruppe";
         } catch (Exception e) {
             return "redirect:/gruppe";

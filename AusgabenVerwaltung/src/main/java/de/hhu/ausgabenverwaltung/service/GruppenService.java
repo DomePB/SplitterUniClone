@@ -85,7 +85,6 @@ public class GruppenService {
     public Set<Transaktion> berechneTransaktionen(Gruppe gruppe) {
         Set<Transaktion> transaktionen = new HashSet<>();
         var salden = berechneSalden(gruppe); //salden uebergeben
-
         for (var empfaengerEntry : salden.entrySet()) {
 
             for (var senderEntry : salden.entrySet()) {

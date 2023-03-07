@@ -7,7 +7,11 @@ import de.hhu.ausgabenverwaltung.service.GruppenService;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
+
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
+import org.springframework.security.oauth2.core.OAuth2AuthenticatedPrincipal;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,11 +29,11 @@ public class WebController {
     }
 
     @GetMapping("/")
-    public String index(Model model, OAuth2AuthenticationToken token) {
-        User user = new User(token.getPrincipal().getAttribute("login"));
-        Gruppe g = service.gruppeErstellen(new User("test"), "gruppe2");
-        g.addMitglieder(new User("myUser"));
-        g.addMitglieder(new User("lnx00"));
+    public String index(Model model,@AuthenticationPrincipal OAuth2User token) {
+        User user = new User(token.getAttribute("login"));
+        //Gruppe g = service.gruppeErstellen(new User("test"), "gruppe2");
+        //g.addMitglieder(new User("myUser"));
+        //g.addMitglieder(new User("lnx00"));
 
         model.addAttribute("user", user);
         model.addAttribute("offeneGruppen", service.offenVonUser(user));
@@ -38,8 +42,8 @@ public class WebController {
     }
 
     @PostMapping("/")
-    public String gruppeErstellen(@RequestParam(name = "gruppenName") String gruppenName, OAuth2AuthenticationToken token) {
-        User user = new User(token.getPrincipal().getAttribute("login"));
+    public String gruppeErstellen(@RequestParam(name = "gruppenName") String gruppenName,@AuthenticationPrincipal OAuth2User token) {
+        User user = new User(token.getAttribute("login"));
         service.gruppeErstellen(user, gruppenName);
         return "redirect:/";
     }

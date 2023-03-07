@@ -74,12 +74,49 @@
                     <h1 class="modal-title fs-5" id="exampleModalLabel">Ausgabe hinzufügen</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
+
                 <div class="modal-body">
                     <div class="mb-3">
                         <label for="ausgabeName" class="col-form-label">Name:</label>
                         <input type="text" name="ausgabeName" class="form-control" id="ausgabeName">
                     </div>
+
+                    <div class="mb-3">
+                        <label class="col-form-label" for="ausgabeBetrag">Betrag:</label>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text">€</span>
+                            <input aria-label="Betrag" class="form-control" id="ausgabeBetrag" min="0" name="ausgabeBetrag"
+                                   step="0.01" type="number">
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="col-form-label" for="ausgabeBeteiligte">Bezahlt von:</label>
+                        <ul class="list-group" th:each="mitglied : ${gruppe.getMitglieder()}">
+                            <li class="list-group-item">
+                                <input checked class="form-check-input me-1" name="listGroupRadio" th:id="'radio' + ${mitglied.githubHandle()}"
+                                       type="radio" value="">
+                                <label class="form-check-label stretched-link"
+                                       th:for="'radio' + ${mitglied.githubHandle()}"
+                                       th:text="${mitglied.githubHandle()}"></label>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="col-form-label" for="ausgabeBeteiligte">Beteiligte:</label>
+                        <ul class="list-group" id="ausgabeBeteiligte" th:each="mitglied : ${gruppe.getMitglieder()}">
+                            <li class="list-group-item">
+                                <input class="form-check-input me-1" th:id="'chk' + ${mitglied.githubHandle()}"
+                                       th:value="${mitglied.githubHandle()}" type="checkbox">
+                                <label class="form-check-label stretched-link"
+                                       th:for="'chk' + ${mitglied.githubHandle()}"
+                                       th:text="${mitglied.githubHandle()}"></label>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
+
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Abbrechen</button>
                     <button type="submit" class="btn btn-primary">Erstellen</button>

@@ -27,8 +27,10 @@ public class WebController {
     @GetMapping("/")
     public String index(Model model, OAuth2AuthenticationToken token) {
         User user = new User(token.getPrincipal().getAttribute("login"));
-        //service.gruppeErstellen(user,"Testgruppe");
-        //service.gruppeErstellen(new User("test", "test"), "gruppe2");
+        Gruppe g = service.gruppeErstellen(new User("test"), "gruppe2");
+        g.addMitglieder(new User("myUser"));
+        g.addMitglieder(new User("lnx00"));
+
         model.addAttribute("user", user);
         model.addAttribute("offeneGruppen", service.offenVonUser(user));
         model.addAttribute("geschlosseneGruppen", service.geschlossenVonUser(user));

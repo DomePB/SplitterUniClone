@@ -1,13 +1,12 @@
 package de.hhu.ausgabenverwaltung.database;
 
 import de.hhu.ausgabenverwaltung.domain.Gruppe;
+import de.hhu.ausgabenverwaltung.domain.Transaktion;
 import de.hhu.ausgabenverwaltung.domain.User;
 import de.hhu.ausgabenverwaltung.service.GruppenRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Repository
 public class GruppenRepositoryImp implements GruppenRepository {
@@ -71,5 +70,21 @@ public class GruppenRepositoryImp implements GruppenRepository {
             }
         }
         throw new Exception("Gruppe existiert nicht");
+    }
+    public Map<Gruppe, Set<Transaktion>> getBeteiligteTransaktionen(User user) {
+        Map<Gruppe, Set<Transaktion>> userTransaktinen = new HashMap<>();
+        for (Gruppe gruppe : gruppen) {
+            Set<Transaktion> temp = new HashSet<>();
+            if (gruppe.getMitglieder().contains(user)) {
+                Set<Transaktion> groupeTransaktionen = gruppe.getTransaktionen();
+                for (Transaktion t : groupeTransaktionen) {
+                    if (t.sender().equals(user) || t.empfaenger().equals(user)) {
+                        temp.add(t);
+                    }
+                }
+                userTransaktinen.put(gruppe, temp);
+            }
+        }
+        return userTransaktinen;
     }
 }

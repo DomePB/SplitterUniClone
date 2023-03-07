@@ -32,9 +32,11 @@ public class WebController {
 
     public String index(Model model,@AuthenticationPrincipal OAuth2User token) {
         User user = new User(token.getAttribute("login"));
+        User user2= new User("myUser");
         Gruppe g = service.gruppeErstellen(new User("test"), "gruppe2");
-        g.addMitglieder(new User("myUser"));
+        g.addMitglieder(user2);
         g.addMitglieder(new User(token.getAttribute("login")));
+        g.ausgabeHinzufuegen(new Ausgabe("test","test",BigDecimal.TEN,user,List.of(user2)));
 
         model.addAttribute("user", user);
         model.addAttribute("offeneGruppen", service.offenVonUser(user));

@@ -58,10 +58,13 @@ public class WebController {
     @PostMapping("/gruppe/ausgaben")
     public String ausgabeHinzufuegen(@RequestParam UUID id,
                                      @RequestParam(name = "ausgabeName") String name,
+                                     @RequestParam(name = "ausgabeBeschreibung")
+                                         String beschreibung,
+                                     @RequestParam(name = "ausgabeBetrag") BigDecimal betrag,
                                      RedirectAttributes attrs) {
         try {
             Gruppe gruppe = service.findById(id);
-            gruppe.ausgabeHinzufuegen(new Ausgabe(name, "", BigDecimal.ONE, new User("guthub"),
+            gruppe.ausgabeHinzufuegen(new Ausgabe(name, beschreibung, betrag, new User("guthub"),
                     List.of()));
             attrs.addAttribute("id", gruppe.getId());
 
@@ -70,4 +73,5 @@ public class WebController {
             return "redirect:/gruppe";
         }
     }
+
 }

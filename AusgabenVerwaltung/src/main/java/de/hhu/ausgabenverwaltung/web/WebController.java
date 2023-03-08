@@ -5,9 +5,12 @@ import de.hhu.ausgabenverwaltung.domain.Gruppe;
 import de.hhu.ausgabenverwaltung.domain.User;
 import de.hhu.ausgabenverwaltung.service.GruppenService;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
+import java.util.stream.Collectors;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.OAuth2AuthenticatedPrincipal;
@@ -55,7 +58,11 @@ public class WebController {
     public String gruppenUebersicht(@RequestParam UUID id, Model model) {
         try {
             Gruppe gruppe = service.findById(id);
+            HashMap<User, BigDecimal> salden =
+                    gruppe.berechneSalden(gruppe.alleSchuldenBerechnen());
             model.addAttribute("gruppe", gruppe);
+            model.addAttribute("salden",salden);
+
             return "gruppen-uebersicht";
         } catch (Exception e) {
             return "redirect:/";
@@ -63,16 +70,13 @@ public class WebController {
     }
 
     @PostMapping("/gruppe/ausgaben")
-    public String ausgabeHinzufuegen(@RequestParam UUID id,
-                                     @RequestParam(name = "ausgabeName") String name,
-                                     @RequestParam(name = "ausgabeBeschreibung")
-                                         String beschreibung,
-                                     @RequestParam(name = "ausgabeBetrag") BigDecimal betrag,
-                                     RedirectAttributes attrs) {
+    public String ausgabeHinzufuegen(@RequestParam UUID id, String ausgabeName, String ausgabeBeschreibung, BigDecimal ausgabeBetrag,
+                                     String bezahltVon, ArrayList<String> beteiligte, RedirectAttributes attrs) {
         try {
             Gruppe gruppe = service.findById(id);
-            gruppe.ausgabeHinzufuegen(new Ausgabe(name, beschreibung, betrag, new User("DomePB"),
-                    List.of()));
+            List<User> users = beteiligte.stream().map(User::new).collect(Collectors.toList());
+            gruppe.ausgabeHinzufuegen(new Ausgabe(ausgabeName, ausgabeBeschreibung, ausgabeBetrag,
+                    new User(bezahltVon), users));
             attrs.addAttribute("id", gruppe.getId());
 
             return "redirect:/gruppe";

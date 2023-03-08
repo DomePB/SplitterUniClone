@@ -59,7 +59,7 @@
         <h3>Salden</h3>
         <table class ="table">
             <tbody th:remove="all-but-first">
-           <tr th:each="entry :${gruppe.berechneSalden(gruppe.alleSchuldenBerechnen())}">
+           <tr th:each="entry :${salden}">
                 <td th:text="${entry.key.githubHandle}"> </td>
                 <td th:text ="${entry.value}"></td>
             </tr>
@@ -116,11 +116,11 @@
                     </div>
 
                     <div class="mb-3">
-                        <label class="col-form-label" for="ausgabeBeteiligte">Bezahlt von:</label>
-                        <ul class="list-group" th:each="mitglied : ${gruppe.getMitglieder()}">
+                        <label class="col-form-label" for="bezahltVon">Bezahlt von:</label>
+                        <ul class="list-group" th:each="mitglied : ${gruppe.getMitglieder()}" id="bezahltVon">
                             <li class="list-group-item">
-                                <input checked class="form-check-input me-1" name="listGroupRadio" th:id="'radio' + ${mitglied.githubHandle()}"
-                                       type="radio" value="">
+                                <input checked class="form-check-input me-1" name="bezahltVon"  th:id="'radio' + ${mitglied.githubHandle()}"
+                                       type="radio" th:value="${mitglied.githubHandle()}">
                                 <label class="form-check-label stretched-link"
                                        th:for="'radio' + ${mitglied.githubHandle()}"
                                        th:text="${mitglied.githubHandle()}"></label>
@@ -132,7 +132,7 @@
                         <label class="col-form-label" for="ausgabeBeteiligte">Beteiligte:</label>
                         <ul class="list-group" id="ausgabeBeteiligte" th:each="mitglied : ${gruppe.getMitglieder()}">
                             <li class="list-group-item">
-                                <input class="form-check-input me-1" th:id="'chk' + ${mitglied.githubHandle()}"
+                                <input name="beteiligte" class="form-check-input me-1" th:id="'chk' + ${mitglied.githubHandle()}"
                                        th:value="${mitglied.githubHandle()}" type="checkbox">
                                 <label class="form-check-label stretched-link"
                                        th:for="'chk' + ${mitglied.githubHandle()}"

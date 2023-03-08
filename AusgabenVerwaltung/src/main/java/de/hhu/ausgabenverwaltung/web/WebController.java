@@ -93,12 +93,26 @@ public class WebController {
     }
     @PostMapping("/gruppe/Mitglieder")
     public String userHinzufuegen(@RequestParam UUID id,
-                                     @RequestParam(name = "MitgliedName") String name,
-                                     RedirectAttributes attrs) {
+                                  @RequestParam(name = "MitgliedName") String name,
+                                  RedirectAttributes attrs) {
         try {
             Gruppe gruppe = service.findById(id);
             gruppe.addMitglieder(new User(name));
             attrs.addAttribute("id", gruppe.getId());
+            return "redirect:/gruppe";
+        } catch (Exception e) {
+            return "redirect:/gruppe";
+        }
+    }
+
+    @PostMapping("/gruppe/schliessen")
+    public String ausgabeHinzufuegen(@RequestParam UUID id, RedirectAttributes attrs) {
+        attrs.addAttribute("id", id);
+
+        try {
+            Gruppe gruppe = service.findById(id);
+            gruppe.schliessen();
+
             return "redirect:/gruppe";
         } catch (Exception e) {
             return "redirect:/gruppe";

@@ -8,6 +8,11 @@
 </head>
 <body>
 <h2 th:text="${gruppe.getName()}"></h2>
+
+<div class="alert alert-warning" role="alert" th:if="${!gruppe.istOffen()}">
+    Diese Gruppe wurde bereits geschlossen!
+</div>
+
 <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
     <li class="nav-item" role="presentation">
         <button class="nav-link active" id="pills-ausgaben-tab" data-bs-toggle="pill" data-bs-target="#pills-ausgaben"
@@ -37,7 +42,8 @@
     <!-- Ausgaben Tab -->
     <div class="tab-pane fade show active" id="pills-ausgaben" role="tabpanel" aria-labelledby="pills-ausgaben-tab"
          tabindex="0"><h3>Ausgaben</h3>
-        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#ausgabehinzufuegenModal">
+        <button class="btn btn-primary" data-bs-target="#ausgabehinzufuegenModal" data-bs-toggle="modal"
+                th:classappend="${gruppe.istOffen() ? '' : 'disabled'}" type="button">
             Ausgabe hinzufügen
         </button>
         <table class="table">
@@ -93,23 +99,35 @@
             </tr>
             </tbody>
         </table>
-        <button class="btn btn-primary" type="submit">
-            Ausgleichen
-        </button>
+        <form method="post" th:action="@{/gruppe/schliessen(id=${gruppe.getId()})}">
+            <button class="btn btn-primary" th:classappend="${gruppe.istOffen() ? '' : 'disabled'}" type="submit">
+                Ausgleichen & Schließen
+            </button>
+        </form>
     </div>
 
     <!-- Mitglieder Tab -->
-    <div class="tab-pane fade" id="pills-mitglieder" role="tabpanel" aria-labelledby="pills-mitglieder-tab" tabindex="0">
+    <div aria-labelledby="pills-mitglieder-tab" class="tab-pane fade" id="pills-mitglieder" role="tabpanel"
+         tabindex="0">
         <h3>Mitglieder</h3>
-        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#mitgliedhinzufuegenModal">
+
+        <div class="alert alert-info alert-dismissible fade show" role="alert"
+             th:if="${!gruppe.getAusgaben().isEmpty()}">
+            Es könne keine Mitglieder mehr hinzugefügt werden, da bereits Ausgaben vorhanden sind!
+            <button aria-label="Close" class="btn-close" data-bs-dismiss="alert" type="button"></button>
+        </div>
+
+        <button class="btn btn-primary" data-bs-target="#mitgliedhinzufuegenModal"
+                data-bs-toggle="modal" th:classappend="${gruppe.getAusgaben().isEmpty() ? '' : 'disabled'}"
+                type="button">
             User hinzufügen
         </button>
         <table class="table mx-auto">
-        <tbody th:remove="all-but-first">
-        <tr th:each="mitglied: ${gruppe.getMitglieder()}">
-            <td th:text="${mitglied.githubHandle}"></td>
-        </tr>
-        </tbody>
+            <tbody th:remove="all-but-first">
+            <tr th:each="mitglied: ${gruppe.getMitglieder()}">
+                <td th:text="${mitglied.githubHandle}"></td>
+            </tr>
+            </tbody>
         </table>
     </div>
 </div>

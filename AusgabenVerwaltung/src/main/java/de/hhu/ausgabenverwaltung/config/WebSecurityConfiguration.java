@@ -12,6 +12,7 @@ public class WebSecurityConfiguration {
     public SecurityFilterChain configure(HttpSecurity chainBuilder) throws Exception {
         chainBuilder.authorizeHttpRequests(
                         configurer -> configurer
+                                .requestMatchers("/api/**").permitAll()
                                 .anyRequest().authenticated()
                 )
                 .oauth2Login();

@@ -7,7 +7,6 @@ import de.hhu.ausgabenverwaltung.service.GruppenService;
 import de.hhu.ausgabenverwaltung.web.models.AusgabeForm;
 import java.math.BigDecimal;
 import java.util.HashMap;
-import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -34,10 +33,10 @@ public class WebController {
     public String index(Model model,@AuthenticationPrincipal OAuth2User token) {
         User user = new User(token.getAttribute("login"));
         User user2= new User("myUser");
-        Gruppe g = service.gruppeErstellen(new User("test"), "gruppe2");
+        /*Gruppe g = service.gruppeErstellen(new User("test"), "gruppe2");
         g.addMitglieder(user2);
         g.addMitglieder(new User(token.getAttribute("login")));
-        g.ausgabeHinzufuegen(new Ausgabe("test","test",BigDecimal.TEN,user,List.of(user2)));
+        g.ausgabeHinzufuegen(new Ausgabe("test","test",BigDecimal.TEN,user,List.of(user2)));*/
 
         model.addAttribute("user", user);
         model.addAttribute("offeneGruppen", service.offenVonUser(user));

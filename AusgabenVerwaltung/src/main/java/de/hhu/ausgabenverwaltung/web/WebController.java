@@ -18,7 +18,10 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @Controller
 public class WebController {
@@ -57,15 +60,16 @@ public class WebController {
                                     @AuthenticationPrincipal OAuth2User token) {
         User user = new User(token.getAttribute("login"));
         Gruppe gruppe;
+        HashMap<User, BigDecimal> salden;
         try {
             gruppe = service.findById(id);
+            salden =
+                    service.berechneSalden(gruppe);
+            service.berechneTransaktionen(gruppe);
         } catch (Exception e) {
-            return "redirect:/";
+            throw new ResponseStatusException(NOT_FOUND, "Gruppe nicht gefunden");
         }
 
-        HashMap<User, BigDecimal> salden =
-               service.berechneSalden(gruppe);
-        service.berechneTransaktionen(gruppe);
 
         model.addAttribute("gruppe", gruppe);
         model.addAttribute("salden", salden);

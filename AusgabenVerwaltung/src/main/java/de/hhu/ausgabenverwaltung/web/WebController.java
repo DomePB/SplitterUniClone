@@ -9,7 +9,6 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
-
 import java.util.stream.Collectors;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -17,7 +16,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -55,20 +53,26 @@ public class WebController {
     }
 
     @GetMapping("/gruppe")
-    public String gruppenUebersicht(@RequestParam UUID id, Model model) {
-      Gruppe gruppe;
+    public String gruppenUebersicht(@RequestParam UUID id, Model model,
+                                    @AuthenticationPrincipal OAuth2User token) {
+        User user = new User(token.getAttribute("login"));
+        Gruppe gruppe;
         try {
-             gruppe = service.findById(id);
+            gruppe = service.findById(id);
         } catch (Exception e) {
             return "redirect:/";
         }
-            HashMap<User, BigDecimal> salden =
-                    gruppe.berechneSalden(gruppe.alleSchuldenBerechnen());
-            model.addAttribute("gruppe", gruppe);
-            model.addAttribute("salden",salden);
-            model.addAttribute("ausgabe",AusgabeForm.defaultAusgabe());
 
-            return "gruppen-uebersicht";
+        HashMap<User, BigDecimal> salden =
+                gruppe.berechneSalden(gruppe.alleSchuldenBerechnen());
+        gruppe.berechneTransaktionen(gruppe.berechneSalden(gruppe.alleSchuldenBerechnen()));
+
+        model.addAttribute("gruppe", gruppe);
+        model.addAttribute("salden", salden);
+        model.addAttribute("ausgabe", AusgabeForm.defaultAusgabe());
+        model.addAttribute("user", user);
+
+        return "gruppen-uebersicht";
     }
 
     @PostMapping("/gruppe/ausgaben")
@@ -81,7 +85,6 @@ public class WebController {
               //      new User(bezahltVon), users));
             attrs.addAttribute("id", gruppe.getId());
             gruppe.ausgabeHinzufuegen(new Ausgabe(ausgabe.ausgabeName(),ausgabe.ausgabeBeschreibung(),ausgabe.ausgabeBetrag(),new User(ausgabe.bezahltVon()),ausgabe.beteiligte().stream().map(User::new).collect(Collectors.toList())));
-
 
             return "redirect:/gruppe";
         } catch (Exception e) {

@@ -74,8 +74,28 @@
     </div>
 
     <!-- Transaktionen Tab -->
-    <div class="tab-pane fade" id="pills-transaktion" role="tabpanel" aria-labelledby="pills-transaktion-tab" tabindex="0">
+    <div aria-labelledby="pills-transaktion-tab" class="tab-pane fade" id="pills-transaktion" role="tabpanel"
+         tabindex="0">
         <h3>Transaktionen</h3>
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Von</th>
+                <th>An</th>
+                <th>Betrag</th>
+            </tr>
+            </thead>
+            <tbody th:each="transaktion, iterStat: ${gruppe.getTransaktionen()}" th:remove="all-but-first">
+            <tr th:classappend="${(transaktion.sender().equals(user) ? 'table-danger' : '') + (transaktion.empfaenger().equals(user) ? 'table-success' : '')}">
+                <td th:text="${transaktion.sender().githubHandle()}"></td>
+                <td th:text="${transaktion.empfaenger().githubHandle()}"></td>
+                <td th:text="${transaktion.betrag()}"></td>
+            </tr>
+            </tbody>
+        </table>
+        <button class="btn btn-primary" type="submit">
+            Ausgleichen
+        </button>
     </div>
 
     <!-- Mitglieder Tab -->

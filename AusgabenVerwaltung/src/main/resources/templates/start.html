@@ -8,7 +8,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
 <body>
 <h1>Hallo index.html</h1>
-<span th:text="${user.githubHandle} "></span>
+<span th:text="${user.githubHandle()}"></span>
 <h2> Offene Gruppen:</h2>
 <ul class="list-group" th:remove="all-but-first">
     <li class="list-group-item" th:each="gruppe:${offeneGruppen}"><a th:href="@{/gruppe(id=${gruppe.getId()})}"

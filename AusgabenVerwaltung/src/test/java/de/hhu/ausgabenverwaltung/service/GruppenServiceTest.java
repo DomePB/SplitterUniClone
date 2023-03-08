@@ -1,9 +1,11 @@
 package de.hhu.ausgabenverwaltung.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
 
 import de.hhu.ausgabenverwaltung.domain.Gruppe;
 import de.hhu.ausgabenverwaltung.domain.User;
+import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,9 +30,8 @@ class GruppenServiceTest {
     @DisplayName("Anzahl der Mitglieder beträgt 1, wenn die Gruppe zuerst erstellt wird")
     void erstelleGruppeTest() {
         //Arrange
-        User user = new User("githubname");
         //Act
-        Gruppe gruppe = gruppenService.gruppeErstellen(user, "gruppenName");
+        Gruppe gruppe = gruppenService.gruppeErstellen("githubname", "gruppenName");
 
         //Assert
         assertThat(gruppe.getMitglieder().size()).isEqualTo(1);
@@ -38,13 +39,13 @@ class GruppenServiceTest {
 
     @Test
     @DisplayName("Wird eine Gruppe korrekt geschlossen?")
-    void gruppeSchliessenTest() {
+    void gruppeSchliessenTest() throws Exception {
         //Arrange
-        Gruppe gruppe =
-                Gruppe.gruppeErstellen("gruppe1", new User("test"));
-
+        Gruppe gruppe = gruppenService.gruppeErstellen("test", "test");
+        UUID id = gruppe.getId();
+        when(repository.findById(id)).thenReturn(gruppe);
         //Act
-        gruppenService.gruppeSchliessen(gruppe);
+        gruppenService.gruppeSchliessen(id);
 
         //Assert
         assertThat(gruppe.istOffen()).isFalse();

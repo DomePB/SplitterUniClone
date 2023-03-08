@@ -23,38 +23,42 @@ public class GruppenService {
     }
 
 
-    public Gruppe gruppeErstellen(User ersteller, String name) {
-        Gruppe gruppe = new Gruppe(name, new ArrayList<>(), new ArrayList<>(List.of(ersteller)),
-                new HashSet<>(), true,UUID.randomUUID());
+    public Gruppe gruppeErstellen(String ersteller, String name) {
+        Gruppe gruppe = Gruppe.gruppeErstellen(name,new User(ersteller));
         gruppen.findAll().add(gruppe);
         return gruppe;
     } //Application Service
 
-    public void gruppeSchliessen(Gruppe gruppe) {
+    public void gruppeSchliessen(UUID gruppenId) throws Exception {
+        Gruppe gruppe = findById(gruppenId);
         gruppe.schliessen();
     }
 
-    public List<Gruppe> geschlossenVonUser(User user) {
-        return gruppen.geschlossenVonUser(user);
+    public List<Gruppe> geschlossenVonUser(String githubHandle) {
+        return gruppen.geschlossenVonUser(new User(githubHandle));
     } //Application service
 
-    public List<Gruppe> offenVonUser(User user) {
-        return gruppen.offenVonUser(user);
+    public List<Gruppe> offenVonUser(String githubHandle) {
+        return gruppen.offenVonUser(new User(githubHandle));
     } //Application service
 
     public Gruppe findById(UUID gruppenId) throws Exception { //Application Service
         return gruppen.findById(gruppenId);
     }
-    public HashMap<User, BigDecimal> berechneSalden(Gruppe gruppe){
+    public HashMap<User, BigDecimal> berechneSalden(UUID gruppenId) throws Exception {
+        Gruppe gruppe = findById(gruppenId);
         return gruppe.berechneSalden(gruppe.alleSchuldenBerechnen());
     }
-    public Set<Transaktion> berechneTransaktionen(Gruppe gruppe){
-        return gruppe.berechneTransaktionen(berechneSalden(gruppe));
+    public Set<Transaktion> berechneTransaktionen(UUID gruppenId) throws Exception {
+        Gruppe gruppe = findById(gruppenId);
+        return gruppe.berechneTransaktionen(berechneSalden(gruppenId));
     }
-    public void addMitglied(Gruppe gruppe, User user){
-        gruppe.addMitglieder(user);
+    public void addMitglied(UUID gruppenId, String githubHandle) throws Exception {
+        Gruppe gruppe = findById(gruppenId);
+        gruppe.addMitglieder(new User(githubHandle));
     }
-    public void addAusgabe(Gruppe gruppe, Ausgabe ausgabe){
+    public void addAusgabe(UUID gruppenId, Ausgabe ausgabe) throws Exception {
+        Gruppe gruppe = findById(gruppenId);
         gruppe.ausgabeHinzufuegen(ausgabe);
     }
 

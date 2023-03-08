@@ -43,7 +43,7 @@ class WebControllerTest {
     void gruppeErstellenTest() throws Exception {
         User user = new User("githubHandle");
         Gruppe gruppe = Gruppe.gruppeErstellen("gruppename",user);
-        when(service.gruppeErstellen(user,"")).thenReturn(gruppe);
+        when(service.gruppeErstellen("githubHandle","")).thenReturn(gruppe);
 
         mockMvc.perform(
                 post("/").with(csrf()).param("gruppenName", "gruppenName"))

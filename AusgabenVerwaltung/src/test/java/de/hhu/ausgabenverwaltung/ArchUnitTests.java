@@ -1,11 +1,11 @@
 package de.hhu.ausgabenverwaltung;
 
+import static com.tngtech.archunit.library.Architectures.onionArchitecture;
+
 import com.tngtech.archunit.core.importer.ImportOption;
 import com.tngtech.archunit.junit.AnalyzeClasses;
 import com.tngtech.archunit.junit.ArchTest;
 import com.tngtech.archunit.lang.ArchRule;
-
-import static com.tngtech.archunit.library.Architectures.onionArchitecture;
 
 @AnalyzeClasses(packagesOf = AusgabenVerwaltungApplication.class, importOptions = ImportOption.DoNotIncludeTests.class)
 public class ArchUnitTests {
@@ -16,5 +16,6 @@ public class ArchUnitTests {
             .domainServices("..service..")
             .applicationServices("..service..")
             .adapter("web", "..web..")
-            .adapter("database", "..database..");
+            .adapter("database", "..database..")
+            .adapter("api", "..api..");
 }

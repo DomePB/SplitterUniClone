@@ -1,5 +1,6 @@
 package de.hhu.ausgabenverwaltung.service;
 
+import de.hhu.ausgabenverwaltung.domain.Ausgabe;
 import de.hhu.ausgabenverwaltung.domain.Gruppe;
 import de.hhu.ausgabenverwaltung.domain.Transaktion;
 import de.hhu.ausgabenverwaltung.domain.User;
@@ -44,4 +45,17 @@ public class GruppenService {
     public Gruppe findById(UUID gruppenId) throws Exception { //Application Service
         return gruppen.findById(gruppenId);
     }
+    public HashMap<User, BigDecimal> berechneSalden(Gruppe gruppe){
+        return gruppe.berechneSalden(gruppe.alleSchuldenBerechnen());
+    }
+    public Set<Transaktion> berechneTransaktionen(Gruppe gruppe){
+        return gruppe.berechneTransaktionen(berechneSalden(gruppe));
+    }
+    public void addMitglied(Gruppe gruppe, User user){
+        gruppe.addMitglieder(user);
+    }
+    public void addAusgabe(Gruppe gruppe, Ausgabe ausgabe){
+        gruppe.ausgabeHinzufuegen(ausgabe);
+    }
+
 }

@@ -1,5 +1,7 @@
 package de.hhu.ausgabenverwaltung.web;
 
+import static org.springframework.http.HttpStatus.NOT_FOUND;
+
 import de.hhu.ausgabenverwaltung.domain.Ausgabe;
 import de.hhu.ausgabenverwaltung.domain.Gruppe;
 import de.hhu.ausgabenverwaltung.domain.User;
@@ -17,6 +19,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
@@ -32,11 +35,11 @@ public class WebController {
 
     public String index(Model model,@AuthenticationPrincipal OAuth2User token) {
         User user = new User(token.getAttribute("login"));
-        User user2= new User("myUser");
-        /*Gruppe g = service.gruppeErstellen(new User("test"), "gruppe2");
-        g.addMitglieder(user2);
-        g.addMitglieder(new User(token.getAttribute("login")));
-        g.ausgabeHinzufuegen(new Ausgabe("test","test",BigDecimal.TEN,user,List.of(user2)));*/
+        //  User user2= new User("myUser");
+        //   Gruppe g = service.gruppeErstellen(new User("test"), "gruppe2");
+        // g.addMitglieder(user2);
+        //  g.addMitglieder(new User(token.getAttribute("login")));
+        //  g.ausgabeHinzufuegen(new Ausgabe("test","test",BigDecimal.TEN,user,List.of(user2)));
 
         model.addAttribute("user", user);
         model.addAttribute("offeneGruppen", service.offenVonUser(user));
@@ -56,15 +59,16 @@ public class WebController {
                                     @AuthenticationPrincipal OAuth2User token) {
         User user = new User(token.getAttribute("login"));
         Gruppe gruppe;
+        HashMap<User, BigDecimal> salden;
         try {
             gruppe = service.findById(id);
+            salden =
+                    service.berechneSalden(gruppe);
+            service.berechneTransaktionen(gruppe);
         } catch (Exception e) {
-            return "redirect:/";
+            throw new ResponseStatusException(NOT_FOUND, "Gruppe nicht gefunden");
         }
 
-        HashMap<User, BigDecimal> salden =
-                gruppe.berechneSalden(gruppe.alleSchuldenBerechnen());
-        gruppe.berechneTransaktionen(gruppe.berechneSalden(gruppe.alleSchuldenBerechnen()));
 
         model.addAttribute("gruppe", gruppe);
         model.addAttribute("salden", salden);
@@ -79,12 +83,14 @@ public class WebController {
     AusgabeForm ausgabe, RedirectAttributes attrs) {
         try {
             Gruppe gruppe = service.findById(id);
-        //    List<User> users = beteiligte.stream().map(User::new).collect(Collectors.toList());
-         //   gruppe.ausgabeHinzufuegen(new Ausgabe(ausgabeName, ausgabeBeschreibung, ausgabeBetrag,
-              //      new User(bezahltVon), users));
+            //    List<User> users = beteiligte.stream().map(User::new).collect(Collectors.toList());
+            //   gruppe.ausgabeHinzufuegen(new Ausgabe(ausgabeName, ausgabeBeschreibung, ausgabeBetrag,
+            //      new User(bezahltVon), users));
             attrs.addAttribute("id", gruppe.getId());
-            gruppe.ausgabeHinzufuegen(new Ausgabe(ausgabe.ausgabeName(),ausgabe.ausgabeBeschreibung(),ausgabe.ausgabeBetrag(),new User(ausgabe.bezahltVon()),ausgabe.beteiligte().stream().map(User::new).collect(Collectors.toList())));
-
+            Ausgabe ausgabe1 = new Ausgabe(ausgabe.ausgabeName(), ausgabe.ausgabeBeschreibung(),
+                    ausgabe.ausgabeBetrag(), new User(ausgabe.bezahltVon()),
+                    ausgabe.beteiligte().stream().map(User::new).collect(Collectors.toList()));
+            service.addAusgabe(gruppe, ausgabe1);
             return "redirect:/gruppe";
         } catch (Exception e) {
             return "redirect:/gruppe";
@@ -96,7 +102,7 @@ public class WebController {
                                   RedirectAttributes attrs) {
         try {
             Gruppe gruppe = service.findById(id);
-            gruppe.addMitglieder(new User(name));
+            service.addMitglied(gruppe, new User(name));
             attrs.addAttribute("id", gruppe.getId());
             return "redirect:/gruppe";
         } catch (Exception e) {
@@ -110,7 +116,7 @@ public class WebController {
 
         try {
             Gruppe gruppe = service.findById(id);
-            gruppe.schliessen();
+            service.gruppeSchliessen(gruppe);
 
             return "redirect:/gruppe";
         } catch (Exception e) {

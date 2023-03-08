@@ -42,7 +42,8 @@ public class WebController {
 
         model.addAttribute("user", token.getAttribute("login"));
         model.addAttribute("offeneGruppen", service.offenVonUser(token.getAttribute("login")));
-        model.addAttribute("geschlosseneGruppen", service.geschlossenVonUser(token.getAttribute("loging")));
+        model.addAttribute("geschlosseneGruppen",
+            service.geschlossenVonUser(token.getAttribute("login")));
         return "start";
     }
 

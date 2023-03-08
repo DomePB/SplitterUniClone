@@ -1,6 +1,7 @@
 package de.hhu.ausgabenverwaltung.domain;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.*;
 
 public class Gruppe {
@@ -131,7 +132,8 @@ public class Gruppe {
                     }
                     BigDecimal userSumme = schuldner.getOrDefault(useri, BigDecimal.ZERO);
                     userSumme = userSumme.add(
-                            ausgabe.betrag().divide(new BigDecimal(ausgabe.beteiligte().size())));
+                            ausgabe.betrag().divide(new BigDecimal(ausgabe.beteiligte().size()),2,
+                                    RoundingMode.HALF_UP));
                     schuldner.put(useri, userSumme);
 
                 }

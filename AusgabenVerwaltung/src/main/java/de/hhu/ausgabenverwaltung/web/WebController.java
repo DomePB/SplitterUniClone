@@ -4,20 +4,20 @@ import de.hhu.ausgabenverwaltung.domain.Ausgabe;
 import de.hhu.ausgabenverwaltung.domain.Gruppe;
 import de.hhu.ausgabenverwaltung.domain.User;
 import de.hhu.ausgabenverwaltung.service.GruppenService;
+import de.hhu.ausgabenverwaltung.web.models.AusgabeForm;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
 import java.util.stream.Collectors;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
-import org.springframework.security.oauth2.core.OAuth2AuthenticatedPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -56,28 +56,32 @@ public class WebController {
 
     @GetMapping("/gruppe")
     public String gruppenUebersicht(@RequestParam UUID id, Model model) {
+      Gruppe gruppe;
         try {
-            Gruppe gruppe = service.findById(id);
+             gruppe = service.findById(id);
+        } catch (Exception e) {
+            return "redirect:/";
+        }
             HashMap<User, BigDecimal> salden =
                     gruppe.berechneSalden(gruppe.alleSchuldenBerechnen());
             model.addAttribute("gruppe", gruppe);
             model.addAttribute("salden",salden);
+            model.addAttribute("ausgabe",AusgabeForm.defaultAusgabe());
 
             return "gruppen-uebersicht";
-        } catch (Exception e) {
-            return "redirect:/";
-        }
     }
 
     @PostMapping("/gruppe/ausgaben")
-    public String ausgabeHinzufuegen(@RequestParam UUID id, String ausgabeName, String ausgabeBeschreibung, BigDecimal ausgabeBetrag,
-                                     String bezahltVon, ArrayList<String> beteiligte, RedirectAttributes attrs) {
+    public String ausgabeHinzufuegen(@RequestParam UUID id, @Validated
+    AusgabeForm ausgabe, RedirectAttributes attrs) {
         try {
             Gruppe gruppe = service.findById(id);
-            List<User> users = beteiligte.stream().map(User::new).collect(Collectors.toList());
-            gruppe.ausgabeHinzufuegen(new Ausgabe(ausgabeName, ausgabeBeschreibung, ausgabeBetrag,
-                    new User(bezahltVon), users));
+        //    List<User> users = beteiligte.stream().map(User::new).collect(Collectors.toList());
+         //   gruppe.ausgabeHinzufuegen(new Ausgabe(ausgabeName, ausgabeBeschreibung, ausgabeBetrag,
+              //      new User(bezahltVon), users));
             attrs.addAttribute("id", gruppe.getId());
+            gruppe.ausgabeHinzufuegen(new Ausgabe(ausgabe.ausgabeName(),ausgabe.ausgabeBeschreibung(),ausgabe.ausgabeBetrag(),new User(ausgabe.bezahltVon()),ausgabe.beteiligte().stream().map(User::new).collect(Collectors.toList())));
+
 
             return "redirect:/gruppe";
         } catch (Exception e) {

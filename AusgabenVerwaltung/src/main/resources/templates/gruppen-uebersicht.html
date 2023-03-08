@@ -87,7 +87,7 @@
 <div class="modal fade" id="ausgabehinzufuegenModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form method="post" th:action="@{/gruppe/ausgaben(id=${gruppe.getId()})}">
+            <form method="post" th:action="@{/gruppe/ausgaben(id=${gruppe.getId()})}" th:object="${ausgabe}">
                 <div class="modal-header">
                     <h1 class="modal-title fs-5" id="exampleModalLabel">Ausgabe hinzufügen</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -95,8 +95,8 @@
 
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label for="ausgabeName" class="col-form-label">Name:</label>
-                        <input type="text" name="ausgabeName" class="form-control" id="ausgabeName">
+                        <label th:for="ausgabeName" class="col-form-label">Name:</label>
+                        <input type="text"  class="form-control"  th:field="*{ausgabeName}"/>
                     </div>
 
                     <div class="mb-3">
@@ -111,7 +111,7 @@
                             <span class="input-group-text">€</span>
                             <input aria-label="Betrag" class="form-control" id="ausgabeBetrag" min="0"
                                    name="ausgabeBetrag"
-                                   step="0.01" type="number">
+                                   step="0.01" type="number" th:field="*{ausgabeBetrag}"/>
                         </div>
                     </div>
 
@@ -120,7 +120,7 @@
                         <ul class="list-group" th:each="mitglied : ${gruppe.getMitglieder()}" id="bezahltVon">
                             <li class="list-group-item">
                                 <input checked class="form-check-input me-1" name="bezahltVon"  th:id="'radio' + ${mitglied.githubHandle()}"
-                                       type="radio" th:value="${mitglied.githubHandle()}">
+                                       type="radio" th:value="${mitglied.githubHandle()}" th:field="*{bezahltVon}"/>
                                 <label class="form-check-label stretched-link"
                                        th:for="'radio' + ${mitglied.githubHandle()}"
                                        th:text="${mitglied.githubHandle()}"></label>
@@ -133,7 +133,7 @@
                         <ul class="list-group" id="ausgabeBeteiligte" th:each="mitglied : ${gruppe.getMitglieder()}">
                             <li class="list-group-item">
                                 <input name="beteiligte" class="form-check-input me-1" th:id="'chk' + ${mitglied.githubHandle()}"
-                                       th:value="${mitglied.githubHandle()}" type="checkbox">
+                                       th:value="${mitglied.githubHandle()}" type="checkbox" th:field="*{beteiligte}"/>
                                 <label class="form-check-label stretched-link"
                                        th:for="'chk' + ${mitglied.githubHandle()}"
                                        th:text="${mitglied.githubHandle()}"></label>
@@ -161,7 +161,7 @@
                 <div class="modal-body">
                     <div class="mb-3">
                         <label for="MitgliedName" class="col-form-label">Name:</label>
-                        <input type="text" name="MitgliedName" class="form-control" id="MitgliedName">
+                        <input type="text" name="MitgliedName" class="form-control" id="MitgliedName"/>
                     </div>
                 </div>
                 <div class="modal-footer">

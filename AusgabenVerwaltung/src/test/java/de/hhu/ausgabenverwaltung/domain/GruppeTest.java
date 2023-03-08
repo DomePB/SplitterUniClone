@@ -249,6 +249,23 @@ class GruppeTest {
         assertThat(gruppe.getTransaktionen().size()).isEqualTo(0);
 
     }
+    @Test
+    @DisplayName("Muss bezahlenVonUser bei 100/3")
+    void berechneSalden_2() {
+        User userA = new User("githubname1");
+        User userB = new User("githubname2");
+        User userC = new User("githubname3");
+        Ausgabe ausgabe1 = new Ausgabe("ausgabe1", "Ausgabe1", new BigDecimal(100), userA, new ArrayList<>(List.of(userA,userB,userC)));
+
+        Gruppe gruppe = Gruppe.gruppeErstellen("test",userA);
+        gruppe.addMitglieder(userB);
+        gruppe.addMitglieder(userC);
+        gruppe.setAusgaben(List.of(ausgabe1));
+        //Act
+        HashMap<User, BigDecimal> mussBezahlen = gruppe.mussBezahlenVonUser(userA);
+        //Assert
+        assertThat(mussBezahlen).containsEntry(userB,new BigDecimal("33.33"));
+    }
 
     @Test
     @DisplayName("Salden werden korrekt berechnet")

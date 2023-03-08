@@ -105,8 +105,8 @@ class GruppeTest {
         var listVonSchuldigen = gruppe.alleSchuldenBerechnen();
 
         //Assert
-        assertThat(listVonSchuldigen).containsEntry(user1, new HashMap<>(Map.of(user2, new BigDecimal(5))));
-        assertThat(listVonSchuldigen).containsEntry(user2, new HashMap<>(Map.of(user1, new BigDecimal(15))));
+        assertThat(listVonSchuldigen).containsEntry(user1, new HashMap<>(Map.of(user2, new BigDecimal("5.00"))));
+        assertThat(listVonSchuldigen).containsEntry(user2, new HashMap<>(Map.of(user1, new BigDecimal("15.00"))));
     }
 
     @Test
@@ -194,7 +194,7 @@ class GruppeTest {
         //Act
         gruppeMussBezahlenVon = gruppe.mussBezahlenVonUser(user1);
         //Assert
-        assertThat(gruppeMussBezahlenVon).containsEntry(user2, new BigDecimal(5));
+        assertThat(gruppeMussBezahlenVon).containsEntry(user2, new BigDecimal("5.00"));
     }
 
     @Test
@@ -298,10 +298,10 @@ class GruppeTest {
         var alleSalden = gruppe.berechneSalden(schulden);
 
         // Assert
-        assertThat(alleSalden).containsEntry(userA, new BigDecimal(2));
-        assertThat(alleSalden).containsEntry(userB, new BigDecimal(-7));
-        assertThat(alleSalden).containsEntry(userC, new BigDecimal(-1));
-        assertThat(alleSalden).containsEntry(userD, new BigDecimal(6));
+        assertThat(alleSalden).containsEntry(userA, new BigDecimal("2.00"));
+        assertThat(alleSalden).containsEntry(userB, new BigDecimal("-7.00"));
+        assertThat(alleSalden).containsEntry(userC, new BigDecimal("-1.00"));
+        assertThat(alleSalden).containsEntry(userD, new BigDecimal("6.00"));
     }
 
     @Test
@@ -394,7 +394,7 @@ class GruppeTest {
         //Act
         var alleTransaktionen = gruppe.berechneTransaktionen(gruppe.berechneSalden(gruppe.alleSchuldenBerechnen()));
         //Assert
-        assertThat(alleTransaktionen).isEqualTo(new HashSet<>(Set.of(new Transaktion(userB, userA, new BigDecimal(15)))));
+        assertThat(alleTransaktionen).isEqualTo(new HashSet<>(Set.of(new Transaktion(userB, userA, new BigDecimal("15.00")))));
     }
 
     @Test
@@ -413,7 +413,7 @@ class GruppeTest {
         //Act
         var alleTransaktionen = gruppe.berechneTransaktionen(gruppe.berechneSalden(gruppe.alleSchuldenBerechnen()));
         //Assert
-        assertThat(alleTransaktionen).isEqualTo(new HashSet<>(Set.of(new Transaktion(userA, userB, new BigDecimal(5)))));
+        assertThat(alleTransaktionen).isEqualTo(new HashSet<>(Set.of(new Transaktion(userA, userB, new BigDecimal("5.00")))));
     }
 
     @Test
@@ -432,7 +432,7 @@ class GruppeTest {
         //Act
         var alleTransaktionen = gruppe.berechneTransaktionen(gruppe.berechneSalden(gruppe.alleSchuldenBerechnen()));
         //Assert
-        assertThat(alleTransaktionen).isEqualTo(new HashSet<>(Set.of(new Transaktion(userB, userA, new BigDecimal(20)))));
+        assertThat(alleTransaktionen).isEqualTo(new HashSet<>(Set.of(new Transaktion(userB, userA, new BigDecimal("20.00")))));
     }
 
     @Test
@@ -477,8 +477,8 @@ class GruppeTest {
         //Act
         var alleTransaktionen = gruppe.berechneTransaktionen(gruppe.berechneSalden(gruppe.alleSchuldenBerechnen()));
         //Assert
-        assertThat(alleTransaktionen).containsExactlyInAnyOrder(new Transaktion(berta, anton, new BigDecimal(30)),
-                new Transaktion(berta, christian, new BigDecimal(20)));
+        assertThat(alleTransaktionen).containsExactlyInAnyOrder(new Transaktion(berta, anton, new BigDecimal("30.00")),
+                new Transaktion(berta, christian, new BigDecimal("20.00")));
     }
 
     @Test
@@ -542,11 +542,11 @@ class GruppeTest {
         var alleTransaktionen = gruppe.berechneTransaktionen(gruppe.berechneSalden(gruppe.alleSchuldenBerechnen()));
 
         //Assert
-        assertThat(alleTransaktionen).containsExactlyInAnyOrder(new Transaktion(userA, userF, new BigDecimal("40")),
-                new Transaktion(userA, userG, new BigDecimal("40")),
-                new Transaktion(userB, userE, new BigDecimal("30")),
-                new Transaktion(userC, userE, new BigDecimal("30")),
-                new Transaktion(userD, userE, new BigDecimal("30")));
+        assertThat(alleTransaktionen).containsExactlyInAnyOrder(new Transaktion(userA, userF, new BigDecimal("40.00")),
+                new Transaktion(userA, userG, new BigDecimal("40.00")),
+                new Transaktion(userB, userE, new BigDecimal("30.00")),
+                new Transaktion(userC, userE, new BigDecimal("30.00")),
+                new Transaktion(userD, userE, new BigDecimal("30.00")));
     }
 
 }

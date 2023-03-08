@@ -1,172 +1,201 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 <head>
     <meta charset="UTF-8">
-    <title>Gruppen Übersicht</title>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js"></script>
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <title>Splitter - Gruppe</title>
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
-<h2 th:text="${gruppe.getName()}"></h2>
 
-<div class="alert alert-warning" role="alert" th:if="${!gruppe.istOffen()}">
-    Diese Gruppe wurde bereits geschlossen!
-</div>
-
-<ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
-    <li class="nav-item" role="presentation">
-        <button class="nav-link active" id="pills-ausgaben-tab" data-bs-toggle="pill" data-bs-target="#pills-ausgaben"
-                type="button" role="tab" aria-controls="pills-ausgaben" aria-selected="true">Ausgaben
-        </button>
-    </li>
-    <li class="nav-item" role="presentation">
-        <button class="nav-link" id="pills-salden-tab" data-bs-toggle="pill" data-bs-target="#pills-salden"
-                type="button" role="tab" aria-controls="pills-salden" aria-selected="false">Salden
-        </button>
-    </li>
-    <li class="nav-item" role="presentation">
-        <button class="nav-link" id="pills-transaktion-tab" data-bs-toggle="pill" data-bs-target="#pills-transaktion"
-                type="button" role="tab" aria-controls="pills-transaktion" aria-selected="false">Transaktionen
-        </button>
-    </li>
-    <li class="nav-item" role="presentation">
-        <button class="nav-link" id="pills-mitglieder-tab" data-bs-toggle="pill" data-bs-target="#pills-mitglieder"
-                type="button" role="tab" aria-controls="pills-mitglieder" aria-selected="false">Mitglieder
-        </button>
-    </li>
-</ul>
-
-<!-- Tabs -->
-<div class="tab-content" id="pills-tabContent">
-
-    <!-- Ausgaben Tab -->
-    <div class="tab-pane fade show active" id="pills-ausgaben" role="tabpanel" aria-labelledby="pills-ausgaben-tab"
-         tabindex="0"><h3>Ausgaben</h3>
-        <button class="btn btn-primary" data-bs-target="#ausgabehinzufuegenModal" data-bs-toggle="modal"
-                th:classappend="${gruppe.istOffen() ? '' : 'disabled'}" type="button">
-            Ausgabe hinzufügen
-        </button>
-        <table class="table">
-        <thead>
-        <tr>
-            <th>Name</th>
-            <th>Beschreibung</th>
-            <th>Bezahlt von</th>
-            <th>Betrag</th>
-            <th></th>
-        </tr>
-        </thead>
-            <tbody th:remove="all-but-first">
-            <tr th:each="ausgabe, iterStat: ${gruppe.getAusgaben()}">
-                <td th:text="${ausgabe.name}"></td>
-                <td th:text="${ausgabe.beschreibung}"></td>
-                <td th:text="${ausgabe.bezahltVon.githubHandle}"></td>
-                <td th:text="${ausgabe.betrag}"></td>
-                <td>
-                    <div class="dropdown">
-                        <button aria-expanded="false" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown"
-                                type="button">
-                            Beteiligte
-                        </button>
-                        <ul class="dropdown-menu">
-                            <li th:each="beteiligte : ${ausgabe.beteiligte()}">
-                                <a class="dropdown-item" href="#" th:text="${beteiligte.githubHandle}"></a>
-                            </li>
-                        </ul>
-                    </div>
-                </td>
-            </tr>
-            </tbody>
-        </table>
+<!-- Inhalt -->
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <a class="btn btn-outline-secondary btn-sm" role="button" th:href="@{/}">Zurück</a>
+        <h2 th:text="${gruppe.getName()}"></h2>
+        <div></div>
     </div>
 
-    <!-- Salden Tab -->
-    <div class="tab-pane fade" id="pills-salden" role="tabpanel" aria-labelledby="pills-salden-tab" tabindex="0">
-        <h3>Salden</h3>
-        <table class ="table">
-            <tbody th:remove="all-but-first">
-           <tr th:each="entry :${salden}">
-                <td th:text="${entry.key.githubHandle}"> </td>
-                <td th:text ="${entry.value}"></td>
-            </tr>
-            </tbody>
-        </table>
+    <!-- Alert: Gruppe bereits geschlossen -->
+    <div class="alert alert-warning" role="alert" th:if="${!gruppe.istOffen()}">
+        Diese Gruppe wurde geschlossen!
     </div>
 
-    <!-- Transaktionen Tab -->
-    <div aria-labelledby="pills-transaktion-tab" class="tab-pane fade" id="pills-transaktion" role="tabpanel"
-         tabindex="0">
-        <h3>Transaktionen</h3>
-        <table class="table">
-            <thead>
-            <tr>
-                <th>Von</th>
-                <th>An</th>
-                <th>Betrag</th>
-            </tr>
-            </thead>
-            <tbody th:each="transaktion, iterStat: ${gruppe.getTransaktionen()}" th:remove="all-but-first">
-            <tr th:classappend="${(transaktion.sender().equals(user) ? 'table-danger' : '') + (transaktion.empfaenger().equals(user) ? 'table-success' : '')}">
-                <td th:text="${transaktion.sender().githubHandle()}"></td>
-                <td th:text="${transaktion.empfaenger().githubHandle()}"></td>
-                <td th:text="${transaktion.betrag()}"></td>
-            </tr>
-            </tbody>
-        </table>
-        <form method="post" th:action="@{/gruppe/schliessen(id=${gruppe.getId()})}">
-            <button class="btn btn-primary" th:classappend="${gruppe.istOffen() ? '' : 'disabled'}" type="submit">
-                Ausgleichen & Schließen
+    <!-- Tab-Liste -->
+    <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button aria-controls="pills-ausgaben" aria-selected="true" class="nav-link active"
+                    data-bs-target="#pills-ausgaben"
+                    data-bs-toggle="pill" id="pills-ausgaben-tab" role="tab" type="button">Ausgaben
             </button>
-        </form>
-    </div>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button aria-controls="pills-salden" aria-selected="false" class="nav-link" data-bs-target="#pills-salden"
+                    data-bs-toggle="pill" id="pills-salden-tab" role="tab" type="button">Salden
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button aria-controls="pills-transaktion" aria-selected="false" class="nav-link"
+                    data-bs-target="#pills-transaktion"
+                    data-bs-toggle="pill" id="pills-transaktion-tab" role="tab" type="button">Transaktionen
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button aria-controls="pills-mitglieder" aria-selected="false" class="nav-link"
+                    data-bs-target="#pills-mitglieder"
+                    data-bs-toggle="pill" id="pills-mitglieder-tab" role="tab" type="button">Mitglieder
+            </button>
+        </li>
+    </ul>
 
-    <!-- Mitglieder Tab -->
-    <div aria-labelledby="pills-mitglieder-tab" class="tab-pane fade" id="pills-mitglieder" role="tabpanel"
-         tabindex="0">
-        <h3>Mitglieder</h3>
+    <!-- Tab-Inhalt -->
+    <div class="tab-content" id="pills-tabContent">
 
-        <div class="alert alert-info alert-dismissible fade show" role="alert"
-             th:if="${!gruppe.getAusgaben().isEmpty()}">
-            Es könne keine Mitglieder mehr hinzugefügt werden, da bereits Ausgaben vorhanden sind!
-            <button aria-label="Close" class="btn-close" data-bs-dismiss="alert" type="button"></button>
+        <!-- Tab: Ausgaben -->
+        <div aria-labelledby="pills-ausgaben-tab" class="tab-pane fade show active" id="pills-ausgaben" role="tabpanel"
+             tabindex="0"><h3>Ausgaben</h3>
+
+            <!-- Button: Ausgabe hinzufügen -->
+            <button class="btn btn-primary" data-bs-target="#ausgabeHinzufuegenModal" data-bs-toggle="modal"
+                    th:classappend="${gruppe.istOffen() ? '' : 'disabled'}" type="button">
+                Ausgabe hinzufügen
+            </button>
+
+            <!-- Tabelle: Ausgaben -->
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Beschreibung</th>
+                    <th>Bezahlt von</th>
+                    <th>Betrag</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody th:remove="all-but-first">
+                <tr th:each="ausgabe, iterStat: ${gruppe.getAusgaben()}">
+                    <td th:text="${ausgabe.name}"></td>
+                    <td th:text="${ausgabe.beschreibung}"></td>
+                    <td th:text="${ausgabe.bezahltVon.githubHandle}"></td>
+                    <td th:text="${ausgabe.betrag} + '€'"></td>
+                    <td>
+                        <div class="dropdown">
+                            <button aria-expanded="false" class="btn btn-secondary dropdown-toggle"
+                                    data-bs-toggle="dropdown"
+                                    type="button">
+                                Beteiligte
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li th:each="beteiligte : ${ausgabe.beteiligte()}">
+                                    <a class="dropdown-item" href="#" th:text="${beteiligte.githubHandle}"></a>
+                                </li>
+                            </ul>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
         </div>
 
-        <button class="btn btn-primary" data-bs-target="#mitgliedhinzufuegenModal"
-                data-bs-toggle="modal" th:classappend="${gruppe.getAusgaben().isEmpty() ? '' : 'disabled'}"
-                type="button">
-            User hinzufügen
-        </button>
-        <table class="table mx-auto">
-            <tbody th:remove="all-but-first">
-            <tr th:each="mitglied: ${gruppe.getMitglieder()}">
-                <td th:text="${mitglied.githubHandle}"></td>
-            </tr>
-            </tbody>
-        </table>
+        <!-- Tab: Salden -->
+        <div aria-labelledby="pills-salden-tab" class="tab-pane fade" id="pills-salden" role="tabpanel" tabindex="0">
+            <h3>Salden</h3>
+
+            <table class="table">
+                <tbody th:remove="all-but-first">
+                <tr th:each="entry :${salden}">
+                    <td th:text="${entry.key.githubHandle}"></td>
+                    <td th:text="${entry.value} + '€'"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Tab: Transaktionen -->
+        <div aria-labelledby="pills-transaktion-tab" class="tab-pane fade" id="pills-transaktion" role="tabpanel"
+             tabindex="0">
+            <h3>Transaktionen</h3>
+
+            <!-- Button: Ausgleichen und Gruppe schliessen -->
+            <form method="post" th:action="@{/gruppe/schliessen(id=${gruppe.getId()})}">
+                <button class="btn btn-primary" th:classappend="${gruppe.istOffen() ? '' : 'disabled'}" type="submit">
+                    Ausgleichen & Gruppe schliessen
+                </button>
+            </form>
+
+            <!-- Tabelle: Transaktionen -->
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Von</th>
+                    <th>An</th>
+                    <th>Betrag</th>
+                </tr>
+                </thead>
+                <tbody th:each="transaktion, iterStat: ${gruppe.getTransaktionen()}" th:remove="all-but-first">
+                <tr th:classappend="${(transaktion.sender().equals(user) ? 'table-danger' : '') + (transaktion.empfaenger().equals(user) ? 'table-success' : '')}">
+                    <td th:text="${transaktion.sender().githubHandle()}"></td>
+                    <td th:text="${transaktion.empfaenger().githubHandle()}"></td>
+                    <td th:text="${transaktion.betrag() + '€'}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Tab: Mitglieder -->
+        <div aria-labelledby="pills-mitglieder-tab" class="tab-pane fade" id="pills-mitglieder" role="tabpanel"
+             tabindex="0">
+            <h3>Mitglieder</h3>
+
+            <!-- Alert: Keine Mitglieder können hinzugefügt werden -->
+            <div class="alert alert-info alert-dismissible fade show" role="alert"
+                 th:if="${!gruppe.getAusgaben().isEmpty()}">
+                Es könne keine Mitglieder mehr hinzugefügt werden, da bereits Ausgaben vorhanden sind!
+                <button aria-label="Close" class="btn-close" data-bs-dismiss="alert" type="button"></button>
+            </div>
+
+            <!-- Button: Mitglied hinzufügen -->
+            <button class="btn btn-primary" data-bs-target="#mitgliedhinzufuegenModal"
+                    data-bs-toggle="modal"
+                    th:classappend="${gruppe.getAusgaben().isEmpty() || !gruppe.istOffen() ? '' : 'disabled'}"
+                    type="button">
+                Mitglied hinzufügen
+            </button>
+
+            <!-- Tabelle: Mitglieder -->
+            <table class="table mx-auto">
+                <tbody th:remove="all-but-first">
+                <tr th:each="mitglied: ${gruppe.getMitglieder()}">
+                    <td th:text="${mitglied.githubHandle}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 
-<!-- Ausgabe hinzufügen Modal -->
-<div class="modal fade" id="ausgabehinzufuegenModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<!-- Modal: Ausgabe hinzufügen -->
+<div aria-hidden="true" aria-labelledby="ausgabenModalLabel" class="modal fade" id="ausgabeHinzufuegenModal"
+     tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
             <form method="post" th:action="@{/gruppe/ausgaben(id=${gruppe.getId()})}" th:object="${ausgabe}">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">Ausgabe hinzufügen</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <h1 class="modal-title fs-5" id="ausgabenModalLabel">Ausgabe hinzufügen</h1>
+                    <button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></button>
                 </div>
 
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label th:for="ausgabeName" class="col-form-label">Name:</label>
-                        <input type="text"  class="form-control"  th:field="*{ausgabeName}"/>
+                        <label class="col-form-label" th:for="ausgabeName">Name:</label>
+                        <input class="form-control" th:field="*{ausgabeName}" type="text"/>
                     </div>
 
                     <div class="mb-3">
                         <label class="form-label" for="ausgabeBeschreibung">Beschreibung</label>
                         <textarea class="form-control" id="ausgabeBeschreibung" name="ausgabeBeschreibung"
-                                  rows="3"></textarea>
+                                  rows="2"></textarea>
                     </div>
 
                     <div class="mb-3">
@@ -175,16 +204,18 @@
                             <span class="input-group-text">€</span>
                             <input aria-label="Betrag" class="form-control" id="ausgabeBetrag" min="0"
                                    name="ausgabeBetrag"
-                                   step="0.01" type="number" th:field="*{ausgabeBetrag}"/>
+                                   step="0.01" th:field="*{ausgabeBetrag}" type="number"/>
                         </div>
                     </div>
 
                     <div class="mb-3">
                         <label class="col-form-label" for="bezahltVon">Bezahlt von:</label>
-                        <ul class="list-group" th:each="mitglied : ${gruppe.getMitglieder()}" id="bezahltVon">
+                        <ul class="list-group" id="bezahltVon" th:each="mitglied : ${gruppe.getMitglieder()}">
                             <li class="list-group-item">
-                                <input checked class="form-check-input me-1" name="bezahltVon"  th:id="'radio' + ${mitglied.githubHandle()}"
-                                       type="radio" th:value="${mitglied.githubHandle()}" th:field="*{bezahltVon}"/>
+                                <input checked class="form-check-input me-1" name="bezahltVon"
+                                       th:field="*{bezahltVon}"
+                                       th:id="'radio' + ${mitglied.githubHandle()}"
+                                       th:value="${mitglied.githubHandle()}" type="radio"/>
                                 <label class="form-check-label stretched-link"
                                        th:for="'radio' + ${mitglied.githubHandle()}"
                                        th:text="${mitglied.githubHandle()}"></label>
@@ -196,8 +227,10 @@
                         <label class="col-form-label" for="ausgabeBeteiligte">Beteiligte:</label>
                         <ul class="list-group" id="ausgabeBeteiligte" th:each="mitglied : ${gruppe.getMitglieder()}">
                             <li class="list-group-item">
-                                <input name="beteiligte" class="form-check-input me-1" th:id="'chk' + ${mitglied.githubHandle()}"
-                                       th:value="${mitglied.githubHandle()}" type="checkbox" th:field="*{beteiligte}"/>
+                                <input class="form-check-input me-1" name="beteiligte"
+                                       th:field="*{beteiligte}"
+                                       th:id="'chk' + ${mitglied.githubHandle()}" th:value="${mitglied.githubHandle()}"
+                                       type="checkbox"/>
                                 <label class="form-check-label stretched-link"
                                        th:for="'chk' + ${mitglied.githubHandle()}"
                                        th:text="${mitglied.githubHandle()}"></label>
@@ -207,36 +240,38 @@
                 </div>
 
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Abbrechen</button>
-                    <button type="submit" class="btn btn-primary">Erstellen</button>
+                    <button class="btn btn-secondary" data-bs-dismiss="modal" type="button">Abbrechen</button>
+                    <button class="btn btn-primary" type="submit">Erstellen</button>
                 </div>
             </form>
         </div>
     </div>
 </div>
 
-<!-- Mitglied hinzufügen Modal -->
-<div class="modal fade" id="mitgliedhinzufuegenModal" tabindex="-1" aria-labelledby="mitgliedModal" aria-hidden="true">
+<!-- Modal: Mitglied hinzufügen -->
+<div aria-hidden="true" aria-labelledby="mitgliedModal" class="modal fade" id="mitgliedhinzufuegenModal" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
             <form method="post" th:action="@{/gruppe/Mitglieder(id=${gruppe.getId()})}">
                 <div class="modal-header">
                     <h1 class="modal-title fs-5" id="MitgliedLabel">Mitglied hinzufügen</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></button>
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label for="MitgliedName" class="col-form-label">Name:</label>
-                        <input type="text" name="MitgliedName" class="form-control" id="MitgliedName"/>
+                        <label class="col-form-label" for="MitgliedName">Name:</label>
+                        <input class="form-control" id="MitgliedName" name="MitgliedName" type="text"/>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary">Erstellen</button>
+                    <button class="btn btn-primary" type="submit">Erstellen</button>
                 </div>
             </form>
         </div>
     </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

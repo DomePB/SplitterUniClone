@@ -161,7 +161,7 @@
             <!-- Button: Mitglied hinzufügen -->
             <button class="btn btn-primary" data-bs-target="#mitgliedhinzufuegenModal"
                     data-bs-toggle="modal"
-                    th:classappend="${gruppe.getAusgaben().isEmpty() || !gruppe.istOffen() ? '' : 'disabled'}"
+                    th:classappend="${!gruppe.getAusgaben().isEmpty() || !gruppe.istOffen() ? 'disabled' : ''}"
                     type="button">
                 Mitglied hinzufügen
             </button>
@@ -255,15 +255,15 @@
 <div aria-hidden="true" aria-labelledby="mitgliedModal" class="modal fade" id="mitgliedhinzufuegenModal" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form method="post" th:action="@{/gruppe/Mitglieder(id=${gruppe.getId()})}">
+            <form method="post" th:action="@{/gruppe/mitglieder(id=${gruppe.getId()})}">
                 <div class="modal-header">
                     <h1 class="modal-title fs-5" id="MitgliedLabel">Mitglied hinzufügen</h1>
                     <button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></button>
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label class="col-form-label" for="MitgliedName">Name:</label>
-                        <input class="form-control" id="MitgliedName" name="MitgliedName" type="text"/>
+                        <label class="col-form-label" for="mitgliedName-id">Name:</label>
+                        <input class="form-control" id="mitgliedName-id" name="mitgliedName" type="text"/>
                     </div>
                 </div>
                 <div class="modal-footer">

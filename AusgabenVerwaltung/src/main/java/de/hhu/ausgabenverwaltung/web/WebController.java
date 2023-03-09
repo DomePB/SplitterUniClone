@@ -7,10 +7,12 @@ import de.hhu.ausgabenverwaltung.domain.Gruppe;
 import de.hhu.ausgabenverwaltung.domain.User;
 import de.hhu.ausgabenverwaltung.service.GruppenService;
 import de.hhu.ausgabenverwaltung.web.models.AusgabeForm;
+
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.UUID;
 import java.util.stream.Collectors;
+
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
@@ -32,33 +34,25 @@ public class WebController {
     }
 
     @GetMapping("/")
-    public String index(Model model,@AuthenticationPrincipal OAuth2User token) {
-       // User user = new User(token.getAttribute("login"));
-        //  User user2= new User("myUser");
-        //   Gruppe g = service.gruppeErstellen(new User("test"), "gruppe2");
-        // g.addMitglieder(user2);
-        //  g.addMitglieder(new User(token.getAttribute("login")));
-        //  g.ausgabeHinzufuegen(new Ausgabe("test","test",BigDecimal.TEN,user,List.of(user2)));
-
+    public String index(Model model, @AuthenticationPrincipal OAuth2User token) {
         model.addAttribute("user", token.getAttribute("login"));
         model.addAttribute("offeneGruppen", service.offenVonUser(token.getAttribute("login")));
-        model.addAttribute("geschlosseneGruppen",
-            service.geschlossenVonUser(token.getAttribute("login")));
+        model.addAttribute("geschlosseneGruppen", service.geschlossenVonUser(token.getAttribute("login")));
         return "start";
     }
 
     @PostMapping("/")
-    public String gruppeErstellen(@RequestParam(name = "gruppenName") String gruppenName,@AuthenticationPrincipal OAuth2User token) {
+    public String gruppeErstellen(String gruppenName, @AuthenticationPrincipal OAuth2User token) {
         service.gruppeErstellen(token.getAttribute("login"), gruppenName);
         return "redirect:/";
     }
 
     @GetMapping("/gruppe")
-    public String gruppenUebersicht(@RequestParam UUID id, Model model,
-                                    @AuthenticationPrincipal OAuth2User token) {
+    public String gruppenUebersicht(@RequestParam UUID id, Model model,@AuthenticationPrincipal OAuth2User token) {
         User user = new User(token.getAttribute("login"));
         Gruppe gruppe;
         HashMap<User, BigDecimal> salden;
+
         try {
             gruppe = service.findById(id);
             salden = service.berechneSalden(id);
@@ -66,7 +60,6 @@ public class WebController {
         } catch (Exception e) {
             throw new ResponseStatusException(NOT_FOUND, "Gruppe nicht gefunden");
         }
-
 
         model.addAttribute("gruppe", gruppe);
         model.addAttribute("salden", salden);
@@ -81,9 +74,6 @@ public class WebController {
     AusgabeForm ausgabe, RedirectAttributes attrs) {
         try {
             Gruppe gruppe = service.findById(id);
-            //    List<User> users = beteiligte.stream().map(User::new).collect(Collectors.toList());
-            //   gruppe.ausgabeHinzufuegen(new Ausgabe(ausgabeName, ausgabeBeschreibung, ausgabeBetrag,
-            //      new User(bezahltVon), users));
             attrs.addAttribute("id", gruppe.getId());
             Ausgabe ausgabe1 = new Ausgabe(ausgabe.ausgabeName(), ausgabe.ausgabeBeschreibung(),
                     ausgabe.ausgabeBetrag(), new User(ausgabe.bezahltVon()),
@@ -94,9 +84,10 @@ public class WebController {
             return "redirect:/gruppe";
         }
     }
-    @PostMapping("/gruppe/Mitglieder")
+
+    @PostMapping("/gruppe/mitglieder")
     public String userHinzufuegen(@RequestParam UUID id,
-                                  @RequestParam(name = "MitgliedName") String name,
+                                  @RequestParam(name = "mitgliedName") String name,
                                   RedirectAttributes attrs) {
         try {
             Gruppe gruppe = service.findById(id);
@@ -109,7 +100,7 @@ public class WebController {
     }
 
     @PostMapping("/gruppe/schliessen")
-    public String ausgabeHinzufuegen(@RequestParam UUID id, RedirectAttributes attrs) {
+    public String gruppeSchliessen(@RequestParam UUID id, RedirectAttributes attrs) {
         attrs.addAttribute("id", id);
 
         try {

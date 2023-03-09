@@ -14,56 +14,79 @@
 
     <p class="fs-4">Offene Gruppen:</p>
     <div class="list-group">
-        <a class="list-group-item list-group-item-action"
-           th:each="gruppe:${offeneGruppen}"
-           th:href="@{/gruppe(id=${gruppe.getId()})}"
-           th:text="${gruppe.name}">Gruppenname</a>
+        <div th:each="gruppe:${offeneGruppen}">
+            <a class="list-group-item list-group-item-action"
+               th:href="@{/gruppe(id=${gruppe.getId()})}"
+               th:text="${gruppe.name}">Gruppenname</a>
+
+            <!-- Transactions of the user pro gruppe-->
+            <div th:if="${!gruppe.getTransaktionen().isEmpty()}">
+                <ul class="list-group list-group-flush">
+                    <li th:each="transaktion : ${gruppe.getTransaktionen()}" class="list-group-item"
+                        th:if="${transaktion.sender().githubHandle() == user}">
+                        <span th:if="${transaktion.betrag() > T(java.math.BigDecimal).ZERO}">
+                            <span th:class="'badge bg-danger'" th:text="'Du musst ' +
+                             ${transaktion.betrag()} + '€ an ' + ${transaktion.empfaenger().githubHandle()} + ' bezahlen'">
+                             </span>
+                        </span>
+
+                    <li th:each="transaktion : ${gruppe.getTransaktionen()}" class="list-group-item"
+                        th:if="${transaktion.empfaenger().githubHandle() == user}">
+                    <span th:if="${transaktion.betrag() > T(java.math.BigDecimal).ZERO}">
+                        <span th:class="'badge bg-success'" th:text="${transaktion.sender().githubHandle()} +
+                        ' muss dir' + ' ' + ${transaktion.betrag()} + '€ bezahlen'">
+                            </span>
+                        </span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <p class="fs-4 text-secondary">Geschlossene Gruppen: </p>
+        <div class="list-group">
+            <a class="list-group-item list-group-item-action"
+               th:each="gruppe : ${geschlosseneGruppen}"
+               th:href="@{/gruppe(id=${gruppe.getId()})}"
+               th:text="${gruppe.name}">Gruppenname</a>
+        </div>
+
+        <br/>
+
+        <button class="btn btn-primary" data-bs-target="#gruppeErstellenModal" data-bs-toggle="modal" type="button">
+            Gruppe erstellen
+        </button>
     </div>
 
-    <p class="fs-4 text-secondary">Geschlossene Gruppen: </p>
-    <div class="list-group">
-        <a class="list-group-item list-group-item-action"
-           th:each="gruppe : ${geschlosseneGruppen}"
-           th:href="@{/gruppe(id=${gruppe.getId()})}"
-           th:text="${gruppe.name}">Gruppenname</a>
-    </div>
-
-    <br/>
-
-    <button class="btn btn-primary" data-bs-target="#gruppeErstellenModal" data-bs-toggle="modal" type="button">
-        Gruppe Erstellen
-    </button>
-</div>
-
-<!-- Modal: Gruppe erstellen -->
-<div aria-hidden="true" aria-labelledby="gruppeErstellenModalLabel" class="modal fade" id="gruppeErstellenModal"
-     tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <form method="post" th:action="@{/}">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="gruppeErstellenModalLabel">Gruppe erstellen</h1>
-                    <button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></button>
-                </div>
-
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label class="col-form-label" for="gruppenName">Name:</label>
-                        <input class="form-control" id="gruppenName" name="gruppenName" type="text">
+    <!-- Modal: Gruppe erstellen -->
+    <div aria-hidden="true" aria-labelledby="gruppeErstellenModalLabel" class="modal fade" id="gruppeErstellenModal"
+         tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form method="post" th:action="@{/}">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="gruppeErstellenModalLabel">Gruppe erstellen</h1>
+                        <button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></button>
                     </div>
-                </div>
 
-                <div class="modal-footer">
-                    <button class="btn btn-secondary" data-bs-dismiss="modal" type="button">Abbrechen</button>
-                    <button class="btn btn-primary" type="submit">Erstellen</button>
-                </div>
-            </form>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="col-form-label" for="gruppenName">Name:</label>
+                            <input class="form-control" id="gruppenName" name="gruppenName" type="text">
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" data-bs-dismiss="modal" type="button">Abbrechen</button>
+                        <button class="btn btn-primary" type="submit">Erstellen</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
-</div>
 
-<!-- Scripts -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+</div>
 </body>
 </html>

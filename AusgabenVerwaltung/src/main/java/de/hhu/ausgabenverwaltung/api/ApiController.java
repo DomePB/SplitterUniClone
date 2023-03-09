@@ -5,10 +5,13 @@ import de.hhu.ausgabenverwaltung.api.models.AuslagenModel;
 import de.hhu.ausgabenverwaltung.api.models.GruppeModel;
 import de.hhu.ausgabenverwaltung.domain.Ausgabe;
 import de.hhu.ausgabenverwaltung.domain.Gruppe;
-import de.hhu.ausgabenverwaltung.service.GruppenService;
+import de.hhu.ausgabenverwaltung.service.ApiService;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,9 +22,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class ApiController {
 
-    private final GruppenService service;
+    private final ApiService service;
 
-    public ApiController(GruppenService service) {
+    public ApiController(ApiService service) {
         this.service = service;
     }
 
@@ -31,18 +34,27 @@ public class ApiController {
         return "Hello, API!";
     }
 
-    @PostMapping("/api/gruppen")
+    @GetMapping("/api/test")
     @ResponseBody
-    public String gruppeErstellen(@RequestBody GruppeModel gruppeModel) {
-        Gruppe gruppe = gruppeModel.toGruppe();
+    public String hello2() {
+        return "Hello, API!";
+    }
 
-        return "Gruppe erstellen";
+    @PostMapping("/api/gruppen")
+    public ResponseEntity<UUID> gruppeErstellen(@RequestBody GruppeModel gruppeModel) {
+        Gruppe gruppe = gruppeModel.toGruppe();
+        service.gruppeHinzufuegen(gruppe);
+
+        return new ResponseEntity<>(gruppe.getId(), HttpStatus.CREATED);
     }
 
     @GetMapping("/api/user/{githubHandle}/gruppen")
-    @ResponseBody
-    public String gruppenAnzeigen(@PathVariable String githubHandle) {
-        return "Gruppen anzeigen";
+    public ResponseEntity<List<GruppeModel>> gruppenAnzeigen(@PathVariable String githubHandle) {
+        List<Gruppe> gruppen = service.gruppenVonUser(githubHandle); // TODO: Falsche methode
+        List<GruppeModel> gruppeModels =
+            gruppen.stream().map(GruppeModel::fromGruppe).collect(Collectors.toList());
+
+        return new ResponseEntity<>(gruppeModels, HttpStatus.OK);
     }
 
     @GetMapping("/api/gruppen/{gruppenId}")

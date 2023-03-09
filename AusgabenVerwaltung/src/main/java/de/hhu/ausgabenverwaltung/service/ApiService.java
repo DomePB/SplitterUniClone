@@ -3,6 +3,7 @@ package de.hhu.ausgabenverwaltung.service;
 import de.hhu.ausgabenverwaltung.domain.Gruppe;
 import de.hhu.ausgabenverwaltung.domain.User;
 import java.util.List;
+import java.util.UUID;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -20,6 +21,10 @@ public class ApiService {
 
   public List<Gruppe> gruppenVonUser(String githubHandle) {
     return gruppen.vonUser(new User(githubHandle));
+  }
+
+  public Gruppe findById(UUID id) throws Exception {
+    return gruppen.findById(id);
   }
 
 }

@@ -58,12 +58,18 @@ public class ApiController {
     }
 
     @GetMapping("/api/gruppen/{gruppenId}")
-    @ResponseBody
-    public String gruppenInfo(@PathVariable UUID gruppenId) {
-        return "Gruppen-Info";
+    public ResponseEntity<GruppeModel> gruppenInfo(@PathVariable UUID gruppenId) {
+        try {
+            Gruppe gruppe = service.findById(gruppenId);
+            GruppeModel gruppeModel = GruppeModel.fromGruppe(gruppe);
+            return new ResponseEntity<>(gruppeModel, HttpStatus.OK);
+
+        } catch (Exception ex) {
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
     }
 
-    @PostMapping("/api/gruppen/{gruppenId}/schliesen")
+    @PostMapping("/api/gruppen/{gruppenId}/schliessen")
     @ResponseBody
     public String gruppeSchliessen(@PathVariable UUID gruppenId) {
         return "Gruppe schliessen";

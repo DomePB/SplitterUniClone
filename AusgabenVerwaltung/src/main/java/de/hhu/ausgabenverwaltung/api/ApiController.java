@@ -5,9 +5,11 @@ import de.hhu.ausgabenverwaltung.api.models.AuslagenModel;
 import de.hhu.ausgabenverwaltung.api.models.GruppeModel;
 import de.hhu.ausgabenverwaltung.domain.Ausgabe;
 import de.hhu.ausgabenverwaltung.domain.Gruppe;
+import de.hhu.ausgabenverwaltung.domain.Transaktion;
 import de.hhu.ausgabenverwaltung.service.ApiService;
-import java.util.ArrayList;
+import de.hhu.ausgabenverwaltung.service.GruppenService;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import org.springframework.http.HttpStatus;
@@ -22,10 +24,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class ApiController {
 
-    private final ApiService service;
+    @Deprecated
+    private final ApiService service; // TODO: entfernen
 
-    public ApiController(ApiService service) {
+    private final GruppenService gruppenService;
+
+    public ApiController(ApiService service, GruppenService gruppenService) {
         this.service = service;
+        this.gruppenService = gruppenService;
     }
 
     @GetMapping("/api")
@@ -80,18 +86,37 @@ public class ApiController {
     }
 
     @PostMapping("/api/gruppen/{gruppenId}/auslagen")
-    @ResponseBody
-    public String auslageEintragen(@RequestBody AuslagenModel auslagenModel) {
+    public ResponseEntity<String> auslageEintragen(@PathVariable UUID gruppenId,
+                                                   @RequestBody AuslagenModel auslagenModel) {
         Ausgabe ausgabe = auslagenModel.toAusgabe();
 
-        return "Auslage eintragen";
+        try {
+            if (!gruppenService.istOffen(gruppenId)) {
+                return new ResponseEntity<>("Die Gruppe ist bereits geschlossen",
+                    HttpStatus.CONFLICT);
+            }
+
+            gruppenService.addAusgabe(gruppenId, ausgabe);
+        } catch (Exception ex) {
+            return new ResponseEntity<>("Die Gruppe ist nicht vorhanden", HttpStatus.NOT_FOUND);
+        }
+
+        return new ResponseEntity<>("Die Ausgabe wurde korrekt eingetragen", HttpStatus.CREATED);
     }
 
     @GetMapping("/api/gruppen/{gruppenId}/ausgleich")
-    @ResponseBody
-    public String ausgleichBerechnen(@PathVariable UUID gruppenId) {
-        List<AusgleichModel> ausgleiche = new ArrayList<>();
-        return "Ausgleich Berechnen";
+    public ResponseEntity<List<AusgleichModel>> ausgleichBerechnen(@PathVariable UUID gruppenId) {
+        try {
+            Gruppe gruppe = gruppenService.findById(gruppenId);
+            Set<Transaktion> transaktionen = gruppe.getTransaktionen();
+            List<AusgleichModel> ausgleichZahlungen =
+                transaktionen.stream().map(AusgleichModel::fromTransaktion)
+                    .collect(Collectors.toList());
+
+            return new ResponseEntity<>(ausgleichZahlungen, HttpStatus.OK);
+        } catch (Exception ex) {
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
     }
 
 }

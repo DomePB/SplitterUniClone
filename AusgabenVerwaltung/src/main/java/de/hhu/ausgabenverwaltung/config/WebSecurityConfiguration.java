@@ -18,7 +18,8 @@ public class WebSecurityConfiguration {
                     //.anyRequest().permitAll()
                     .anyRequest().authenticated()
             )
-            .csrf().disable() // TODO: Das ist eine schlechte Idee :D
+            .csrf().ignoringRequestMatchers("/api/**")
+            .and()
             .oauth2Login();
 
         return chainBuilder.build();

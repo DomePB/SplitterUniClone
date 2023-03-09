@@ -5,6 +5,7 @@ import static org.mockito.Mockito.when;
 
 import de.hhu.ausgabenverwaltung.domain.Gruppe;
 import de.hhu.ausgabenverwaltung.domain.User;
+import java.util.List;
 import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -50,5 +51,19 @@ class GruppenServiceTest {
         //Assert
         assertThat(gruppe.istOffen()).isFalse();
     }
+    @Test
+    @DisplayName("Werden die geschlossenen Gruppen von User richtig rausgegeben")
+    void geschlossenVonUserTest() throws Exception {
+        //Arrange
+        Gruppe gruppe = gruppenService.gruppeErstellen("test", "testgruppe");
+        gruppe.schliessen();
+        when(repository.geschlossenVonUser(new User("test"))).thenReturn(List.of(gruppe));
+        //Act
+        List<Gruppe> geschlossenVonUser = gruppenService.geschlossenVonUser("test");
+
+        //Assert
+        assertThat(geschlossenVonUser).contains(gruppe);
+    }
+
 }
 

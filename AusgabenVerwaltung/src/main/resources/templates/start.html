@@ -15,51 +15,39 @@
     <!-- Liste: Offene Gruppen -->
     <p class="fs-4">Offene Gruppen:</p>
     <div class="list-group">
-        <div th:each="gruppe:${offeneGruppen}">
-            <a class="list-group-item list-group-item-action"
-               th:href="@{/gruppe(id=${gruppe.getId()})}"
-               th:text="${gruppe.name}">Gruppenname</a>
+        <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
+           th:each="gruppe:${offeneGruppen}"
+           th:href="@{/gruppe(id=${gruppe.getId()})}">
+            <span th:text="${gruppe.name}">Gruppen-Name</span>
 
-            <!-- Transactions of the user pro gruppe-->
-            <div th:if="${!gruppe.getTransaktionen().isEmpty()}">
-                <ul class="list-group list-group-flush">
-                    <li th:each="transaktion : ${gruppe.getTransaktionen()}" class="list-group-item"
-                        th:if="${transaktion.sender().githubHandle() == user}">
-                        <span th:if="${transaktion.betrag() > T(java.math.BigDecimal).ZERO}">
-                            <span th:class="'badge bg-danger'" th:text="'Du musst ' +
-                             ${transaktion.betrag()} + '€ an ' + ${transaktion.empfaenger().githubHandle()} + ' bezahlen'">
-                             </span>
-                        </span>
+            <div>
+                <th:block th:each="transaktion : ${gruppe.getTransaktionen()}">
+                    <span class="badge bg-danger rounded-pill"
+                          th:if="${transaktion.sender().githubHandle() == user}"
+                          th:text="|Du musst ${transaktion.betrag() + '€'} an ${transaktion.empfaenger().githubHandle()} bezahlen|">Geld senden</span>
 
-                    <li th:each="transaktion : ${gruppe.getTransaktionen()}" class="list-group-item"
-                        th:if="${transaktion.empfaenger().githubHandle() == user}">
-                    <span th:if="${transaktion.betrag() > T(java.math.BigDecimal).ZERO}">
-                        <span th:class="'badge bg-success'" th:text="${transaktion.sender().githubHandle()} +
-                        ' muss dir' + ' ' + ${transaktion.betrag()} + '€ bezahlen'">
-                            </span>
-                        </span>
-                    </li>
-                </ul>
+                    <span class="badge bg-success rounded-pill"
+                          th:if="${transaktion.empfaenger().githubHandle() == user}"
+                          th:text="|${transaktion.sender().githubHandle()} muss dir ${transaktion.betrag() + '€'} bezahlen|">Geld erhalten</span>
+                </th:block>
             </div>
-        </div>
+        </a>
     </div>
 
     <!-- Liste: Geschlossene Gruppen -->
     <p class="fs-4 text-secondary">Geschlossene Gruppen: </p>
     <div class="list-group">
-        <div class="list-group">
-            <a class="list-group-item list-group-item-action"
-               th:each="gruppe : ${geschlosseneGruppen}"
-               th:href="@{/gruppe(id=${gruppe.getId()})}"
-               th:text="${gruppe.name}">Gruppenname</a>
-        </div>
-
-        <br/>
-
-        <button class="btn btn-primary" data-bs-target="#gruppeErstellenModal" data-bs-toggle="modal" type="button">
-            Gruppe erstellen
-        </button>
+        <a class="list-group-item list-group-item-action"
+           th:each="gruppe : ${geschlosseneGruppen}"
+           th:href="@{/gruppe(id=${gruppe.getId()})}"
+           th:text="${gruppe.name}">Gruppenname</a>
     </div>
+
+    <br/>
+
+    <button class="btn btn-primary" data-bs-target="#gruppeErstellenModal" data-bs-toggle="modal" type="button">
+        Gruppe erstellen
+    </button>
 </div>
 
 <!-- Modal: Gruppe erstellen -->

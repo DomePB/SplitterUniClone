@@ -3,9 +3,13 @@ package de.hhu.ausgabenverwaltung.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
+import de.hhu.ausgabenverwaltung.domain.Ausgabe;
 import de.hhu.ausgabenverwaltung.domain.Gruppe;
 import de.hhu.ausgabenverwaltung.domain.User;
+import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -86,6 +90,23 @@ class GruppenServiceTest {
         Gruppe gesuchteGruppe = gruppenService.findById(id);
         //Assert
         assertThat(gesuchteGruppe).isEqualTo(gruppe);
+    }
+    @Test
+    @DisplayName("Die Salden werden richtig zurueckgegeben")
+    void berechneSaldenTest() throws Exception {
+        //Arrange
+        Gruppe gruppe = gruppenService.gruppeErstellen("test", "testgruppe");
+        User test1 = new User("test1");
+        User test2 = new User("test2");
+        gruppe.addMitglieder(test1);
+        gruppe.addMitglieder(test2);
+        gruppe.ausgabeHinzufuegen(new Ausgabe("ausgabe1","ausgabe2",BigDecimal.TEN,test1,List.of(test2)));
+        UUID id = gruppe.getId();
+        when(repository.findById(id)).thenReturn(gruppe);
+        //Act
+        HashMap<User, BigDecimal> salden = gruppenService.berechneSalden(id);
+        //Assert
+        assertThat(salden).isEqualTo(new HashMap<>(Map.of(test1,new BigDecimal("-10.00"),test2,new BigDecimal("10.00"),new User("test"),BigDecimal.ZERO)));
     }
 }
 

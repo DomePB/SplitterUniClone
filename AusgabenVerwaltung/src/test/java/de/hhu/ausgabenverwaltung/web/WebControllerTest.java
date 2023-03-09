@@ -65,5 +65,18 @@ class WebControllerTest {
                         .andExpect(status().isNotFound());
     }
 
+    @Test
+    @WithMockOAuth2User(login = "JoeSchmoe")
+    @DisplayName("Gruppenübersicht anzeigen, wenn die Gruppe existiert")
+    void test_5()throws Exception{
+        when(service.findById(any())).thenReturn(Gruppe.gruppeErstellen("gruppenName", new User("JoeSchmoe")));
+        final UUID uuid = UUID.randomUUID();
+        mockMvc.perform(MockMvcRequestBuilders.get("/gruppe").with(csrf()).param("id", uuid.toString()))
+                .andExpect(view().name("gruppen-uebersicht"))
+                .andExpect(status().isOk());
+
+    }
+
+
 }
 

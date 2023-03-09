@@ -120,5 +120,19 @@ class GruppenServiceTest {
         //Assert
         assertThat(gruppe.getMitglieder().size()).isEqualTo(2);
     }
+    @Test
+    @DisplayName("Ausgabe wird hinzugefuegt")
+    void addAusgabe() throws Exception {
+        //Arrange
+        Gruppe gruppe = gruppenService.gruppeErstellen("test", "testgruppe");
+        UUID id = gruppe.getId();
+        User user = new User("test1");
+        gruppe.addMitglieder(user);
+        when(repository.findById(id)).thenReturn(gruppe);
+        //Act
+        gruppenService.addAusgabe(id,new Ausgabe("ausgabe1","ausgabe2",BigDecimal.TEN,user,List.of(user)));
+        //Assert
+        assertThat(gruppe.getAusgaben().size()).isEqualTo(1);
+    }
 }
 

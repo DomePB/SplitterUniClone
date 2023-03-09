@@ -49,10 +49,6 @@ public class GruppenService {
         Gruppe gruppe = findById(gruppenId);
         return gruppe.berechneSalden(gruppe.alleSchuldenBerechnen());
     }
-    public Set<Transaktion> berechneTransaktionen(UUID gruppenId) throws Exception {
-        Gruppe gruppe = findById(gruppenId);
-        return gruppe.berechneTransaktionen(berechneSalden(gruppenId));
-    }
     public void addMitglied(UUID gruppenId, String githubHandle) throws Exception {
         Gruppe gruppe = findById(gruppenId);
         gruppe.addMitglieder(new User(githubHandle));
@@ -60,6 +56,12 @@ public class GruppenService {
     public void addAusgabe(UUID gruppenId, Ausgabe ausgabe) throws Exception {
         Gruppe gruppe = findById(gruppenId);
         gruppe.ausgabeHinzufuegen(ausgabe);
+        gruppe.berechneTransaktionen(berechneSalden(gruppenId));
+    }
+
+    public boolean checkMitglied(UUID gruppenId, String githubHandle) throws Exception {
+        Gruppe gruppe = findById(gruppenId);
+        return gruppe.checkMitglied(githubHandle);
     }
 
 }

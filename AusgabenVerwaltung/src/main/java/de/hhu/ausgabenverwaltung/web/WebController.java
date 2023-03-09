@@ -10,6 +10,8 @@ import de.hhu.ausgabenverwaltung.web.models.AusgabeForm;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -55,8 +57,10 @@ public class WebController {
 
         try {
             gruppe = service.findById(id);
+            if(!gruppe.checkMitglied(token.getAttribute("login"))){
+                return "/401";
+            };
             salden = service.berechneSalden(id);
-            service.berechneTransaktionen(id);
         } catch (Exception e) {
             throw new ResponseStatusException(NOT_FOUND, "Gruppe nicht gefunden");
         }

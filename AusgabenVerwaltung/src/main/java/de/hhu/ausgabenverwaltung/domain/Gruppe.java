@@ -262,6 +262,13 @@ public class Gruppe {
         return transaktionen;
     }
 
+    public boolean checkMitglied(String githubHandle){
+        if(mitglieder.contains(new User(githubHandle))){
+            return true;
+        }
+        return false;
+    }
+
 
 
 

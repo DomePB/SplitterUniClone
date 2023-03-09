@@ -161,7 +161,7 @@
             <!-- Button: Mitglied hinzufügen -->
             <button class="btn btn-primary" data-bs-target="#mitgliedhinzufuegenModal"
                     data-bs-toggle="modal"
-                    th:classappend="${gruppe.getAusgaben().isEmpty() || !gruppe.istOffen() ? '' : 'disabled'}"
+                    th:classappend="${!gruppe.getAusgaben().isEmpty() || !gruppe.istOffen() ? 'disabled' : ''}"
                     type="button">
                 Mitglied hinzufügen
             </button>

@@ -4,9 +4,14 @@ import de.hhu.ausgabenverwaltung.domain.Gruppe;
 import de.hhu.ausgabenverwaltung.domain.Transaktion;
 import de.hhu.ausgabenverwaltung.domain.User;
 import de.hhu.ausgabenverwaltung.service.GruppenRepository;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 import org.springframework.stereotype.Repository;
-
-import java.util.*;
 
 @Repository
 public class GruppenRepositoryImp implements GruppenRepository {
@@ -19,6 +24,11 @@ public class GruppenRepositoryImp implements GruppenRepository {
 
     public GruppenRepositoryImp(List<Gruppe> gruppen) {
         this.gruppen = gruppen;
+    }
+
+    @Override
+    public void add(Gruppe gruppe) {
+        gruppen.add(gruppe);
     }
 
     @Override

@@ -13,6 +13,7 @@ import de.hhu.ausgabenverwaltung.domain.User;
 import de.hhu.ausgabenverwaltung.helper.WithMockOAuth2User;
 import de.hhu.ausgabenverwaltung.service.GruppenService;
 
+import java.util.Random;
 import java.util.UUID;
 
 import org.junit.jupiter.api.DisplayName;
@@ -100,8 +101,22 @@ class WebControllerTest {
                         .with(csrf())
                         .param("id", uuid.toString())
                         .param("MitgliedName", "test"))
-                        .andExpect(status().isFound());
+                .andExpect(status().isFound());
+    }
 
+    @Test
+    @WithMockOAuth2User(login = "JoeSchmoe")
+    @DisplayName("Gruppe schliessen, prüft ob das redirect korrekt ist.")
+    void test_8() throws Exception {
+        User user = new User("githubHandle");
+        Gruppe gruppe = Gruppe.gruppeErstellen("gruppename", user);
+        when(service.gruppeErstellen("githubHandle", "")).thenReturn(gruppe);
+
+        mockMvc.perform(post("/gruppe/schliessen")
+                        .with(csrf())
+                        .param("id", gruppe.getId().toString()))
+                        .andExpect(view().name("redirect:/gruppe"))
+                        .andExpect(status().isFound());
     }
 
 }

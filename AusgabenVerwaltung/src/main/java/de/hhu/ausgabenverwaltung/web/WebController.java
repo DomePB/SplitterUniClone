@@ -100,7 +100,7 @@ public class WebController {
     }
 
     @PostMapping("/gruppe/schliessen")
-    public String ausgabeHinzufuegen(@RequestParam UUID id, RedirectAttributes attrs) {
+    public String gruppeSchliessen(@RequestParam UUID id, RedirectAttributes attrs) {
         attrs.addAttribute("id", id);
 
         try {

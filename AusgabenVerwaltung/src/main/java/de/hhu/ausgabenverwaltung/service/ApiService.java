@@ -27,4 +27,9 @@ public class ApiService {
     return gruppen.findById(id);
   }
 
+  public void gruppeSchliessen(UUID gruppenId) throws Exception {
+    Gruppe gruppe = gruppen.findById(gruppenId);
+    gruppe.schliessen();
+  }
+
 }

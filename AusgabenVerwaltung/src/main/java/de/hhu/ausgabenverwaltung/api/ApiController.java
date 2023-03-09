@@ -70,9 +70,13 @@ public class ApiController {
     }
 
     @PostMapping("/api/gruppen/{gruppenId}/schliessen")
-    @ResponseBody
-    public String gruppeSchliessen(@PathVariable UUID gruppenId) {
-        return "Gruppe schliessen";
+    public ResponseEntity<String> gruppeSchliessen(@PathVariable UUID gruppenId) {
+        try {
+            service.gruppeSchliessen(gruppenId);
+            return new ResponseEntity<>("Gruppe geschlossen", HttpStatus.OK);
+        } catch (Exception ex) {
+            return new ResponseEntity<>("Gruppe nicht gefunden", HttpStatus.NOT_FOUND);
+        }
     }
 
     @PostMapping("/api/gruppen/{gruppenId}/auslagen")

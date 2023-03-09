@@ -6,8 +6,9 @@ import de.hhu.ausgabenverwaltung.api.models.GruppeModel;
 import de.hhu.ausgabenverwaltung.domain.Ausgabe;
 import de.hhu.ausgabenverwaltung.domain.Gruppe;
 import de.hhu.ausgabenverwaltung.domain.Transaktion;
-import de.hhu.ausgabenverwaltung.service.ApiService;
+import de.hhu.ausgabenverwaltung.domain.User;
 import de.hhu.ausgabenverwaltung.service.GruppenService;
+import jakarta.validation.Valid;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -18,85 +19,82 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequestMapping("/api")
 public class ApiController {
-
-    @Deprecated
-    private final ApiService service; // TODO: entfernen
 
     private final GruppenService gruppenService;
 
-    public ApiController(ApiService service, GruppenService gruppenService) {
-        this.service = service;
+    public ApiController(GruppenService gruppenService) {
         this.gruppenService = gruppenService;
     }
 
-    @GetMapping("/api")
+    @GetMapping("/")
     @ResponseBody
     public String hello() {
         return "Hello, API!";
     }
 
-    @GetMapping("/api/test")
-    @ResponseBody
-    public String hello2() {
-        return "Hello, API!";
-    }
-
-    @PostMapping("/api/gruppen")
-    public ResponseEntity<UUID> gruppeErstellen(@RequestBody GruppeModel gruppeModel) {
-        Gruppe gruppe = gruppeModel.toGruppe();
-        service.gruppeHinzufuegen(gruppe);
+    @PostMapping("/gruppen")
+    public ResponseEntity<UUID> gruppeErstellen(@Valid @RequestBody GruppeModel gruppeModel) {
+        //Gruppe gruppe = gruppeModel.toGruppe();
+        // TODO: GruppenService - gruppeErstellen anpassen mit List<String>
+        Gruppe gruppe = gruppenService.gruppeErstellen("", gruppeModel.name());
+        gruppe.setMitglieder(
+            gruppeModel.personen().stream().map(User::new).collect(Collectors.toList()));
 
         return new ResponseEntity<>(gruppe.getId(), HttpStatus.CREATED);
     }
 
-    @GetMapping("/api/user/{githubHandle}/gruppen")
+    @GetMapping("/user/{githubHandle}/gruppen")
     public ResponseEntity<List<GruppeModel>> gruppenAnzeigen(@PathVariable String githubHandle) {
-        List<Gruppe> gruppen = service.gruppenVonUser(githubHandle); // TODO: Falsche methode
+        List<Gruppe> gruppen = gruppenService.gruppenVonUser(githubHandle);
         List<GruppeModel> gruppeModels =
             gruppen.stream().map(GruppeModel::fromGruppe).collect(Collectors.toList());
 
         return new ResponseEntity<>(gruppeModels, HttpStatus.OK);
     }
 
-    @GetMapping("/api/gruppen/{gruppenId}")
-    public ResponseEntity<GruppeModel> gruppenInfo(@PathVariable UUID gruppenId) {
+    @GetMapping("/gruppen/{gruppenId}")
+    public ResponseEntity<GruppeModel> gruppenInfo(@PathVariable String gruppenId) {
         try {
-            Gruppe gruppe = service.findById(gruppenId);
+            Gruppe gruppe = gruppenService.findById(UUID.fromString(gruppenId));
             GruppeModel gruppeModel = GruppeModel.fromGruppe(gruppe);
             return new ResponseEntity<>(gruppeModel, HttpStatus.OK);
-
         } catch (Exception ex) {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
     }
 
-    @PostMapping("/api/gruppen/{gruppenId}/schliessen")
-    public ResponseEntity<String> gruppeSchliessen(@PathVariable UUID gruppenId) {
+    @PostMapping("/gruppen/{gruppenId}/schliessen")
+    public ResponseEntity<String> gruppeSchliessen(@PathVariable String gruppenId) {
         try {
-            service.gruppeSchliessen(gruppenId);
+            gruppenService.gruppeSchliessen(UUID.fromString(gruppenId));
             return new ResponseEntity<>("Gruppe geschlossen", HttpStatus.OK);
         } catch (Exception ex) {
             return new ResponseEntity<>("Gruppe nicht gefunden", HttpStatus.NOT_FOUND);
         }
     }
 
-    @PostMapping("/api/gruppen/{gruppenId}/auslagen")
-    public ResponseEntity<String> auslageEintragen(@PathVariable UUID gruppenId,
-                                                   @RequestBody AuslagenModel auslagenModel) {
+    @PostMapping("/gruppen/{gruppenId}/auslagen")
+    public ResponseEntity<String> auslageEintragen(@PathVariable String gruppenId,
+                                                   @Valid @RequestBody
+                                                   AuslagenModel auslagenModel) {
         Ausgabe ausgabe = auslagenModel.toAusgabe();
 
         try {
-            if (!gruppenService.istOffen(gruppenId)) {
+            UUID id = UUID.fromString(gruppenId);
+
+            if (!gruppenService.istOffen(id)) {
                 return new ResponseEntity<>("Die Gruppe ist bereits geschlossen",
                     HttpStatus.CONFLICT);
             }
 
-            gruppenService.addAusgabe(gruppenId, ausgabe);
+            gruppenService.addAusgabe(id, ausgabe);
         } catch (Exception ex) {
             return new ResponseEntity<>("Die Gruppe ist nicht vorhanden", HttpStatus.NOT_FOUND);
         }
@@ -104,10 +102,10 @@ public class ApiController {
         return new ResponseEntity<>("Die Ausgabe wurde korrekt eingetragen", HttpStatus.CREATED);
     }
 
-    @GetMapping("/api/gruppen/{gruppenId}/ausgleich")
-    public ResponseEntity<List<AusgleichModel>> ausgleichBerechnen(@PathVariable UUID gruppenId) {
+    @GetMapping("/gruppen/{gruppenId}/ausgleich")
+    public ResponseEntity<List<AusgleichModel>> ausgleichBerechnen(@PathVariable String gruppenId) {
         try {
-            Gruppe gruppe = gruppenService.findById(gruppenId);
+            Gruppe gruppe = gruppenService.findById(UUID.fromString(gruppenId));
             Set<Transaktion> transaktionen = gruppe.getTransaktionen();
             List<AusgleichModel> ausgleichZahlungen =
                 transaktionen.stream().map(AusgleichModel::fromTransaktion)

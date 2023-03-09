@@ -75,6 +75,17 @@ class GruppenServiceTest {
         //Assert
         assertThat(offenVonUser).contains(gruppe);
     }
-
+    @Test
+    @DisplayName("Die richtige Gruppe wird mit id gefunden")
+    void findByIdTest() throws Exception {
+        //Arrange
+        Gruppe gruppe = gruppenService.gruppeErstellen("test", "testgruppe");
+        UUID id = gruppe.getId();
+        when(repository.findById(id)).thenReturn(gruppe);
+        //Act
+        Gruppe gesuchteGruppe = gruppenService.findById(id);
+        //Assert
+        assertThat(gesuchteGruppe).isEqualTo(gruppe);
+    }
 }
 

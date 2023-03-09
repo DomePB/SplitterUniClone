@@ -3,9 +3,13 @@ package de.hhu.ausgabenverwaltung.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
+import de.hhu.ausgabenverwaltung.domain.Ausgabe;
 import de.hhu.ausgabenverwaltung.domain.Gruppe;
 import de.hhu.ausgabenverwaltung.domain.User;
+import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -75,6 +79,74 @@ class GruppenServiceTest {
         //Assert
         assertThat(offenVonUser).contains(gruppe);
     }
-
+    @Test
+    @DisplayName("Die richtige Gruppe wird mit id gefunden")
+    void findByIdTest() throws Exception {
+        //Arrange
+        Gruppe gruppe = gruppenService.gruppeErstellen("test", "testgruppe");
+        UUID id = gruppe.getId();
+        when(repository.findById(id)).thenReturn(gruppe);
+        //Act
+        Gruppe gesuchteGruppe = gruppenService.findById(id);
+        //Assert
+        assertThat(gesuchteGruppe).isEqualTo(gruppe);
+    }
+    @Test
+    @DisplayName("Die Salden werden richtig zurueckgegeben")
+    void berechneSaldenTest() throws Exception {
+        //Arrange
+        Gruppe gruppe = gruppenService.gruppeErstellen("test", "testgruppe");
+        User test1 = new User("test1");
+        User test2 = new User("test2");
+        gruppe.addMitglieder(test1);
+        gruppe.addMitglieder(test2);
+        gruppe.ausgabeHinzufuegen(new Ausgabe("ausgabe1","ausgabe2",BigDecimal.TEN,test1,List.of(test2)));
+        UUID id = gruppe.getId();
+        when(repository.findById(id)).thenReturn(gruppe);
+        //Act
+        HashMap<User, BigDecimal> salden = gruppenService.berechneSalden(id);
+        //Assert
+        assertThat(salden).isEqualTo(new HashMap<>(Map.of(test1,new BigDecimal("-10.00"),test2,new BigDecimal("10.00"),new User("test"),BigDecimal.ZERO)));
+    }
+    @Test
+    @DisplayName("Mitglied wird hinzugefuegt")
+    void addMitgliedTest() throws Exception {
+        //Arrange
+        Gruppe gruppe = gruppenService.gruppeErstellen("test", "testgruppe");
+        UUID id = gruppe.getId();
+        when(repository.findById(id)).thenReturn(gruppe);
+        //Act
+        gruppenService.addMitglied(id,"test1");
+        //Assert
+        assertThat(gruppe.getMitglieder().size()).isEqualTo(2);
+    }
+    @Test
+    @DisplayName("Ausgabe wird hinzugefuegt")
+    void addAusgabe() throws Exception {
+        //Arrange
+        Gruppe gruppe = gruppenService.gruppeErstellen("test", "testgruppe");
+        UUID id = gruppe.getId();
+        User user = new User("test1");
+        gruppe.addMitglieder(user);
+        when(repository.findById(id)).thenReturn(gruppe);
+        //Act
+        gruppenService.addAusgabe(id,new Ausgabe("ausgabe1","ausgabe2",BigDecimal.TEN,user,List.of(user)));
+        //Assert
+        assertThat(gruppe.getAusgaben().size()).isEqualTo(1);
+    }
+    @Test
+    @DisplayName("Mitglieder Check")
+    void checkMitglied() throws Exception {
+        //Arrange
+        Gruppe gruppe = gruppenService.gruppeErstellen("test", "testgruppe");
+        UUID id = gruppe.getId();
+        User user = new User("test1");
+        gruppe.addMitglieder(user);
+        when(repository.findById(id)).thenReturn(gruppe);
+        //Act
+        boolean checkMitglied = gruppenService.checkMitglied(id, "test1");
+        //Assert
+        assertThat(checkMitglied).isTrue();
+    }
 }
 

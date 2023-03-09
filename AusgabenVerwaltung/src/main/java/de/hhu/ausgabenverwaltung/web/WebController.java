@@ -87,7 +87,7 @@ public class WebController {
 
     @PostMapping("/gruppe/mitglieder")
     public String userHinzufuegen(@RequestParam UUID id,
-                                  @RequestParam(name = "MitgliedName") String name,
+                                  @RequestParam(name = "mitgliedName") String name,
                                   RedirectAttributes attrs) {
         try {
             Gruppe gruppe = service.findById(id);

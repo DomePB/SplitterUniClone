@@ -13,7 +13,6 @@ import de.hhu.ausgabenverwaltung.domain.User;
 import de.hhu.ausgabenverwaltung.helper.WithMockOAuth2User;
 import de.hhu.ausgabenverwaltung.service.GruppenService;
 
-import java.util.Random;
 import java.util.UUID;
 
 import org.junit.jupiter.api.DisplayName;
@@ -38,7 +37,7 @@ class WebControllerTest {
     @Test
     @WithMockOAuth2User(login = "JoeSchmoe")
     @DisplayName("Gruppe erstellen, prüft ob das redirect korrekt ist.")
-    void gruppeErstellenTest() throws Exception {
+    void test_1() throws Exception {
         User user = new User("githubHandle");
         Gruppe gruppe = Gruppe.gruppeErstellen("gruppename", user);
         when(service.gruppeErstellen("githubHandle", "")).thenReturn(gruppe);
@@ -100,7 +99,7 @@ class WebControllerTest {
         mockMvc.perform(MockMvcRequestBuilders.post("/gruppe/mitglieder")
                         .with(csrf())
                         .param("id", uuid.toString())
-                        .param("MitgliedName", "test"))
+                        .param("mitgliedName", "test"))
                 .andExpect(status().isFound());
     }
 
@@ -115,8 +114,23 @@ class WebControllerTest {
         mockMvc.perform(post("/gruppe/schliessen")
                         .with(csrf())
                         .param("id", gruppe.getId().toString()))
-                        .andExpect(view().name("redirect:/gruppe"))
-                        .andExpect(status().isFound());
+                .andExpect(view().name("redirect:/gruppe"))
+                .andExpect(status().isFound());
+    }
+
+    @Test
+    @WithMockOAuth2User(login = "JoeSchmoe")
+    @DisplayName("Prüfe ob beim Gruppe schliessen man zu /gruppe redirected wird")
+    void test_9() throws Exception {
+        User user = new User("githubHandle");
+        Gruppe gruppe = Gruppe.gruppeErstellen("gruppename", user);
+        when(service.gruppeErstellen("githubHandle", "")).thenReturn(gruppe);
+
+        mockMvc.perform(post("/gruppe/schliessen")
+                        .with(csrf())
+                        .param("id", gruppe.getId().toString()))
+                .andExpect(view().name("redirect:/gruppe"))
+                .andExpect(status().isFound());
     }
 
 }

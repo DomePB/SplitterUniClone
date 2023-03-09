@@ -64,6 +64,17 @@ class GruppenServiceTest {
         //Assert
         assertThat(geschlossenVonUser).contains(gruppe);
     }
+    @Test
+    @DisplayName("Werden die offenen Gruppen von User richtig rausgegeben")
+    void offenVonUserTest() throws Exception {
+        //Arrange
+        Gruppe gruppe = gruppenService.gruppeErstellen("test", "testgruppe");
+        when(repository.offenVonUser(new User("test"))).thenReturn(List.of(gruppe));
+        //Act
+        List<Gruppe> offenVonUser = gruppenService.offenVonUser("test");
+        //Assert
+        assertThat(offenVonUser).contains(gruppe);
+    }
 
 }
 

@@ -57,7 +57,7 @@ public class WebController {
 
         try {
             gruppe = service.findById(id);
-            if(!gruppe.checkMitglied(token.getAttribute("login"))){
+            if(!service.checkMitglied(id,token.getAttribute("login"))){
                 return "/401";
             };
             salden = service.berechneSalden(id);

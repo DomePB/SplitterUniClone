@@ -3,16 +3,25 @@ package de.hhu.ausgabenverwaltung.api.models;
 import de.hhu.ausgabenverwaltung.domain.Ausgabe;
 import de.hhu.ausgabenverwaltung.domain.User;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public record AuslagenModel(String grund, String glaeubiger, int cent, List<String> schuldner) {
 
-    AuslagenModel fromAusgabe(Ausgabe ausgabe) {
+    public static AuslagenModel fromAusgabe(Ausgabe ausgabe) {
         return new AuslagenModel(ausgabe.name(),
-                ausgabe.bezahltVon().githubHandle(),
-                ausgabe.betrag().multiply(BigDecimal.TEN).intValue(),
-                ausgabe.beteiligte().stream().map(User::githubHandle).collect(Collectors.toList()));
+            ausgabe.bezahltVon().githubHandle(),
+            ausgabe.betrag().multiply(BigDecimal.TEN).intValue(),
+            ausgabe.beteiligte().stream().map(User::githubHandle).collect(Collectors.toList()));
+    }
+
+    public Ausgabe toAusgabe() {
+        return new Ausgabe(grund,
+            "",
+            new BigDecimal(cent).divide(new BigDecimal(100), 2, RoundingMode.HALF_UP),
+            new User(glaeubiger),
+            schuldner.stream().map(User::new).collect(Collectors.toList()));
     }
 
 }

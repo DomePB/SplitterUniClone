@@ -3,6 +3,8 @@ package de.hhu.ausgabenverwaltung.api;
 import de.hhu.ausgabenverwaltung.api.models.AusgleichModel;
 import de.hhu.ausgabenverwaltung.api.models.AuslagenModel;
 import de.hhu.ausgabenverwaltung.api.models.GruppeModel;
+import de.hhu.ausgabenverwaltung.domain.Ausgabe;
+import de.hhu.ausgabenverwaltung.domain.Gruppe;
 import de.hhu.ausgabenverwaltung.service.GruppenService;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,13 +27,15 @@ public class ApiController {
 
     @GetMapping("/api")
     @ResponseBody
-    public String ping() {
+    public String hello() {
         return "Hello, API!";
     }
 
     @PostMapping("/api/gruppen")
     @ResponseBody
     public String gruppeErstellen(@RequestBody GruppeModel gruppeModel) {
+        Gruppe gruppe = gruppeModel.toGruppe();
+
         return "Gruppe erstellen";
     }
 
@@ -56,6 +60,8 @@ public class ApiController {
     @PostMapping("/api/gruppen/{gruppenId}/auslagen")
     @ResponseBody
     public String auslageEintragen(@RequestBody AuslagenModel auslagenModel) {
+        Ausgabe ausgabe = auslagenModel.toAusgabe();
+
         return "Auslage eintragen";
     }
 

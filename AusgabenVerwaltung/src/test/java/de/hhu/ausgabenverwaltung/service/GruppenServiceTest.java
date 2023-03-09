@@ -108,5 +108,17 @@ class GruppenServiceTest {
         //Assert
         assertThat(salden).isEqualTo(new HashMap<>(Map.of(test1,new BigDecimal("-10.00"),test2,new BigDecimal("10.00"),new User("test"),BigDecimal.ZERO)));
     }
+    @Test
+    @DisplayName("Mitglied wird hinzugefuegt")
+    void addMitgliedTest() throws Exception {
+        //Arrange
+        Gruppe gruppe = gruppenService.gruppeErstellen("test", "testgruppe");
+        UUID id = gruppe.getId();
+        when(repository.findById(id)).thenReturn(gruppe);
+        //Act
+        gruppenService.addMitglied(id,"test1");
+        //Assert
+        assertThat(gruppe.getMitglieder().size()).isEqualTo(2);
+    }
 }
 

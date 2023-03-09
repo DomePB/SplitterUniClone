@@ -85,7 +85,7 @@ public class WebController {
         }
     }
 
-    @PostMapping("/gruppe/Mitglieder")
+    @PostMapping("/gruppe/mitglieder")
     public String userHinzufuegen(@RequestParam UUID id,
                                   @RequestParam(name = "MitgliedName") String name,
                                   RedirectAttributes attrs) {

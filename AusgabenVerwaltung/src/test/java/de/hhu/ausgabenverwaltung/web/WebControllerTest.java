@@ -12,7 +12,9 @@ import de.hhu.ausgabenverwaltung.domain.Gruppe;
 import de.hhu.ausgabenverwaltung.domain.User;
 import de.hhu.ausgabenverwaltung.helper.WithMockOAuth2User;
 import de.hhu.ausgabenverwaltung.service.GruppenService;
+
 import java.util.UUID;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,11 +39,11 @@ class WebControllerTest {
     @DisplayName("Gruppe erstellen, prüft ob das redirect korrekt ist.")
     void gruppeErstellenTest() throws Exception {
         User user = new User("githubHandle");
-        Gruppe gruppe = Gruppe.gruppeErstellen("gruppename",user);
-        when(service.gruppeErstellen("githubHandle","")).thenReturn(gruppe);
+        Gruppe gruppe = Gruppe.gruppeErstellen("gruppename", user);
+        when(service.gruppeErstellen("githubHandle", "")).thenReturn(gruppe);
 
         mockMvc.perform(
-                post("/").with(csrf()).param("gruppenName", "gruppenName"))
+                        post("/").with(csrf()).param("gruppenName", "gruppenName"))
                 .andExpect(view().name("redirect:/"))
                 .andExpect(status().isFound());
     }
@@ -58,17 +60,17 @@ class WebControllerTest {
     @Test
     @WithMockOAuth2User(login = "JoeSchmoe")
     @DisplayName("Exception werfen, wenn Gruppe nicht gefundnen wird.")
-    void test_4() throws Exception{
+    void test_4() throws Exception {
         when(service.findById(any())).thenThrow(new Exception("Gruppe existiert nicht"));
         final UUID uuid = UUID.randomUUID();
         mockMvc.perform(MockMvcRequestBuilders.get("/gruppe").with(csrf()).param("id", uuid.toString()))
-                        .andExpect(status().isNotFound());
+                .andExpect(status().isNotFound());
     }
 
     @Test
     @WithMockOAuth2User(login = "JoeSchmoe")
     @DisplayName("Gruppenübersicht anzeigen, wenn die Gruppe existiert")
-    void test_5()throws Exception{
+    void test_5() throws Exception {
         when(service.findById(any())).thenReturn(Gruppe.gruppeErstellen("gruppenName", new User("JoeSchmoe")));
         final UUID uuid = UUID.randomUUID();
         mockMvc.perform(MockMvcRequestBuilders.get("/gruppe").with(csrf()).param("id", uuid.toString()))
@@ -77,6 +79,30 @@ class WebControllerTest {
 
     }
 
+    @Test
+    @WithMockOAuth2User(login = "JoeSchmoe")
+    @DisplayName("Bei Ausgabe hinzufügen wird man zu gruppen-uebersicht redirected")
+    void test_6() throws Exception {
+        when(service.findById(any())).thenReturn(Gruppe.gruppeErstellen("gruppenName", new User("JoeSchmoe")));
+        final UUID uuid = UUID.randomUUID();
+        mockMvc.perform(MockMvcRequestBuilders.post("/gruppe/ausgaben").with(csrf()).param("id", uuid.toString()))
+                .andExpect(status().isFound());
+
+    }
+
+    @Test
+    @WithMockOAuth2User(login = "JoeSchmoe")
+    @DisplayName("Bei Mitglieder hinzufügen wird man zu gruppen-uebersicht redirected")
+    void test_7() throws Exception {
+        when(service.findById(any())).thenReturn(Gruppe.gruppeErstellen("gruppenName", new User("JoeSchmoe")));
+        final UUID uuid = UUID.randomUUID();
+        mockMvc.perform(MockMvcRequestBuilders.post("/gruppe/mitglieder")
+                        .with(csrf())
+                        .param("id", uuid.toString())
+                        .param("MitgliedName", "test"))
+                        .andExpect(status().isFound());
+
+    }
 
 }
 

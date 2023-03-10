@@ -8,13 +8,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.hhu.ausgabenverwaltung.api.models.AuslagenModel;
 import de.hhu.ausgabenverwaltung.api.models.GruppeModel;
-import de.hhu.ausgabenverwaltung.domain.Ausgabe;
 import de.hhu.ausgabenverwaltung.domain.Gruppe;
 import de.hhu.ausgabenverwaltung.domain.User;
 import de.hhu.ausgabenverwaltung.service.GruppenService;
 
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -145,6 +145,25 @@ public class ApiControllerTest {
                     .contentType(MediaType.APPLICATION_JSON)
                     .content("")).andExpect(status().isBadRequest());
   }
+
+  @Test
+  @DisplayName("Ausgleichen Test")
+  void test_8() throws Exception {
+    Gruppe gruppe = Gruppe.gruppeErstellen("gruppenName", Set.of());
+    when(service.berechneTransaktionen(gruppe.getId())).thenReturn(Set.of());
+    mockMvc.perform(
+            MockMvcRequestBuilders.get("/api/gruppen/{gruppenId}/ausgleich", gruppe.getId()))
+                    .andExpect(status().isOk());
+  }
+
+    @Test
+    @DisplayName("Ausgleichen Test")
+    void test_9() throws Exception {
+        when(service.berechneTransaktionen(any())).thenThrow(new Exception(""));
+        mockMvc.perform(
+                        MockMvcRequestBuilders.get("/api/gruppen/{gruppenId}/ausgleich", UUID.randomUUID()))
+                .andExpect(status().isNotFound());
+    }
 
 
 }

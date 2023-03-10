@@ -11,17 +11,17 @@ import java.util.UUID;
 
 public interface GruppenRepository {
 
-    void add(Gruppe gruppe);
+  void add(Gruppe gruppe);
 
-    List<Gruppe> vonUser(User user);
+  List<Gruppe> vonUser(User user);
 
-    List<Gruppe> offenVonUser(User user);
+  List<Gruppe> offenVonUser(User user);
 
-    List<Gruppe> geschlossenVonUser(User user);
+  List<Gruppe> geschlossenVonUser(User user);
 
-    List<Gruppe> findAll();
+  List<Gruppe> findAll();
 
-    Gruppe findById(UUID id) throws Exception;
+  Gruppe findById(UUID id) throws Exception;
 
-    Map<Gruppe, Set<Transaktion>> getBeteiligteTransaktionen(User user);
+  Map<Gruppe, Set<Transaktion>> getBeteiligteTransaktionen(User user);
 }

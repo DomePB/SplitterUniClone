@@ -83,12 +83,15 @@ public class GruppenRepositoryImp implements GruppenRepository {
         }
         throw new NoSuchElementException("Gruppe existiert nicht");
     }
+
     public Map<Gruppe, Set<Transaktion>> getBeteiligteTransaktionen(User user) {
         Map<Gruppe, Set<Transaktion>> userTransaktinen = new HashMap<>();
         for (Gruppe gruppe : gruppen) {
             Set<Transaktion> temp = new HashSet<>();
             if (gruppe.getMitglieder().contains(user)) {
-                Set<Transaktion> groupeTransaktionen = gruppe.berechneTransaktionen(gruppe.berechneSalden(gruppe.alleSchuldenBerechnen()));
+                Set<Transaktion> groupeTransaktionen =
+                    gruppe.berechneTransaktionen(
+                        gruppe.berechneSalden(gruppe.alleSchuldenBerechnen()));
                 for (Transaktion t : groupeTransaktionen) {
                     if (t.sender().equals(user) || t.empfaenger().equals(user)) {
                         temp.add(t);

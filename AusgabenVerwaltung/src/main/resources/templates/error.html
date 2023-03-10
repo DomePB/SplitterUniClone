@@ -11,16 +11,16 @@
 <h2>Fehler ist aufgetreten</h2>
 <th:block th:switch="${status}">
 
-    <div th:case="401" class="alert alert-warning" role="alert">
+    <div class="alert alert-warning" role="alert" th:case="401">
         Unauthorized!
     </div>
-    <div th:case="404" class="alert alert-warning" role="alert">
+    <div class="alert alert-warning" role="alert" th:case="404">
         Die Seite wurde nicht gefunden!
     </div>
-    <div th:case="409" class="alert alert-warning" role="alert">
+    <div class="alert alert-warning" role="alert" th:case="409">
         eine Konflikt ist aufgetretten!
     </div>
-    <div th:case="400" class="alert alert-warning" role="alert">
+    <div class="alert alert-warning" role="alert" th:case="400">
         Bad Request!
     </div>
 

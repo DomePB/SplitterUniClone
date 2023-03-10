@@ -7,16 +7,16 @@ import java.math.RoundingMode;
 
 public record AusgleichModel(String von, String an, int cents) {
 
-    public static AusgleichModel fromTransaktion(Transaktion transaktion) {
-        return new AusgleichModel(transaktion.sender().githubHandle(),
-            transaktion.empfaenger().githubHandle(),
-            transaktion.betrag().multiply(new BigDecimal(100)).intValue());
-    }
+  public static AusgleichModel fromTransaktion(Transaktion transaktion) {
+    return new AusgleichModel(transaktion.sender().githubHandle(),
+        transaktion.empfaenger().githubHandle(),
+        transaktion.betrag().multiply(new BigDecimal(100)).intValue());
+  }
 
-    public Transaktion toTransaktion() {
-        return new Transaktion(new User(von),
-            new User(an),
-            new BigDecimal(cents).divide(new BigDecimal(100), 2, RoundingMode.HALF_UP));
-    }
+  public Transaktion toTransaktion() {
+    return new Transaktion(new User(von),
+        new User(an),
+        new BigDecimal(cents).divide(new BigDecimal(100), 2, RoundingMode.HALF_UP));
+  }
 
 }

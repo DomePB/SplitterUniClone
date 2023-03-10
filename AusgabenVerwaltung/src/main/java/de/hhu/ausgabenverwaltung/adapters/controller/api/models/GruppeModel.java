@@ -12,14 +12,14 @@ public record GruppeModel(String gruppe, @NotNull String name,
                           @NotNull @NotEmpty Set<String> personen, Boolean geschlossen,
                           List<AuslagenModel> ausgaben) {
 
-    public static GruppeModel fromGruppe(Gruppe gruppe) {
-        return new GruppeModel(gruppe.getId().toString(),
-            gruppe.getName(),
-            gruppe.getMitglieder().stream().map(User::githubHandle)
-                .collect(Collectors.toSet()),
-            !gruppe.istOffen(),
-            gruppe.getAusgaben().stream().map(AuslagenModel::fromAusgabe)
-                .collect(Collectors.toList()));
-    }
+  public static GruppeModel fromGruppe(Gruppe gruppe) {
+    return new GruppeModel(gruppe.getId().toString(),
+        gruppe.getName(),
+        gruppe.getMitglieder().stream().map(User::githubHandle)
+            .collect(Collectors.toSet()),
+        !gruppe.istOffen(),
+        gruppe.getAusgaben().stream().map(AuslagenModel::fromAusgabe)
+            .collect(Collectors.toList()));
+  }
 
 }

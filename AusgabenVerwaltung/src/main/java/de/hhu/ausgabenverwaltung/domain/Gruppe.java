@@ -65,7 +65,6 @@ public class Gruppe {
     }
 
 
-
     public void ausgabeHinzufuegen(Ausgabe ausgabe) {
         if (!offen) {
             return;
@@ -75,9 +74,9 @@ public class Gruppe {
 
     public BigDecimal summeVonUser(User user) {
         return ausgaben.stream()
-                .filter(ausgabe -> ausgabe.bezahltVon().equals(user))
-                .map(Ausgabe::betrag)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+            .filter(ausgabe -> ausgabe.bezahltVon().equals(user))
+            .map(Ausgabe::betrag)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
 
@@ -92,8 +91,8 @@ public class Gruppe {
                     }
                     BigDecimal userSumme = schuldner.getOrDefault(useri, BigDecimal.ZERO);
                     userSumme = userSumme.add(
-                            ausgabe.betrag().divide(new BigDecimal(ausgabe.beteiligte().size()),2,
-                                    RoundingMode.HALF_UP));
+                        ausgabe.betrag().divide(new BigDecimal(ausgabe.beteiligte().size()), 2,
+                            RoundingMode.HALF_UP));
                     schuldner.put(useri, userSumme);
 
                 }
@@ -119,7 +118,8 @@ public class Gruppe {
         return schulden;
     }
 
-    public HashMap<User, BigDecimal> berechneSalden(HashMap<User, HashMap<User, BigDecimal>> alleSchulden) {
+    public HashMap<User, BigDecimal> berechneSalden(
+        HashMap<User, HashMap<User, BigDecimal>> alleSchulden) {
         HashMap<User, BigDecimal> schuldenSumme = new HashMap<>();
         // Iteriere durch alle Spalten der Tabelle
         for (var entry : alleSchulden.entrySet()) {
@@ -153,15 +153,15 @@ public class Gruppe {
 
                 // Sind Empfänger und Sender gleich?
                 if (empfaengerEntry.getValue().add(senderEntry.getValue())
-                        .equals(BigDecimal.ZERO)) {
+                    .equals(BigDecimal.ZERO)) {
                     if (empfaengerEntry.getValue().compareTo(BigDecimal.ZERO) < 0) {
                         transaktionen.add(
-                                new Transaktion(senderEntry.getKey(), empfaengerEntry.getKey(),
-                                        empfaengerEntry.getValue().multiply(new BigDecimal(-1))));
+                            new Transaktion(senderEntry.getKey(), empfaengerEntry.getKey(),
+                                empfaengerEntry.getValue().multiply(new BigDecimal(-1))));
                     } else if (empfaengerEntry.getValue().compareTo(BigDecimal.ZERO) > 0) {
                         transaktionen.add(
-                                new Transaktion(empfaengerEntry.getKey(), senderEntry.getKey(),
-                                        senderEntry.getValue().multiply(new BigDecimal(-1))));
+                            new Transaktion(empfaengerEntry.getKey(), senderEntry.getKey(),
+                                senderEntry.getValue().multiply(new BigDecimal(-1))));
                     }
 
                     salden.put(empfaengerEntry.getKey(), BigDecimal.ZERO);
@@ -194,21 +194,21 @@ public class Gruppe {
 
                 // Fälle behandeln
                 if (senderEntry.getValue().add(empfaengerEntry.getValue())
-                        .compareTo(BigDecimal.ZERO) < 0) {
+                    .compareTo(BigDecimal.ZERO) < 0) {
                     // Schulden von sender sind kleiner als Einnahmen von empfaenger
                     transaktionen.add(
-                            new Transaktion(senderEntry.getKey(), empfaengerEntry.getKey(),
-                                    senderEntry.getValue()));
+                        new Transaktion(senderEntry.getKey(), empfaengerEntry.getKey(),
+                            senderEntry.getValue()));
                     salden.put(empfaengerEntry.getKey(),
-                            senderEntry.getValue().add(empfaengerEntry.getValue()));
+                        senderEntry.getValue().add(empfaengerEntry.getValue()));
                     salden.put(senderEntry.getKey(), BigDecimal.ZERO);
                 } else {
                     // Schulden von sender sind größer als Einnahmen von empfaenger
                     transaktionen.add(
-                            new Transaktion(senderEntry.getKey(), empfaengerEntry.getKey(),
-                                    empfaengerEntry.getValue().multiply(new BigDecimal(-1))));
+                        new Transaktion(senderEntry.getKey(), empfaengerEntry.getKey(),
+                            empfaengerEntry.getValue().multiply(new BigDecimal(-1))));
                     salden.put(senderEntry.getKey(),
-                            senderEntry.getValue().add(empfaengerEntry.getValue()));
+                        senderEntry.getValue().add(empfaengerEntry.getValue()));
                     salden.put(empfaengerEntry.getKey(), BigDecimal.ZERO);
                 }
             }
@@ -217,12 +217,9 @@ public class Gruppe {
         return transaktionen;
     }
 
-    public boolean checkMitglied(String githubHandle){
+    public boolean checkMitglied(String githubHandle) {
         return mitglieder.contains(new User(githubHandle));
     }
-
-
-
 
 
     @Override
@@ -235,7 +232,7 @@ public class Gruppe {
         }
         Gruppe gruppe = (Gruppe) o;
         return name.equals(gruppe.name) && ausgaben.equals(gruppe.ausgaben) &&
-                mitglieder.equals(gruppe.mitglieder);
+            mitglieder.equals(gruppe.mitglieder);
     }
 
     @Override

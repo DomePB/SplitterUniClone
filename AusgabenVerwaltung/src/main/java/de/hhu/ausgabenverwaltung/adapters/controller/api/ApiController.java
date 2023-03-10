@@ -3,10 +3,10 @@ package de.hhu.ausgabenverwaltung.adapters.controller.api;
 import de.hhu.ausgabenverwaltung.adapters.controller.api.models.AusgleichModel;
 import de.hhu.ausgabenverwaltung.adapters.controller.api.models.AuslagenModel;
 import de.hhu.ausgabenverwaltung.adapters.controller.api.models.GruppeModel;
+import de.hhu.ausgabenverwaltung.application.service.GruppenService;
 import de.hhu.ausgabenverwaltung.domain.Ausgabe;
 import de.hhu.ausgabenverwaltung.domain.Gruppe;
 import de.hhu.ausgabenverwaltung.domain.Transaktion;
-import de.hhu.ausgabenverwaltung.application.service.GruppenService;
 import jakarta.validation.Valid;
 import java.util.List;
 import java.util.Set;
@@ -42,10 +42,10 @@ public class ApiController {
     public ResponseEntity<UUID> gruppeErstellen(@Valid @RequestBody GruppeModel gruppeModel) {
         try {
             Gruppe gruppe =
-                    gruppenService.gruppeErstellen(gruppeModel.personen(), gruppeModel.name());
+                gruppenService.gruppeErstellen(gruppeModel.personen(), gruppeModel.name());
             return new ResponseEntity<>(gruppe.getId(), HttpStatus.CREATED);
-        }catch (Exception e){
-            return new ResponseEntity<>(null,HttpStatus.BAD_REQUEST); //not sure if correct status
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST); //not sure if correct status
         }
 
     }

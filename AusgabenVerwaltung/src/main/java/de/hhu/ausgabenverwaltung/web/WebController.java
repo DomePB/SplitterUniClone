@@ -1,6 +1,5 @@
 package de.hhu.ausgabenverwaltung.web;
 
-import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
@@ -10,16 +9,12 @@ import de.hhu.ausgabenverwaltung.domain.Transaktion;
 import de.hhu.ausgabenverwaltung.domain.User;
 import de.hhu.ausgabenverwaltung.service.GruppenService;
 import de.hhu.ausgabenverwaltung.web.models.AusgabeForm;
-
 import java.math.BigDecimal;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
-
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
@@ -53,7 +48,8 @@ public class WebController {
 
     @PostMapping("/")
     public String gruppeErstellen(String gruppenName, @AuthenticationPrincipal OAuth2User token) {
-        service.gruppeErstellen(token.getAttribute("login"), gruppenName);
+        String githubHandle = token.getAttribute("login");
+        service.gruppeErstellen(githubHandle, gruppenName);
         return "redirect:/";
     }
 
@@ -67,7 +63,7 @@ public class WebController {
             gruppe = service.findById(id);
             if(!service.checkMitglied(id,token.getAttribute("login"))){
                 throw new ResponseStatusException(UNAUTHORIZED, "Nicht Authoriziert auf die Gruppe zuzugreifen");
-            };
+            }
             salden = service.berechneSalden(id);
             transaktionen = service.berechneTransaktionen(id);
         } catch (Exception e) {

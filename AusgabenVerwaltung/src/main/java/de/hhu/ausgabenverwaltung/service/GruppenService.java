@@ -5,6 +5,7 @@ import de.hhu.ausgabenverwaltung.domain.Gruppe;
 import de.hhu.ausgabenverwaltung.domain.Transaktion;
 import de.hhu.ausgabenverwaltung.domain.User;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,20 +17,19 @@ import org.springframework.stereotype.Service;
 public class GruppenService {
     private final GruppenRepository gruppen;
 
-    public GruppenService(GruppenRepository gruppen){
-        this.gruppen =  gruppen;
+    public GruppenService(GruppenRepository gruppen) {
+        this.gruppen = gruppen;
     }
 
-    public List<Gruppe> getGruppen() {
-        return gruppen.findAll();
+    public Gruppe gruppeErstellen(List<String> mitglieder, String name) {
+        Gruppe gruppe = Gruppe.gruppeErstellen(name, mitglieder.stream().map(User::new).toList());
+        gruppen.add(gruppe);
+        return gruppe;
     }
-
 
     public Gruppe gruppeErstellen(String ersteller, String name) {
-        Gruppe gruppe = Gruppe.gruppeErstellen(name, new User(ersteller));
-        gruppen.findAll().add(gruppe);
-        return gruppe;
-    } //Application Service
+        return gruppeErstellen(new ArrayList<>(List.of(ersteller)), name);
+    }
 
     public void gruppeSchliessen(UUID gruppenId) throws Exception {
         Gruppe gruppe = findById(gruppenId);

@@ -1,18 +1,13 @@
 package de.hhu.ausgabenverwaltung.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import de.hhu.ausgabenverwaltung.database.GruppenRepositoryImp;
 import de.hhu.ausgabenverwaltung.domain.Gruppe;
-import de.hhu.ausgabenverwaltung.domain.Transaktion;
 import de.hhu.ausgabenverwaltung.domain.User;
+import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import java.math.BigDecimal;
-
-import java.util.List;
-import java.util.Set;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 
 public class GruppenRepositoryImpTests {
@@ -22,11 +17,14 @@ public class GruppenRepositoryImpTests {
         //Arrange
         User userA = new User("githubname1");
         User userB = new User("githubname2");
-        Gruppe gruppe1 = Gruppe.gruppeErstellen("gruppe1",userA);
-        Gruppe gruppe2 = Gruppe.gruppeErstellen("gruppe2",userB);
-        GruppenRepositoryImp gruppenRepositoryImp = new GruppenRepositoryImp(List.of(gruppe1, gruppe2));
+        Gruppe gruppe1 = Gruppe.gruppeErstellen("gruppe1", List.of(userA));
+        Gruppe gruppe2 = Gruppe.gruppeErstellen("gruppe2", List.of(userB));
+        GruppenRepositoryImp gruppenRepositoryImp =
+            new GruppenRepositoryImp(List.of(gruppe1, gruppe2));
+
         // Act
         List<Gruppe> gruppenVonA = gruppenRepositoryImp.vonUser(userA);
+
         // Assert
         assertThat(gruppenVonA).containsExactly(gruppe1);
     }
@@ -37,13 +35,16 @@ public class GruppenRepositoryImpTests {
         //Arrange
         User user = new User("githubname");
 
-        Gruppe gruppe1 = Gruppe.gruppeErstellen("gruppe1",user);
-        Gruppe gruppe2 = Gruppe.gruppeErstellen("gruppe2", user);
+        Gruppe gruppe1 = Gruppe.gruppeErstellen("gruppe1", List.of(user));
+        Gruppe gruppe2 = Gruppe.gruppeErstellen("gruppe2", List.of(user));
         gruppe2.schliessen();
-        GruppenRepositoryImp gruppenRepositoryImp = new GruppenRepositoryImp(List.of(gruppe1, gruppe2));
+        GruppenRepositoryImp gruppenRepositoryImp =
+            new GruppenRepositoryImp(List.of(gruppe1, gruppe2));
+
         // Act
         List<Gruppe> offeneGruppen = gruppenRepositoryImp.offenVonUser(user);
         List<Gruppe> geschlosseneGruppen = gruppenRepositoryImp.geschlossenVonUser(user);
+
         // Assert
         assertThat(offeneGruppen).containsExactly(gruppe1);
         assertThat(geschlosseneGruppen).containsExactly(gruppe2);

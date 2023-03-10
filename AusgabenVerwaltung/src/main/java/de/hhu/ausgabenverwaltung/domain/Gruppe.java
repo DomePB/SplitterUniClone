@@ -2,14 +2,20 @@ package de.hhu.ausgabenverwaltung.domain;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import java.util.UUID;
 
 public class Gruppe {
 
     private final UUID id;
-    private String name;
-    private List<Ausgabe> ausgaben;
-    private List<User> mitglieder;
+    private final String name;
+    private final List<Ausgabe> ausgaben;
+    private final List<User> mitglieder;
     boolean offen;
 
     public Gruppe(String name, List<Ausgabe> ausgaben, List<User> mitglieder,
@@ -21,8 +27,9 @@ public class Gruppe {
         this.id = id;
     }
 
-    public static Gruppe gruppeErstellen(String name,User user){
-        return new Gruppe(name,new ArrayList<>(),new ArrayList<>(List.of(user)), true,UUID.randomUUID());
+    public static Gruppe gruppeErstellen(String name, List<User> mitglieder) {
+        return new Gruppe(name, new ArrayList<>(), new ArrayList<>(mitglieder), true,
+            UUID.randomUUID());
     }
 
     public UUID getId() {
@@ -32,6 +39,7 @@ public class Gruppe {
     public String getName() {
         return name;
     }
+
     public List<Ausgabe> getAusgaben() {
         return ausgaben;
     }
@@ -210,10 +218,7 @@ public class Gruppe {
     }
 
     public boolean checkMitglied(String githubHandle){
-        if(mitglieder.contains(new User(githubHandle))){
-            return true;
-        }
-        return false;
+        return mitglieder.contains(new User(githubHandle));
     }
 
 

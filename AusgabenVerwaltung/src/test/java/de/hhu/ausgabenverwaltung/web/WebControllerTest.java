@@ -12,12 +12,8 @@ import de.hhu.ausgabenverwaltung.domain.Gruppe;
 import de.hhu.ausgabenverwaltung.domain.User;
 import de.hhu.ausgabenverwaltung.helper.WithMockOAuth2User;
 import de.hhu.ausgabenverwaltung.service.GruppenService;
-
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
+import java.util.List;
 import java.util.UUID;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +38,7 @@ class WebControllerTest {
     @DisplayName("Gruppe erstellen, prüft ob das redirect korrekt ist.")
     void test_1() throws Exception {
         User user = new User("githubHandle");
-        Gruppe gruppe = Gruppe.gruppeErstellen("gruppename", user);
+        Gruppe gruppe = Gruppe.gruppeErstellen("gruppename", List.of(user));
         when(service.gruppeErstellen("githubHandle", "")).thenReturn(gruppe);
 
         mockMvc.perform(
@@ -75,11 +71,15 @@ class WebControllerTest {
     @DisplayName("Gruppenuebersicht anzeigen, wenn die Gruppe existiert")
     void test_5() throws Exception {
         final UUID uuid = UUID.randomUUID();
-        when(service.findById(uuid)).thenReturn(Gruppe.gruppeErstellen("gruppenName", new User("JoeSchmoe")));
-        when(service.checkMitglied(uuid,"JoeSchmoe")).thenReturn(true);
-        mockMvc.perform(MockMvcRequestBuilders.get("/gruppe").with(csrf()).param("id", uuid.toString()))
-                .andExpect(view().name("gruppen-uebersicht"))
-                .andExpect(status().isOk());
+        User user = new User("JoeSchmoe");
+
+        when(service.findById(uuid)).thenReturn(
+            Gruppe.gruppeErstellen("gruppenName", List.of(user)));
+        when(service.checkMitglied(uuid, user.githubHandle())).thenReturn(true);
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/gruppe").with(csrf()).param("id", uuid.toString()))
+            .andExpect(view().name("gruppen-uebersicht"))
+            .andExpect(status().isOk());
 
     }
 
@@ -87,10 +87,13 @@ class WebControllerTest {
     @WithMockOAuth2User(login = "JoeSchmoe")
     @DisplayName("Bei Ausgabe hinzufügen wird man zu gruppen-uebersicht redirected")
     void test_6() throws Exception {
-        when(service.findById(any())).thenReturn(Gruppe.gruppeErstellen("gruppenName", new User("JoeSchmoe")));
+        User user = new User("JoeSchmoe");
+        when(service.findById(any())).thenReturn(
+            Gruppe.gruppeErstellen("gruppenName", List.of(user)));
         final UUID uuid = UUID.randomUUID();
-        mockMvc.perform(MockMvcRequestBuilders.post("/gruppe/ausgaben").with(csrf()).param("id", uuid.toString()))
-                .andExpect(status().isFound());
+        mockMvc.perform(MockMvcRequestBuilders.post("/gruppe/ausgaben").with(csrf())
+                .param("id", uuid.toString()))
+            .andExpect(status().isFound());
 
     }
 
@@ -98,13 +101,15 @@ class WebControllerTest {
     @WithMockOAuth2User(login = "JoeSchmoe")
     @DisplayName("Bei Mitglieder hinzufügen wird man zu gruppen-uebersicht redirected")
     void test_7() throws Exception {
-        when(service.findById(any())).thenReturn(Gruppe.gruppeErstellen("gruppenName", new User("JoeSchmoe")));
+        User user = new User("JoeSchmoe");
+        when(service.findById(any())).thenReturn(
+            Gruppe.gruppeErstellen("gruppenName", List.of(user)));
         final UUID uuid = UUID.randomUUID();
         mockMvc.perform(MockMvcRequestBuilders.post("/gruppe/mitglieder")
-                        .with(csrf())
-                        .param("id", uuid.toString())
-                        .param("mitgliedName", "test"))
-                .andExpect(status().isFound());
+                .with(csrf())
+                .param("id", uuid.toString())
+                .param("mitgliedName", "test"))
+            .andExpect(status().isFound());
     }
 
     @Test
@@ -112,14 +117,14 @@ class WebControllerTest {
     @DisplayName("Gruppe schliessen, prüft ob das redirect korrekt ist.")
     void test_8() throws Exception {
         User user = new User("githubHandle");
-        Gruppe gruppe = Gruppe.gruppeErstellen("gruppename", user);
-        when(service.gruppeErstellen("githubHandle", "")).thenReturn(gruppe);
+        Gruppe gruppe = Gruppe.gruppeErstellen("gruppename", List.of(user));
+        when(service.gruppeErstellen(user.githubHandle(), "")).thenReturn(gruppe);
 
         mockMvc.perform(post("/gruppe/schliessen")
-                        .with(csrf())
-                        .param("id", gruppe.getId().toString()))
-                .andExpect(view().name("redirect:/gruppe"))
-                .andExpect(status().isFound());
+                .with(csrf())
+                .param("id", gruppe.getId().toString()))
+            .andExpect(view().name("redirect:/gruppe"))
+            .andExpect(status().isFound());
     }
 
     @Test
@@ -127,14 +132,14 @@ class WebControllerTest {
     @DisplayName("Prüfe ob beim Gruppe schliessen man zu /gruppe redirected wird")
     void test_9() throws Exception {
         User user = new User("githubHandle");
-        Gruppe gruppe = Gruppe.gruppeErstellen("gruppename", user);
-        when(service.gruppeErstellen("githubHandle", "")).thenReturn(gruppe);
+        Gruppe gruppe = Gruppe.gruppeErstellen("gruppename", List.of(user));
+        when(service.gruppeErstellen(user.githubHandle(), "")).thenReturn(gruppe);
 
         mockMvc.perform(post("/gruppe/schliessen")
-                        .with(csrf())
-                        .param("id", gruppe.getId().toString()))
-                .andExpect(view().name("redirect:/gruppe"))
-                .andExpect(status().isFound());
+                .with(csrf())
+                .param("id", gruppe.getId().toString()))
+            .andExpect(view().name("redirect:/gruppe"))
+            .andExpect(status().isFound());
     }
 
 }

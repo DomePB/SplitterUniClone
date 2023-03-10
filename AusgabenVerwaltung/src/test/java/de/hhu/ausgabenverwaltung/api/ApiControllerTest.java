@@ -2,6 +2,7 @@ package de.hhu.ausgabenverwaltung.api;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -52,7 +53,7 @@ public class ApiControllerTest {
   }
 
   @Test
-  @DisplayName("Gruppe wird angezeigt")
+  @DisplayName("Gruppen von User werden ausgegeben")
   void test_2() throws Exception {
     User user1 = new User("user1");
     Gruppe gruppe = Gruppe.gruppeErstellen("gruppenName", Set.of(user1));
@@ -61,7 +62,22 @@ public class ApiControllerTest {
 
     mockMvc.perform(
             MockMvcRequestBuilders.get("/api/user/{githubHandle}/gruppen", user1.githubHandle()))
-        .andExpect(status().isOk());
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+  }
+
+  @Test
+  @DisplayName("Gruppen-Info wird ausgegeben")
+  void test_3() throws Exception {
+    User user1 = new User("user1");
+    Gruppe gruppe = Gruppe.gruppeErstellen("gruppenName", Set.of(user1));
+
+    when(service.findById(gruppe.getId())).thenReturn(gruppe);
+
+    mockMvc.perform(
+            MockMvcRequestBuilders.get("/api/gruppen/{gruppenId}", gruppe.getId()))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON));
   }
 
 }

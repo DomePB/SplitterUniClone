@@ -6,6 +6,7 @@ import de.hhu.ausgabenverwaltung.database.GruppenRepositoryImp;
 import de.hhu.ausgabenverwaltung.domain.Gruppe;
 import de.hhu.ausgabenverwaltung.domain.User;
 import java.util.List;
+import java.util.Set;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -17,8 +18,8 @@ public class GruppenRepositoryImpTests {
         //Arrange
         User userA = new User("githubname1");
         User userB = new User("githubname2");
-        Gruppe gruppe1 = Gruppe.gruppeErstellen("gruppe1", List.of(userA));
-        Gruppe gruppe2 = Gruppe.gruppeErstellen("gruppe2", List.of(userB));
+        Gruppe gruppe1 = Gruppe.gruppeErstellen("gruppe1", Set.of(userA));
+        Gruppe gruppe2 = Gruppe.gruppeErstellen("gruppe2", Set.of(userB));
         GruppenRepositoryImp gruppenRepositoryImp =
             new GruppenRepositoryImp(List.of(gruppe1, gruppe2));
 
@@ -35,8 +36,8 @@ public class GruppenRepositoryImpTests {
         //Arrange
         User user = new User("githubname");
 
-        Gruppe gruppe1 = Gruppe.gruppeErstellen("gruppe1", List.of(user));
-        Gruppe gruppe2 = Gruppe.gruppeErstellen("gruppe2", List.of(user));
+        Gruppe gruppe1 = Gruppe.gruppeErstellen("gruppe1", Set.of(user));
+        Gruppe gruppe2 = Gruppe.gruppeErstellen("gruppe2", Set.of(user));
         gruppe2.schliessen();
         GruppenRepositoryImp gruppenRepositoryImp =
             new GruppenRepositoryImp(List.of(gruppe1, gruppe2));

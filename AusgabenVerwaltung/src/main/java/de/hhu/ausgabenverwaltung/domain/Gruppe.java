@@ -15,10 +15,10 @@ public class Gruppe {
     private final UUID id;
     private final String name;
     private final List<Ausgabe> ausgaben;
-    private final List<User> mitglieder;
+    private final Set<User> mitglieder;
     boolean offen;
 
-    public Gruppe(String name, List<Ausgabe> ausgaben, List<User> mitglieder,
+    public Gruppe(String name, List<Ausgabe> ausgaben, Set<User> mitglieder,
                   boolean offen, UUID id) {
         this.name = name;
         this.mitglieder = mitglieder;
@@ -27,8 +27,8 @@ public class Gruppe {
         this.id = id;
     }
 
-    public static Gruppe gruppeErstellen(String name, List<User> mitglieder) {
-        return new Gruppe(name, new ArrayList<>(), new ArrayList<>(mitglieder), true,
+    public static Gruppe gruppeErstellen(String name, Set<User> mitglieder) {
+        return new Gruppe(name, new ArrayList<>(), new HashSet<>(mitglieder), true,
             UUID.randomUUID());
     }
 
@@ -44,7 +44,7 @@ public class Gruppe {
         return ausgaben;
     }
 
-    public List<User> getMitglieder() {
+    public Set<User> getMitglieder() {
         return mitglieder;
     }
 

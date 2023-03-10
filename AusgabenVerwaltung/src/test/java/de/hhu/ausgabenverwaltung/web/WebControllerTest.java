@@ -12,7 +12,7 @@ import de.hhu.ausgabenverwaltung.domain.Gruppe;
 import de.hhu.ausgabenverwaltung.domain.User;
 import de.hhu.ausgabenverwaltung.helper.WithMockOAuth2User;
 import de.hhu.ausgabenverwaltung.service.GruppenService;
-import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -38,7 +38,7 @@ class WebControllerTest {
     @DisplayName("Gruppe erstellen, prüft ob das redirect korrekt ist.")
     void test_1() throws Exception {
         User user = new User("githubHandle");
-        Gruppe gruppe = Gruppe.gruppeErstellen("gruppename", List.of(user));
+        Gruppe gruppe = Gruppe.gruppeErstellen("gruppename", Set.of(user));
         when(service.gruppeErstellen("githubHandle", "")).thenReturn(gruppe);
 
         mockMvc.perform(
@@ -74,7 +74,7 @@ class WebControllerTest {
         User user = new User("JoeSchmoe");
 
         when(service.findById(uuid)).thenReturn(
-            Gruppe.gruppeErstellen("gruppenName", List.of(user)));
+            Gruppe.gruppeErstellen("gruppenName", Set.of(user)));
         when(service.checkMitglied(uuid, user.githubHandle())).thenReturn(true);
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/gruppe").with(csrf()).param("id", uuid.toString()))
@@ -89,7 +89,7 @@ class WebControllerTest {
     void test_6() throws Exception {
         User user = new User("JoeSchmoe");
         when(service.findById(any())).thenReturn(
-            Gruppe.gruppeErstellen("gruppenName", List.of(user)));
+            Gruppe.gruppeErstellen("gruppenName", Set.of(user)));
         final UUID uuid = UUID.randomUUID();
         mockMvc.perform(MockMvcRequestBuilders.post("/gruppe/ausgaben").with(csrf())
                 .param("id", uuid.toString()))
@@ -103,7 +103,7 @@ class WebControllerTest {
     void test_7() throws Exception {
         User user = new User("JoeSchmoe");
         when(service.findById(any())).thenReturn(
-            Gruppe.gruppeErstellen("gruppenName", List.of(user)));
+            Gruppe.gruppeErstellen("gruppenName", Set.of(user)));
         final UUID uuid = UUID.randomUUID();
         mockMvc.perform(MockMvcRequestBuilders.post("/gruppe/mitglieder")
                 .with(csrf())
@@ -117,7 +117,7 @@ class WebControllerTest {
     @DisplayName("Gruppe schliessen, prüft ob das redirect korrekt ist.")
     void test_8() throws Exception {
         User user = new User("githubHandle");
-        Gruppe gruppe = Gruppe.gruppeErstellen("gruppename", List.of(user));
+        Gruppe gruppe = Gruppe.gruppeErstellen("gruppename", Set.of(user));
         when(service.gruppeErstellen(user.githubHandle(), "")).thenReturn(gruppe);
 
         mockMvc.perform(post("/gruppe/schliessen")
@@ -132,7 +132,7 @@ class WebControllerTest {
     @DisplayName("Prüfe ob beim Gruppe schliessen man zu /gruppe redirected wird")
     void test_9() throws Exception {
         User user = new User("githubHandle");
-        Gruppe gruppe = Gruppe.gruppeErstellen("gruppename", List.of(user));
+        Gruppe gruppe = Gruppe.gruppeErstellen("gruppename", Set.of(user));
         when(service.gruppeErstellen(user.githubHandle(), "")).thenReturn(gruppe);
 
         mockMvc.perform(post("/gruppe/schliessen")

@@ -6,7 +6,6 @@ import de.hhu.ausgabenverwaltung.api.models.GruppeModel;
 import de.hhu.ausgabenverwaltung.domain.Ausgabe;
 import de.hhu.ausgabenverwaltung.domain.Gruppe;
 import de.hhu.ausgabenverwaltung.domain.Transaktion;
-import de.hhu.ausgabenverwaltung.domain.User;
 import de.hhu.ausgabenverwaltung.service.GruppenService;
 import jakarta.validation.Valid;
 import java.util.List;
@@ -41,11 +40,7 @@ public class ApiController {
 
     @PostMapping("/gruppen")
     public ResponseEntity<UUID> gruppeErstellen(@Valid @RequestBody GruppeModel gruppeModel) {
-        //Gruppe gruppe = gruppeModel.toGruppe();
-        // TODO: GruppenService - gruppeErstellen anpassen mit List<String>
-        Gruppe gruppe = gruppenService.gruppeErstellen("", gruppeModel.name());
-       /* gruppe.setMitglieder(
-            gruppeModel.personen().stream().map(User::new).collect(Collectors.toList()));*/
+        Gruppe gruppe = gruppenService.gruppeErstellen(gruppeModel.personen(), gruppeModel.name());
 
         return new ResponseEntity<>(gruppe.getId(), HttpStatus.CREATED);
     }

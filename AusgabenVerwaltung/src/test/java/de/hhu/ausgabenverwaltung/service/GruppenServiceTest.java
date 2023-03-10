@@ -5,11 +5,13 @@ import static org.mockito.Mockito.when;
 
 import de.hhu.ausgabenverwaltung.domain.Ausgabe;
 import de.hhu.ausgabenverwaltung.domain.Gruppe;
+import de.hhu.ausgabenverwaltung.domain.Transaktion;
 import de.hhu.ausgabenverwaltung.domain.User;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -55,6 +57,7 @@ class GruppenServiceTest {
         //Assert
         assertThat(gruppe.istOffen()).isFalse();
     }
+
     @Test
     @DisplayName("Werden die geschlossenen Gruppen von User richtig rausgegeben")
     void geschlossenVonUserTest() throws Exception {
@@ -68,6 +71,7 @@ class GruppenServiceTest {
         //Assert
         assertThat(geschlossenVonUser).contains(gruppe);
     }
+
     @Test
     @DisplayName("Werden die offenen Gruppen von User richtig rausgegeben")
     void offenVonUserTest() throws Exception {
@@ -79,6 +83,7 @@ class GruppenServiceTest {
         //Assert
         assertThat(offenVonUser).contains(gruppe);
     }
+
     @Test
     @DisplayName("Die richtige Gruppe wird mit id gefunden")
     void findByIdTest() throws Exception {
@@ -91,6 +96,7 @@ class GruppenServiceTest {
         //Assert
         assertThat(gesuchteGruppe).isEqualTo(gruppe);
     }
+
     @Test
     @DisplayName("Die Salden werden richtig zurueckgegeben")
     void berechneSaldenTest() throws Exception {
@@ -100,14 +106,18 @@ class GruppenServiceTest {
         User test2 = new User("test2");
         gruppe.addMitglieder(test1);
         gruppe.addMitglieder(test2);
-        gruppe.ausgabeHinzufuegen(new Ausgabe("ausgabe1","ausgabe2",BigDecimal.TEN,test1,List.of(test2)));
+        gruppe.ausgabeHinzufuegen(
+                new Ausgabe("ausgabe1", "ausgabe2", BigDecimal.TEN, test1, List.of(test2)));
         UUID id = gruppe.getId();
         when(repository.findById(id)).thenReturn(gruppe);
         //Act
         HashMap<User, BigDecimal> salden = gruppenService.berechneSalden(id);
         //Assert
-        assertThat(salden).isEqualTo(new HashMap<>(Map.of(test1,new BigDecimal("-10.00"),test2,new BigDecimal("10.00"),new User("test"),BigDecimal.ZERO)));
+        assertThat(salden).isEqualTo(new HashMap<>(
+                Map.of(test1, new BigDecimal("-10.00"), test2, new BigDecimal("10.00"),
+                        new User("test"), BigDecimal.ZERO)));
     }
+
     @Test
     @DisplayName("Mitglied wird hinzugefuegt")
     void addMitgliedTest() throws Exception {
@@ -116,10 +126,11 @@ class GruppenServiceTest {
         UUID id = gruppe.getId();
         when(repository.findById(id)).thenReturn(gruppe);
         //Act
-        gruppenService.addMitglied(id,"test1");
+        gruppenService.addMitglied(id, "test1");
         //Assert
         assertThat(gruppe.getMitglieder().size()).isEqualTo(2);
     }
+
     @Test
     @DisplayName("Ausgabe wird hinzugefuegt")
     void addAusgabe() throws Exception {
@@ -130,10 +141,12 @@ class GruppenServiceTest {
         gruppe.addMitglieder(user);
         when(repository.findById(id)).thenReturn(gruppe);
         //Act
-        gruppenService.addAusgabe(id,new Ausgabe("ausgabe1","ausgabe2",BigDecimal.TEN,user,List.of(user)));
+        gruppenService.addAusgabe(id,
+                new Ausgabe("ausgabe1", "ausgabe2", BigDecimal.TEN, user, List.of(user)));
         //Assert
         assertThat(gruppe.getAusgaben().size()).isEqualTo(1);
     }
+
     @Test
     @DisplayName("Mitglieder Check")
     void checkMitglied() throws Exception {
@@ -148,5 +161,38 @@ class GruppenServiceTest {
         //Assert
         assertThat(checkMitglied).isTrue();
     }
-}
 
+    @Test
+    @DisplayName("Checkt ob GithubName korrekt ist")
+    void isNameValid() throws Exception {
+        //Act
+        boolean nameisValid = gruppenService.nameisValid("test");
+        //Assert
+        assertThat(nameisValid).isTrue();
+    }
+
+    @Test
+    @DisplayName("Prueft ob Gruppe offen ist")
+    void istOffen() throws Exception {
+        //Arrange
+        Gruppe gruppe = gruppenService.gruppeErstellen("test", "testgruppe");
+        UUID id = gruppe.getId();
+        when(repository.findById(id)).thenReturn(gruppe);
+        //Act
+        boolean istOffen = gruppenService.istOffen(id);
+        //Assert
+        assertThat(istOffen).isTrue();
+    }
+    @Test
+    @DisplayName("berechneTransaktionen set")
+    void berechneTransaktionen() throws Exception {
+        //Arrange
+        Gruppe gruppe = gruppenService.gruppeErstellen("test", "testgruppe");
+        UUID id = gruppe.getId();
+        when(repository.findById(id)).thenReturn(gruppe);
+        //Act
+        Set<Transaktion> transaktionen = gruppenService.berechneTransaktionen(id);
+        //Assert
+        assertThat(transaktionen.size()).isEqualTo(0);
+    }
+}

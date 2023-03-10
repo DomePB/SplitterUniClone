@@ -103,7 +103,6 @@ public class Gruppe {
 
 
     public void schliessen() {
-        berechneTransaktionen(berechneSalden(alleSchuldenBerechnen()));
         offen = false;
     }
 

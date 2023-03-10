@@ -37,10 +37,22 @@
     <!-- Liste: Geschlossene Gruppen -->
     <p class="fs-4 text-secondary">Geschlossene Gruppen: </p>
     <div class="list-group">
-        <a class="list-group-item list-group-item-action"
+        <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
            th:each="gruppe : ${geschlosseneGruppen}"
-           th:href="@{/gruppe(id=${gruppe.getId()})}"
-           th:text="${gruppe.name}">Gruppenname</a>
+           th:href="@{/gruppe(id=${gruppe.getId()})}">
+            <span th:text="${gruppe.name}">Gruppen-Name</span>
+            <div>
+                <th:block th:each="transaktion : ${beteiligteTransaktionen.get(gruppe)}">
+                    <span class="badge bg-danger rounded-pill"
+                          th:if="${transaktion.sender().githubHandle() == user}"
+                          th:text="|Du musst ${transaktion.betrag() + '€'} an ${transaktion.empfaenger().githubHandle()} bezahlen|">Geld senden</span>
+
+                    <span class="badge bg-success rounded-pill"
+                          th:if="${transaktion.empfaenger().githubHandle() == user}"
+                          th:text="|${transaktion.sender().githubHandle()} muss dir ${transaktion.betrag() + '€'} bezahlen|">Geld erhalten</span>
+                </th:block>
+            </div>
+        </a>
     </div>
 
     <br/>
@@ -76,6 +88,8 @@
         </div>
     </div>
 </div>
+
+
 
 <!-- Scripts -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js"></script>

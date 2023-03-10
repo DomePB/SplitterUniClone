@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.UUID;
 import org.springframework.stereotype.Repository;
@@ -73,13 +74,13 @@ public class GruppenRepositoryImp implements GruppenRepository {
     }
 
     @Override
-    public Gruppe findById(UUID id) throws Exception {
+    public Gruppe findById(UUID id) throws NoSuchElementException {
         for (Gruppe gruppe : gruppen) {
             if (gruppe.getId().equals(id)) {
                 return gruppe;
             }
         }
-        throw new Exception("Gruppe existiert nicht");
+        throw new NoSuchElementException("Gruppe existiert nicht");
     }
     public Map<Gruppe, Set<Transaktion>> getBeteiligteTransaktionen(User user) {
         Map<Gruppe, Set<Transaktion>> userTransaktinen = new HashMap<>();

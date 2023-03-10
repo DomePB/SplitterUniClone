@@ -8,11 +8,14 @@ import de.hhu.ausgabenverwaltung.domain.User;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import javax.naming.InvalidNameException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -100,7 +103,7 @@ public class GruppenService {
             return true;
         }
         else {
-            throw new Exception("Invalid Github Name"); //Exception aendern
+            throw new InvalidNameException("Invalid Github Name");
         }
     }
 

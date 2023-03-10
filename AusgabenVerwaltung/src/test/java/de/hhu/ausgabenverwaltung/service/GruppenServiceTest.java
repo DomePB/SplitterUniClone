@@ -148,5 +148,14 @@ class GruppenServiceTest {
         //Assert
         assertThat(checkMitglied).isTrue();
     }
+    @Test
+    @DisplayName("Checkt ob GithubName korrekt ist")
+    void isNameValid() throws Exception {
+        //Arrange
+        boolean nameisValid = gruppenService.nameisValid("test");
+        //Assert
+        assertThat(nameisValid).isTrue();
+    }
+
 }
 

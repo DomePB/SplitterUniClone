@@ -1,5 +1,6 @@
 package de.hhu.ausgabenverwaltung.web;
 
+import static org.springframework.http.HttpStatus.I_AM_A_TEAPOT;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
@@ -15,6 +16,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
@@ -49,7 +51,11 @@ public class WebController {
     @PostMapping("/")
     public String gruppeErstellen(String gruppenName, @AuthenticationPrincipal OAuth2User token) {
         String githubHandle = token.getAttribute("login");
-        service.gruppeErstellen(githubHandle, gruppenName);
+        try {
+            service.gruppeErstellen(githubHandle, gruppenName);
+        }catch (Exception e){
+            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE,e.toString());
+        }
         return "redirect:/";
     }
 
@@ -104,7 +110,7 @@ public class WebController {
             attrs.addAttribute("id", gruppe.getId());
             return "redirect:/gruppe";
         } catch (Exception e) {
-            return "redirect:/gruppe";
+            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE,e.toString());
         }
     }
 

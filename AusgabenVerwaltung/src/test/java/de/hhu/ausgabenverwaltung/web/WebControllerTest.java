@@ -12,7 +12,6 @@ import de.hhu.ausgabenverwaltung.adapters.controller.web.WebController;
 import de.hhu.ausgabenverwaltung.domain.Gruppe;
 import de.hhu.ausgabenverwaltung.domain.User;
 import de.hhu.ausgabenverwaltung.helper.WithMockOAuth2User;
-import de.hhu.ausgabenverwaltung.service.GruppenService;
 import java.util.Set;
 import de.hhu.ausgabenverwaltung.application.service.GruppenService;
 

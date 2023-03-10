@@ -1,21 +1,24 @@
 package de.hhu.ausgabenverwaltung.api;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import de.hhu.ausgabenverwaltung.api.models.AuslagenModel;
-import de.hhu.ausgabenverwaltung.api.models.GruppeModel;
+
+import de.hhu.ausgabenverwaltung.adapters.controller.api.ApiController;
+import de.hhu.ausgabenverwaltung.adapters.controller.api.models.AuslagenModel;
+import de.hhu.ausgabenverwaltung.adapters.controller.api.models.GruppeModel;
+import de.hhu.ausgabenverwaltung.application.service.GruppenService;
 import de.hhu.ausgabenverwaltung.domain.Gruppe;
 import de.hhu.ausgabenverwaltung.domain.User;
-import de.hhu.ausgabenverwaltung.service.GruppenService;
 
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

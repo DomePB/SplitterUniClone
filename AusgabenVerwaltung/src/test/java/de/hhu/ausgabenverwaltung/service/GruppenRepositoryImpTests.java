@@ -3,7 +3,6 @@ package de.hhu.ausgabenverwaltung.service;
 import de.hhu.ausgabenverwaltung.adapters.database.implementation.GruppenRepositoryImp;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import de.hhu.ausgabenverwaltung.database.GruppenRepositoryImp;
 import de.hhu.ausgabenverwaltung.domain.Gruppe;
 import de.hhu.ausgabenverwaltung.domain.User;
 import org.junit.jupiter.api.DisplayName;
@@ -11,10 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import java.util.Set;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 
 
 public class GruppenRepositoryImpTests {

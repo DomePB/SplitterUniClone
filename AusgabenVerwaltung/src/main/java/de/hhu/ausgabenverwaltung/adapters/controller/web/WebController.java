@@ -11,8 +11,6 @@ import de.hhu.ausgabenverwaltung.domain.Transaktion;
 import de.hhu.ausgabenverwaltung.domain.User;
 import de.hhu.ausgabenverwaltung.application.service.GruppenService;
 
-import de.hhu.ausgabenverwaltung.service.GruppenService;
-import de.hhu.ausgabenverwaltung.web.models.AusgabeForm;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;

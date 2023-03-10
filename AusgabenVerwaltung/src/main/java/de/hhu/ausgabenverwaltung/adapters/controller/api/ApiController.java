@@ -6,8 +6,6 @@ import de.hhu.ausgabenverwaltung.adapters.controller.api.models.GruppeModel;
 import de.hhu.ausgabenverwaltung.domain.Ausgabe;
 import de.hhu.ausgabenverwaltung.domain.Gruppe;
 import de.hhu.ausgabenverwaltung.domain.Transaktion;
-import de.hhu.ausgabenverwaltung.service.GruppenService;
-import de.hhu.ausgabenverwaltung.domain.User;
 import de.hhu.ausgabenverwaltung.application.service.GruppenService;
 import jakarta.validation.Valid;
 import java.util.List;

@@ -44,8 +44,8 @@ public class ApiController {
         //Gruppe gruppe = gruppeModel.toGruppe();
         // TODO: GruppenService - gruppeErstellen anpassen mit List<String>
         Gruppe gruppe = gruppenService.gruppeErstellen("", gruppeModel.name());
-        gruppe.setMitglieder(
-            gruppeModel.personen().stream().map(User::new).collect(Collectors.toList()));
+       /* gruppe.setMitglieder(
+            gruppeModel.personen().stream().map(User::new).collect(Collectors.toList()));*/
 
         return new ResponseEntity<>(gruppe.getId(), HttpStatus.CREATED);
     }

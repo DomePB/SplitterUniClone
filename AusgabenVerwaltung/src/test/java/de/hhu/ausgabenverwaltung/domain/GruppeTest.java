@@ -68,7 +68,8 @@ class GruppeTest {
                 new ArrayList<>(List.of(user1, user2)));
         Gruppe gruppe = Gruppe.gruppeErstellen("gruppe",user1);
         gruppe.addMitglieder(user2);
-        gruppe.setAusgaben((List.of(ausgabe1, ausgabe2)));
+        gruppe.ausgabeHinzufuegen(ausgabe1);
+        gruppe.ausgabeHinzufuegen(ausgabe2);
 
         //Act
         var listVonSchuldigen = gruppe.alleSchuldenBerechnen();
@@ -177,7 +178,8 @@ class GruppeTest {
         Gruppe gruppe = Gruppe.gruppeErstellen("test",userA);
         gruppe.addMitglieder(userB);
         gruppe.addMitglieder(userC);
-        gruppe.setAusgaben(List.of(ausgabe1));
+        gruppe.ausgabeHinzufuegen(ausgabe1);
+
         //Act
         HashMap<User, BigDecimal> mussBezahlen = gruppe.mussBezahlenVonUser(userA);
         //Assert
@@ -208,8 +210,23 @@ class GruppeTest {
         Ausgabe ausgabe12 = new Ausgabe("ausgabe12", "Ausgabe2", new BigDecimal(4), userD, new ArrayList<>(List.of(userC)));
 
         Gruppe gruppe =Gruppe.gruppeErstellen("gruppe",userA);
-        gruppe.setAusgaben(new ArrayList<>(List.of(ausgabe1, ausgabe2, ausgabe4, ausgabe5, ausgabe6, ausgabe7, ausgabe8, ausgabe9, ausgabe10, ausgabe11, ausgabe12)));
-        gruppe.setMitglieder( new ArrayList<>(List.of(userA, userB, userC, userD)));
+        gruppe.addMitglieder(userA);
+        gruppe.addMitglieder(userB);
+        gruppe.addMitglieder(userC);
+        gruppe.addMitglieder(userD);
+        gruppe.ausgabeHinzufuegen(ausgabe1);
+        gruppe.ausgabeHinzufuegen(ausgabe2);
+        gruppe.ausgabeHinzufuegen(ausgabe4);
+        gruppe.ausgabeHinzufuegen(ausgabe5);
+        gruppe.ausgabeHinzufuegen(ausgabe6);
+        gruppe.ausgabeHinzufuegen(ausgabe7);
+        gruppe.ausgabeHinzufuegen(ausgabe8);
+        gruppe.ausgabeHinzufuegen(ausgabe9);
+        gruppe.ausgabeHinzufuegen(ausgabe10);
+        gruppe.ausgabeHinzufuegen(ausgabe11);
+        gruppe.ausgabeHinzufuegen(ausgabe12);
+
+
         //Act
         var schulden= gruppe.alleSchuldenBerechnen();
         var alleSalden = gruppe.berechneSalden(schulden);
@@ -307,7 +324,9 @@ class GruppeTest {
 
         Gruppe gruppe = Gruppe.gruppeErstellen("gruppe",userA);
         gruppe.addMitglieder(userB);
-        gruppe.setAusgaben(new ArrayList<>(List.of(ausgabe1, ausgabe2)));
+        gruppe.ausgabeHinzufuegen(ausgabe1);
+        gruppe.ausgabeHinzufuegen(ausgabe2);
+
         //Act
         var alleTransaktionen = gruppe.berechneTransaktionen(gruppe.berechneSalden(gruppe.alleSchuldenBerechnen()));
         //Assert
@@ -326,7 +345,9 @@ class GruppeTest {
 
         Gruppe gruppe = Gruppe.gruppeErstellen("gruppe", userA);
         gruppe.addMitglieder(userB);
-        gruppe.setAusgaben(new ArrayList<>(List.of(ausgabe1, ausgabe2)));
+        gruppe.ausgabeHinzufuegen(ausgabe1);
+        gruppe.ausgabeHinzufuegen(ausgabe2);
+
         //Act
         var alleTransaktionen = gruppe.berechneTransaktionen(gruppe.berechneSalden(gruppe.alleSchuldenBerechnen()));
         //Assert
@@ -345,7 +366,9 @@ class GruppeTest {
 
         Gruppe gruppe = Gruppe.gruppeErstellen("gruppe", userA);
         gruppe.addMitglieder(userB);
-        gruppe.setAusgaben(new ArrayList<>(List.of(ausgabe1, ausgabe2)));
+        gruppe.ausgabeHinzufuegen(ausgabe1);
+        gruppe.ausgabeHinzufuegen(ausgabe2);
+
         //Act
         var alleTransaktionen = gruppe.berechneTransaktionen(gruppe.berechneSalden(gruppe.alleSchuldenBerechnen()));
         //Assert
@@ -367,7 +390,10 @@ class GruppeTest {
         Gruppe gruppe = Gruppe.gruppeErstellen("gruppe", userA);
         gruppe.addMitglieder(userB);
         gruppe.addMitglieder(userC);
-        gruppe.setAusgaben(new ArrayList<>(List.of(ausgabe1, ausgabe2, ausgabe3)));
+        gruppe.ausgabeHinzufuegen(ausgabe1);
+        gruppe.ausgabeHinzufuegen(ausgabe2);
+        gruppe.ausgabeHinzufuegen(ausgabe3);
+
 
         //Act
         var alleTransaktionen = gruppe.berechneTransaktionen(gruppe.berechneSalden(gruppe.alleSchuldenBerechnen()));
@@ -390,7 +416,10 @@ class GruppeTest {
         Gruppe gruppe =Gruppe.gruppeErstellen("gruppe", anton);
         gruppe.addMitglieder(berta);
         gruppe.addMitglieder(christian);
-        gruppe.setAusgaben(new ArrayList<>(List.of(ausgabe1, ausgabe2, ausgabe3)));
+        gruppe.ausgabeHinzufuegen(ausgabe1);
+        gruppe.ausgabeHinzufuegen(ausgabe2);
+        gruppe.ausgabeHinzufuegen(ausgabe3);
+
         //Act
         var alleTransaktionen = gruppe.berechneTransaktionen(gruppe.berechneSalden(gruppe.alleSchuldenBerechnen()));
         //Assert
@@ -417,8 +446,20 @@ class GruppeTest {
         Ausgabe ausgabe6 = new Ausgabe("ausgabe6", "Theatervorstellung", new BigDecimal("95.37"), userF, new ArrayList<>(List.of(userB, userE, userF)));
 
         Gruppe gruppe = Gruppe.gruppeErstellen("gruppe",userA);
-        gruppe.setMitglieder(new ArrayList<>(List.of(userA, userB, userC, userD, userE, userF)));
-        gruppe.setAusgaben(new ArrayList<>(List.of(ausgabe1, ausgabe2, ausgabe3, ausgabe4, ausgabe5, ausgabe6)));
+        gruppe.addMitglieder(userA);
+        gruppe.addMitglieder(userB);
+        gruppe.addMitglieder(userC);
+        gruppe.addMitglieder(userD);
+        gruppe.addMitglieder(userE);
+        gruppe.addMitglieder(userF);
+        gruppe.ausgabeHinzufuegen(ausgabe1);
+        gruppe.ausgabeHinzufuegen(ausgabe2);
+        gruppe.ausgabeHinzufuegen(ausgabe3);
+        gruppe.ausgabeHinzufuegen(ausgabe4);
+        gruppe.ausgabeHinzufuegen(ausgabe5);
+        gruppe.ausgabeHinzufuegen(ausgabe6);
+
+
         //Act
         var alleTransaktionen = gruppe.berechneTransaktionen(gruppe.berechneSalden(gruppe.alleSchuldenBerechnen()));
 
@@ -453,8 +494,23 @@ class GruppeTest {
         Ausgabe ausgabe8 = new Ausgabe("ausgabe8", "Ausgabe8", new BigDecimal("30"), userG, new ArrayList<>(List.of(userA)));
 
         Gruppe gruppe = Gruppe.gruppeErstellen("gruppe", userA);
-        gruppe.setMitglieder((List.of(userA, userB, userC, userD, userE, userF, userG)));
-        gruppe.setAusgaben((List.of(ausgabe1, ausgabe2, ausgabe3, ausgabe4, ausgabe5, ausgabe6, ausgabe7, ausgabe8)));
+        gruppe.addMitglieder(userA);
+        gruppe.addMitglieder(userB);
+        gruppe.addMitglieder(userC);
+        gruppe.addMitglieder(userD);
+        gruppe.addMitglieder(userE);
+        gruppe.addMitglieder(userF);
+        gruppe.addMitglieder(userG);
+        gruppe.ausgabeHinzufuegen(ausgabe1);
+        gruppe.ausgabeHinzufuegen(ausgabe2);
+        gruppe.ausgabeHinzufuegen(ausgabe3);
+        gruppe.ausgabeHinzufuegen(ausgabe4);
+        gruppe.ausgabeHinzufuegen(ausgabe5);
+        gruppe.ausgabeHinzufuegen(ausgabe6);
+        gruppe.ausgabeHinzufuegen(ausgabe7);
+        gruppe.ausgabeHinzufuegen(ausgabe8);
+
+
         //Act
         var alleTransaktionen = gruppe.berechneTransaktionen(gruppe.berechneSalden(gruppe.alleSchuldenBerechnen()));
 

@@ -32,25 +32,12 @@ public class Gruppe {
     public String getName() {
         return name;
     }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public List<Ausgabe> getAusgaben() {
         return ausgaben;
     }
 
-    public void setAusgaben(List<Ausgabe> ausgaben) {
-        this.ausgaben = ausgaben;
-    }
-
     public List<User> getMitglieder() {
         return mitglieder;
-    }
-
-    public void setMitglieder(List<User> mitglieder) {
-        this.mitglieder = mitglieder;
     }
 
 

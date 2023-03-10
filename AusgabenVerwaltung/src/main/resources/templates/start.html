@@ -21,7 +21,7 @@
             <span th:text="${gruppe.name}">Gruppen-Name</span>
 
             <div>
-                <th:block th:each="transaktion : ${gruppe.getTransaktionen()}">
+                <th:block th:each="transaktion : ${beteiligteTransaktionen.get(gruppe)}">
                     <span class="badge bg-danger rounded-pill"
                           th:if="${transaktion.sender().githubHandle() == user}"
                           th:text="|Du musst ${transaktion.betrag() + '€'} an ${transaktion.empfaenger().githubHandle()} bezahlen|">Geld senden</span>

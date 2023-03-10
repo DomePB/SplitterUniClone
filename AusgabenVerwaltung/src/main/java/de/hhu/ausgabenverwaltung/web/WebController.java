@@ -4,6 +4,7 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 import de.hhu.ausgabenverwaltung.domain.Ausgabe;
 import de.hhu.ausgabenverwaltung.domain.Gruppe;
+import de.hhu.ausgabenverwaltung.domain.Transaktion;
 import de.hhu.ausgabenverwaltung.domain.User;
 import de.hhu.ausgabenverwaltung.service.GruppenService;
 import de.hhu.ausgabenverwaltung.web.models.AusgabeForm;
@@ -11,6 +12,7 @@ import de.hhu.ausgabenverwaltung.web.models.AusgabeForm;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -37,6 +39,9 @@ public class WebController {
 
     @GetMapping("/")
     public String index(Model model, @AuthenticationPrincipal OAuth2User token) {
+        Map<Gruppe, Set<Transaktion>> beteiligteTransaktionen =
+                service.getBeteiligteTransaktionen(token.getAttribute("login"));
+        model.addAttribute("beteiligteTransaktionen", beteiligteTransaktionen);
         model.addAttribute("user", token.getAttribute("login"));
         model.addAttribute("offeneGruppen", service.offenVonUser(token.getAttribute("login")));
         model.addAttribute("geschlosseneGruppen", service.geschlossenVonUser(token.getAttribute("login")));

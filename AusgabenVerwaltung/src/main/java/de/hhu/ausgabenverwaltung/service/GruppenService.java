@@ -2,10 +2,13 @@ package de.hhu.ausgabenverwaltung.service;
 
 import de.hhu.ausgabenverwaltung.domain.Ausgabe;
 import de.hhu.ausgabenverwaltung.domain.Gruppe;
+import de.hhu.ausgabenverwaltung.domain.Transaktion;
 import de.hhu.ausgabenverwaltung.domain.User;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import org.springframework.stereotype.Service;
 
@@ -73,6 +76,10 @@ public class GruppenService {
     public boolean checkMitglied(UUID gruppenId, String githubHandle) throws Exception {
         Gruppe gruppe = findById(gruppenId);
         return gruppe.checkMitglied(githubHandle);
+    }
+
+    public Map<Gruppe, Set<Transaktion>> getBeteiligteTransaktionen(String githubHandle){
+    return gruppen.getBeteiligteTransaktionen(new User(githubHandle));
     }
 
 }

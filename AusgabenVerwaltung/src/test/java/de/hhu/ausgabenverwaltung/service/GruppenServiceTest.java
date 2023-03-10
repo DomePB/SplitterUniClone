@@ -3,6 +3,8 @@ package de.hhu.ausgabenverwaltung.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
+import de.hhu.ausgabenverwaltung.application.repositorie.GruppenRepository;
+import de.hhu.ausgabenverwaltung.application.service.GruppenService;
 import de.hhu.ausgabenverwaltung.domain.Ausgabe;
 import de.hhu.ausgabenverwaltung.domain.Gruppe;
 import de.hhu.ausgabenverwaltung.domain.Transaktion;

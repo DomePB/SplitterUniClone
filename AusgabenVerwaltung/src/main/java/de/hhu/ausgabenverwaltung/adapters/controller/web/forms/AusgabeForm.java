@@ -1,4 +1,4 @@
-package de.hhu.ausgabenverwaltung.web.models;
+package de.hhu.ausgabenverwaltung.adapters.controller.web.forms;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;

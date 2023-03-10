@@ -1,6 +1,7 @@
 package de.hhu.ausgabenverwaltung.api;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -78,6 +79,22 @@ public class ApiControllerTest {
             MockMvcRequestBuilders.get("/api/gruppen/{gruppenId}", gruppe.getId()))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+  }
+
+  @Test
+  @DisplayName("Gruppe wird geschlossen")
+  void test_4() throws Exception {
+    User user1 = new User("user1");
+    Gruppe gruppe = Gruppe.gruppeErstellen("gruppenName", Set.of(user1));
+
+    doAnswer(invocation -> {
+      gruppe.schliessen();
+      return null;
+    }).when(service).gruppeSchliessen(gruppe.getId());
+
+    mockMvc.perform(
+            MockMvcRequestBuilders.post("/api/gruppen/{gruppenId}/schliessen", gruppe.getId()))
+        .andExpect(status().isOk());
   }
 
 }

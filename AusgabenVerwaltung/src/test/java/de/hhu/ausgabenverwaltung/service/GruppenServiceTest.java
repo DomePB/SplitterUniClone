@@ -151,11 +151,22 @@ class GruppenServiceTest {
     @Test
     @DisplayName("Checkt ob GithubName korrekt ist")
     void isNameValid() throws Exception {
-        //Arrange
+        //Act
         boolean nameisValid = gruppenService.nameisValid("test");
         //Assert
         assertThat(nameisValid).isTrue();
     }
-
+    @Test
+    @DisplayName("Prueft ob Gruppe offen ist")
+    void istOffen() throws Exception {
+        //Arrange
+        Gruppe gruppe = gruppenService.gruppeErstellen("test", "testgruppe");
+        UUID id = gruppe.getId();
+        when(repository.findById(id)).thenReturn(gruppe);
+        //Act
+        boolean istOffen = gruppenService.istOffen(id);
+        //Assert
+        assertThat(istOffen).isTrue();
+    }
 }
 

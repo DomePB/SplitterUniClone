@@ -10,7 +10,7 @@ import com.tngtech.archunit.core.importer.ImportOption;
 import com.tngtech.archunit.junit.AnalyzeClasses;
 import com.tngtech.archunit.junit.ArchTest;
 import com.tngtech.archunit.lang.ArchRule;
-import com.tngtech.archunit.library.GeneralCodingRules;;
+import com.tngtech.archunit.library.GeneralCodingRules;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Service;
@@ -145,21 +145,21 @@ public class ArchUnitTests {
 
     @ArchTest
     static final ArchRule shouldBeInterfaces =
-            classes()
-                    .that()
-                    .areTopLevelClasses()
-                    .and()
-                    .resideInAPackage("..application.repositorie..")
-                    .should()
-                    .beInterfaces();
+        classes()
+            .that()
+            .areTopLevelClasses()
+            .and()
+            .resideInAPackage("..application.repo..")
+            .should()
+            .beInterfaces();
 
     @ArchTest
     static final ArchRule implementingInterfaces =
-            classes()
-                    .that()
-                    .areTopLevelClasses()
-                    .and()
-                    .resideInAPackage("..adapters.database.implementation")
-                    .should()
-                    .implement(JavaClass.Predicates.resideInAPackage("..application.repositorie.."));
+        classes()
+            .that()
+            .areTopLevelClasses()
+            .and()
+            .resideInAPackage("..adapters.database.implementation")
+            .should()
+            .implement(JavaClass.Predicates.resideInAPackage("..application.repo.."));
 }

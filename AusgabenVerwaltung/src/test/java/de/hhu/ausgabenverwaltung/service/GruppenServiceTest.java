@@ -3,7 +3,7 @@ package de.hhu.ausgabenverwaltung.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
-import de.hhu.ausgabenverwaltung.application.repositorie.GruppenRepository;
+import de.hhu.ausgabenverwaltung.application.repo.GruppenRepository;
 import de.hhu.ausgabenverwaltung.application.service.GruppenService;
 import de.hhu.ausgabenverwaltung.domain.Ausgabe;
 import de.hhu.ausgabenverwaltung.domain.Gruppe;
@@ -20,7 +20,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
@@ -31,9 +30,6 @@ class GruppenServiceTest {
 
     @InjectMocks
     GruppenService gruppenService;
-
-    @Mock
-    GruppenService gruppenServiceMock;
 
     @Test
     @DisplayName("Anzahl der Mitglieder beträgt 1, wenn die Gruppe zuerst erstellt wird")
@@ -168,7 +164,7 @@ class GruppenServiceTest {
     @DisplayName("Checkt ob GithubName korrekt ist")
     void isNameValid() throws Exception {
         //Act
-        boolean nameisValid = gruppenService.nameisValid("test");
+        boolean nameisValid = gruppenService.nameIsValid("test");
         //Assert
         assertThat(nameisValid).isTrue();
     }

@@ -1,4 +1,4 @@
-package de.hhu.ausgabenverwaltung.application.repositorie;
+package de.hhu.ausgabenverwaltung.application.repo;
 
 import de.hhu.ausgabenverwaltung.domain.Gruppe;
 import de.hhu.ausgabenverwaltung.domain.Transaktion;
@@ -11,7 +11,7 @@ import java.util.UUID;
 
 public interface GruppenRepository {
 
-  void add(Gruppe gruppe);
+  void save(Gruppe gruppe);
 
   List<Gruppe> vonUser(User user);
 

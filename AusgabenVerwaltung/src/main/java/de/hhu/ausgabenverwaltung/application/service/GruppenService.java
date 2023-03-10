@@ -1,6 +1,6 @@
 package de.hhu.ausgabenverwaltung.application.service;
 
-import de.hhu.ausgabenverwaltung.application.repositorie.GruppenRepository;
+import de.hhu.ausgabenverwaltung.application.repo.GruppenRepository;
 import de.hhu.ausgabenverwaltung.domain.Ausgabe;
 import de.hhu.ausgabenverwaltung.domain.Gruppe;
 import de.hhu.ausgabenverwaltung.domain.Transaktion;
@@ -26,11 +26,13 @@ public class GruppenService {
 
   public Gruppe gruppeErstellen(Set<String> mitglieder, String name) throws Exception {
     for (String mitglied : mitglieder) {
-      nameisValid(mitglied);
+      nameIsValid(mitglied);
     }
+
     Gruppe gruppe = Gruppe.gruppeErstellen(name,
         mitglieder.stream().map(User::new).collect(Collectors.toSet()));
-    gruppen.add(gruppe);
+    gruppen.save(gruppe);
+
     return gruppe;
   }
 
@@ -49,11 +51,11 @@ public class GruppenService {
 
   public List<Gruppe> geschlossenVonUser(String githubHandle) {
     return gruppen.geschlossenVonUser(new User(githubHandle));
-  } //Application service
+  }
 
   public List<Gruppe> offenVonUser(String githubHandle) {
     return gruppen.offenVonUser(new User(githubHandle));
-  } //Application service
+  }
 
   public Gruppe findById(UUID gruppenId) throws Exception { //Application Service
     return gruppen.findById(gruppenId);
@@ -71,7 +73,7 @@ public class GruppenService {
 
   public void addMitglied(UUID gruppenId, String githubHandle) throws Exception {
     Gruppe gruppe = findById(gruppenId);
-    if (nameisValid(githubHandle)) {
+    if (nameIsValid(githubHandle)) {
       gruppe.addMitglieder(new User(githubHandle));
     }
   }
@@ -96,7 +98,7 @@ public class GruppenService {
     return gruppen.getBeteiligteTransaktionen(new User(githubHandle));
   }
 
-  public boolean nameisValid(String githubHandle) throws Exception {
+  public boolean nameIsValid(String githubHandle) throws Exception {
     String regex = "(^[a-zA-Z\\d](?:[a-zA-Z\\d]|-(?=[a-zA-Z\\d])){0,38}$)";
     if (githubHandle.matches(regex)) {
       return true;

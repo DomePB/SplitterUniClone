@@ -17,6 +17,7 @@ public class CustomErrorController implements ErrorController {
     if (status != null) {
       model.addAttribute("status", Integer.valueOf(status.toString()));
     }
+
     return "error";
   }
 }

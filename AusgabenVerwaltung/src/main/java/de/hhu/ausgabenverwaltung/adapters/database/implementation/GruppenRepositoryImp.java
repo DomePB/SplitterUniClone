@@ -5,6 +5,7 @@ import de.hhu.ausgabenverwaltung.domain.Gruppe;
 import de.hhu.ausgabenverwaltung.domain.Transaktion;
 import de.hhu.ausgabenverwaltung.domain.User;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -70,7 +71,7 @@ public class GruppenRepositoryImp implements GruppenRepository {
 
     @Override
     public List<Gruppe> findAll() {
-        return gruppen;
+        return Collections.unmodifiableList(gruppen);
     }
 
     @Override

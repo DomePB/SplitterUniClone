@@ -3,6 +3,7 @@ package de.hhu.ausgabenverwaltung.domain;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -41,11 +42,11 @@ public class Gruppe {
     }
 
     public List<Ausgabe> getAusgaben() {
-        return ausgaben;
+        return Collections.unmodifiableList(ausgaben);
     }
 
     public Set<User> getMitglieder() {
-        return mitglieder;
+        return Collections.unmodifiableSet(mitglieder);
     }
 
 

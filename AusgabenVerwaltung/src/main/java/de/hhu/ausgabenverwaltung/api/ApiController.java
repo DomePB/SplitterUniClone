@@ -105,8 +105,9 @@ public class ApiController {
     @GetMapping("/gruppen/{gruppenId}/ausgleich")
     public ResponseEntity<List<AusgleichModel>> ausgleichBerechnen(@PathVariable String gruppenId) {
         try {
-            Gruppe gruppe = gruppenService.findById(UUID.fromString(gruppenId));
-            Set<Transaktion> transaktionen = gruppe.getTransaktionen();
+            UUID id = UUID.fromString(gruppenId);
+            Gruppe gruppe = gruppenService.findById(id);
+            Set<Transaktion> transaktionen = gruppenService.berechneTransaktionen(id);
             List<AusgleichModel> ausgleichZahlungen =
                 transaktionen.stream().map(AusgleichModel::fromTransaktion)
                     .collect(Collectors.toList());

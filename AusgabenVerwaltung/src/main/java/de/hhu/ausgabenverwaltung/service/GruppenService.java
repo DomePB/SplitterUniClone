@@ -78,6 +78,11 @@ public class GruppenService {
         return gruppe.checkMitglied(githubHandle);
     }
 
+    public  Set<Transaktion> berechneTransaktionen(UUID gruppenId) throws Exception {
+        Gruppe gruppe = findById(gruppenId);
+        return gruppe.berechneTransaktionen(gruppe.berechneSalden(gruppe.alleSchuldenBerechnen()));
+    }
+
     public Map<Gruppe, Set<Transaktion>> getBeteiligteTransaktionen(String githubHandle){
     return gruppen.getBeteiligteTransaktionen(new User(githubHandle));
     }

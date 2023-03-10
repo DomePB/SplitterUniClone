@@ -136,7 +136,7 @@
                     <th>Betrag</th>
                 </tr>
                 </thead>
-                <tbody th:each="transaktion, iterStat: ${gruppe.getTransaktionen()}" th:remove="all-but-first">
+                <tbody th:each="transaktion, iterStat: ${transaktionen}" th:remove="all-but-first">
                 <tr th:classappend="${(transaktion.sender().equals(user) ? 'table-danger' : '') + (transaktion.empfaenger().equals(user) ? 'table-success' : '')}">
                     <td th:text="${transaktion.sender().githubHandle()}"></td>
                     <td th:text="${transaktion.empfaenger().githubHandle()}"></td>

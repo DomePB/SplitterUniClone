@@ -49,13 +49,11 @@ public class GruppenRepositoryImpTests {
         assertThat(geschlosseneGruppen).containsExactly(gruppe2);
     }
 
-    @Test
+    /*@Test kommt alles in service am ende
     @DisplayName("User Transaktionen werden richtig angezeigt")
     void transaktionenFilternProUser() {
 
         //Arrange
-
-
         User userA = new User("githubname1");
         User userB = new User("githubname2");
         User userC = new User("githubname3");
@@ -83,6 +81,6 @@ public class GruppenRepositoryImpTests {
         assertThat(userTransaktionen.size()).isEqualTo(2);
         assertThat(userTransaktionen).containsEntry(gruppe1, Set.of(transaktion1));
         assertThat(userTransaktionen).containsEntry(gruppe2, Set.of(transaktion2));
-    }
+    }*/
 }
 

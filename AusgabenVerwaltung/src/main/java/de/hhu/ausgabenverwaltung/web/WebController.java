@@ -1,6 +1,8 @@
 package de.hhu.ausgabenverwaltung.web;
 
+import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
 import de.hhu.ausgabenverwaltung.domain.Ausgabe;
 import de.hhu.ausgabenverwaltung.domain.Gruppe;
@@ -17,6 +19,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
@@ -59,17 +62,18 @@ public class WebController {
         User user = new User(token.getAttribute("login"));
         Gruppe gruppe;
         HashMap<User, BigDecimal> salden;
-
+        Set<Transaktion> transaktionen;
         try {
             gruppe = service.findById(id);
             if(!service.checkMitglied(id,token.getAttribute("login"))){
-                return "/401";
+                throw new ResponseStatusException(UNAUTHORIZED, "Nicht Authoriziert auf die Gruppe zuzugreifen");
             };
             salden = service.berechneSalden(id);
+            transaktionen = service.berechneTransaktionen(id);
         } catch (Exception e) {
             throw new ResponseStatusException(NOT_FOUND, "Gruppe nicht gefunden");
         }
-
+        model.addAttribute("transaktionen", transaktionen);
         model.addAttribute("gruppe", gruppe);
         model.addAttribute("salden", salden);
         model.addAttribute("ausgabe", AusgabeForm.defaultAusgabe());

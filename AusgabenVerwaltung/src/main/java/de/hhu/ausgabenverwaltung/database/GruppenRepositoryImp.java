@@ -86,7 +86,7 @@ public class GruppenRepositoryImp implements GruppenRepository {
         for (Gruppe gruppe : gruppen) {
             Set<Transaktion> temp = new HashSet<>();
             if (gruppe.getMitglieder().contains(user)) {
-                Set<Transaktion> groupeTransaktionen = gruppe.getTransaktionen();
+                Set<Transaktion> groupeTransaktionen = gruppe.berechneTransaktionen(gruppe.berechneSalden(gruppe.alleSchuldenBerechnen()));
                 for (Transaktion t : groupeTransaktionen) {
                     if (t.sender().equals(user) || t.empfaenger().equals(user)) {
                         temp.add(t);

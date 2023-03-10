@@ -13,6 +13,9 @@ import de.hhu.ausgabenverwaltung.domain.User;
 import de.hhu.ausgabenverwaltung.helper.WithMockOAuth2User;
 import de.hhu.ausgabenverwaltung.service.GruppenService;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 import java.util.UUID;
 
 import org.junit.jupiter.api.DisplayName;
@@ -69,10 +72,11 @@ class WebControllerTest {
 
     @Test
     @WithMockOAuth2User(login = "JoeSchmoe")
-    @DisplayName("Gruppenübersicht anzeigen, wenn die Gruppe existiert")
+    @DisplayName("Gruppenuebersicht anzeigen, wenn die Gruppe existiert")
     void test_5() throws Exception {
-        when(service.findById(any())).thenReturn(Gruppe.gruppeErstellen("gruppenName", new User("JoeSchmoe")));
         final UUID uuid = UUID.randomUUID();
+        when(service.findById(uuid)).thenReturn(Gruppe.gruppeErstellen("gruppenName", new User("JoeSchmoe")));
+        when(service.checkMitglied(uuid,"JoeSchmoe")).thenReturn(true);
         mockMvc.perform(MockMvcRequestBuilders.get("/gruppe").with(csrf()).param("id", uuid.toString()))
                 .andExpect(view().name("gruppen-uebersicht"))
                 .andExpect(status().isOk());

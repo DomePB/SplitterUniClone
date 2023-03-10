@@ -11,20 +11,18 @@ public class Gruppe {
     private List<Ausgabe> ausgaben;
     private List<User> mitglieder;
     boolean offen;
-    Set<Transaktion> transaktionen;
 
     public Gruppe(String name, List<Ausgabe> ausgaben, List<User> mitglieder,
-                  Set<Transaktion> transaktionen, boolean offen, UUID id) {
+                  boolean offen, UUID id) {
         this.name = name;
         this.mitglieder = mitglieder;
         this.ausgaben = ausgaben;
-        this.transaktionen = transaktionen;
         this.offen = offen;
         this.id = id;
     }
 
     public static Gruppe gruppeErstellen(String name,User user){
-        return new Gruppe(name,new ArrayList<>(),new ArrayList<>(List.of(user)),new HashSet<>(),true,UUID.randomUUID());
+        return new Gruppe(name,new ArrayList<>(),new ArrayList<>(List.of(user)), true,UUID.randomUUID());
     }
 
     public UUID getId() {
@@ -55,13 +53,6 @@ public class Gruppe {
         this.mitglieder = mitglieder;
     }
 
-    public Set<Transaktion> getTransaktionen() {
-        return transaktionen;
-    }
-
-    public void setTransaktionen(Set<Transaktion> transaktionen) {
-        this.transaktionen = transaktionen;
-    }
 
     public void addMitglieder(User user) {
         if (!offen || mitglieder.contains(user) || !ausgaben.isEmpty()) {
@@ -77,34 +68,7 @@ public class Gruppe {
         mitglieder.remove(user);
     }
 
-    public boolean isTransaktionValid(Transaktion transaktion) {
-        if (transaktion.sender().equals(transaktion.empfaenger())) {
-            return false;
-        }
-        if (!mitglieder.contains(transaktion.sender()) ||
-                !mitglieder.contains(transaktion.empfaenger())) {
-            return false;
-        }
 
-        for (Transaktion t : transaktionen) {
-            if (t.empfaenger().equals(transaktion.empfaenger()) &&
-                    t.sender().equals(transaktion.sender()) ||
-                    t.empfaenger().equals(transaktion.sender()) &&
-                            t.sender().equals(transaktion.empfaenger())) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    public void transaktionHinzufuegen(Transaktion transaktion) {
-        if (!offen) {
-            return;
-        }
-        if (isTransaktionValid(transaktion)) {
-            transaktionen.add(transaktion);
-        }
-    }
 
     public void ausgabeHinzufuegen(Ausgabe ausgabe) {
         if (!offen) {
@@ -253,10 +217,6 @@ public class Gruppe {
                     salden.put(empfaengerEntry.getKey(), BigDecimal.ZERO);
                 }
             }
-        }
-
-        if (istOffen()) {
-            setTransaktionen(transaktionen);
         }
 
         return transaktionen;

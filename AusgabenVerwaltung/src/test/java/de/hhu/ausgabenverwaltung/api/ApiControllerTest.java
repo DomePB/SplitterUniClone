@@ -9,6 +9,7 @@ import de.hhu.ausgabenverwaltung.api.models.GruppeModel;
 import de.hhu.ausgabenverwaltung.domain.Gruppe;
 import de.hhu.ausgabenverwaltung.domain.User;
 import de.hhu.ausgabenverwaltung.service.GruppenService;
+import java.util.List;
 import java.util.Set;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -48,6 +49,19 @@ public class ApiControllerTest {
             .contentType(MediaType.APPLICATION_JSON)
             .content(json))
         .andExpect(status().isCreated());
+  }
+
+  @Test
+  @DisplayName("Gruppe wird angezeigt")
+  void test_2() throws Exception {
+    User user1 = new User("user1");
+    Gruppe gruppe = Gruppe.gruppeErstellen("gruppenName", Set.of(user1));
+
+    when(service.gruppenVonUser(user1.githubHandle())).thenReturn(List.of(gruppe));
+
+    mockMvc.perform(
+            MockMvcRequestBuilders.get("/api/user/{githubHandle}/gruppen", user1.githubHandle()))
+        .andExpect(status().isOk());
   }
 
 }

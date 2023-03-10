@@ -1,5 +1,6 @@
-package de.hhu.ausgabenverwaltung.service;
+package de.hhu.ausgabenverwaltung.application.service;
 
+import de.hhu.ausgabenverwaltung.application.repositorie.GruppenRepository;
 import de.hhu.ausgabenverwaltung.domain.Ausgabe;
 import de.hhu.ausgabenverwaltung.domain.Gruppe;
 import de.hhu.ausgabenverwaltung.domain.Transaktion;

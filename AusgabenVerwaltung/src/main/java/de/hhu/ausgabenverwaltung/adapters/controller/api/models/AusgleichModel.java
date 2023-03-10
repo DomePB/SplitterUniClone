@@ -1,4 +1,4 @@
-package de.hhu.ausgabenverwaltung.api.models;
+package de.hhu.ausgabenverwaltung.adapters.controller.api.models;
 
 import de.hhu.ausgabenverwaltung.domain.Transaktion;
 import de.hhu.ausgabenverwaltung.domain.User;

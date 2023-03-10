@@ -1,25 +1,22 @@
-package de.hhu.ausgabenverwaltung.web;
+package de.hhu.ausgabenverwaltung.adapters.controller.web;
 
-import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
+import de.hhu.ausgabenverwaltung.adapters.controller.web.forms.AusgabeForm;
 import de.hhu.ausgabenverwaltung.domain.Ausgabe;
 import de.hhu.ausgabenverwaltung.domain.Gruppe;
 import de.hhu.ausgabenverwaltung.domain.Transaktion;
 import de.hhu.ausgabenverwaltung.domain.User;
-import de.hhu.ausgabenverwaltung.service.GruppenService;
-import de.hhu.ausgabenverwaltung.web.models.AusgabeForm;
+import de.hhu.ausgabenverwaltung.application.service.GruppenService;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;

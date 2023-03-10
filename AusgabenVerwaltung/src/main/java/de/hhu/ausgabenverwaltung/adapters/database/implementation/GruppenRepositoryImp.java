@@ -1,9 +1,9 @@
-package de.hhu.ausgabenverwaltung.database;
+package de.hhu.ausgabenverwaltung.adapters.database.implementation;
 
+import de.hhu.ausgabenverwaltung.application.repositorie.GruppenRepository;
 import de.hhu.ausgabenverwaltung.domain.Gruppe;
 import de.hhu.ausgabenverwaltung.domain.Transaktion;
 import de.hhu.ausgabenverwaltung.domain.User;
-import de.hhu.ausgabenverwaltung.service.GruppenRepository;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;

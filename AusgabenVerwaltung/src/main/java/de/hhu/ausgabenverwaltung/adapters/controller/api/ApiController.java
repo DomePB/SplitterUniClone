@@ -1,13 +1,13 @@
-package de.hhu.ausgabenverwaltung.api;
+package de.hhu.ausgabenverwaltung.adapters.controller.api;
 
-import de.hhu.ausgabenverwaltung.api.models.AusgleichModel;
-import de.hhu.ausgabenverwaltung.api.models.AuslagenModel;
-import de.hhu.ausgabenverwaltung.api.models.GruppeModel;
+import de.hhu.ausgabenverwaltung.adapters.controller.api.models.AusgleichModel;
+import de.hhu.ausgabenverwaltung.adapters.controller.api.models.AuslagenModel;
+import de.hhu.ausgabenverwaltung.adapters.controller.api.models.GruppeModel;
 import de.hhu.ausgabenverwaltung.domain.Ausgabe;
 import de.hhu.ausgabenverwaltung.domain.Gruppe;
 import de.hhu.ausgabenverwaltung.domain.Transaktion;
 import de.hhu.ausgabenverwaltung.domain.User;
-import de.hhu.ausgabenverwaltung.service.GruppenService;
+import de.hhu.ausgabenverwaltung.application.service.GruppenService;
 import jakarta.validation.Valid;
 import java.util.List;
 import java.util.Set;

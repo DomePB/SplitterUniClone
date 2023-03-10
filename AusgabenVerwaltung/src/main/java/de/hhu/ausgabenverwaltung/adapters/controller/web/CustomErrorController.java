@@ -1,4 +1,4 @@
-package de.hhu.ausgabenverwaltung.web;
+package de.hhu.ausgabenverwaltung.adapters.controller.web;
 
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.http.HttpServletRequest;

@@ -1,16 +1,12 @@
 package de.hhu.ausgabenverwaltung.service;
 
-import de.hhu.ausgabenverwaltung.database.GruppenRepositoryImp;
+import de.hhu.ausgabenverwaltung.adapters.database.implementation.GruppenRepositoryImp;
 import de.hhu.ausgabenverwaltung.domain.Gruppe;
-import de.hhu.ausgabenverwaltung.domain.Transaktion;
 import de.hhu.ausgabenverwaltung.domain.User;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.math.BigDecimal;
-
 import java.util.List;
-import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

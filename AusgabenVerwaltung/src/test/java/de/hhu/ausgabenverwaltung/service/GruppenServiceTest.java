@@ -33,7 +33,7 @@ class GruppenServiceTest {
 
     @Test
     @DisplayName("Anzahl der Mitglieder beträgt 1, wenn die Gruppe zuerst erstellt wird")
-    void erstelleGruppeTest() {
+    void erstelleGruppeTest() throws Exception {
         //Arrange
         //Act
         Gruppe gruppe = gruppenService.gruppeErstellen("githubname", "gruppenName");

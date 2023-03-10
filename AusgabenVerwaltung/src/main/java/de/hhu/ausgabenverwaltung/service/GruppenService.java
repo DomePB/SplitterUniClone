@@ -22,14 +22,17 @@ public class GruppenService {
         this.gruppen = gruppen;
     }
 
-    public Gruppe gruppeErstellen(Set<String> mitglieder, String name) {
+    public Gruppe gruppeErstellen(Set<String> mitglieder, String name) throws Exception {
+        for(String mitglied : mitglieder){
+            nameisValid(mitglied);
+        }
         Gruppe gruppe = Gruppe.gruppeErstellen(name,
             mitglieder.stream().map(User::new).collect(Collectors.toSet()));
         gruppen.add(gruppe);
         return gruppe;
     }
 
-    public Gruppe gruppeErstellen(String ersteller, String name) {
+    public Gruppe gruppeErstellen(String ersteller, String name) throws Exception {
         return gruppeErstellen(new HashSet<>(Set.of(ersteller)), name);
     }
 
@@ -66,7 +69,9 @@ public class GruppenService {
 
     public void addMitglied(UUID gruppenId, String githubHandle) throws Exception {
         Gruppe gruppe = findById(gruppenId);
-        gruppe.addMitglieder(new User(githubHandle));
+        if(nameisValid(githubHandle)) {
+            gruppe.addMitglieder(new User(githubHandle));
+        }
     }
 
     public void addAusgabe(UUID gruppenId, Ausgabe ausgabe) throws Exception {
@@ -87,6 +92,15 @@ public class GruppenService {
 
     public Map<Gruppe, Set<Transaktion>> getBeteiligteTransaktionen(String githubHandle){
     return gruppen.getBeteiligteTransaktionen(new User(githubHandle));
+    }
+    public boolean nameisValid(String githubHandle) throws Exception {
+        String regex = "(^[a-zA-Z\\d](?:[a-zA-Z\\d]|-(?=[a-zA-Z\\d])){0,38}$)";
+        if(githubHandle.matches(regex)){
+            return true;
+        }
+        else {
+            throw new Exception("Invalid Github Name"); //Exception aendern
+        }
     }
 
 }

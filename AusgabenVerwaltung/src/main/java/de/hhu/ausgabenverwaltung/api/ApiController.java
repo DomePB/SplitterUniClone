@@ -40,9 +40,14 @@ public class ApiController {
 
     @PostMapping("/gruppen")
     public ResponseEntity<UUID> gruppeErstellen(@Valid @RequestBody GruppeModel gruppeModel) {
-        Gruppe gruppe = gruppenService.gruppeErstellen(gruppeModel.personen(), gruppeModel.name());
+        try {
+            Gruppe gruppe =
+                    gruppenService.gruppeErstellen(gruppeModel.personen(), gruppeModel.name());
+            return new ResponseEntity<>(gruppe.getId(), HttpStatus.CREATED);
+        }catch (Exception e){
+            return new ResponseEntity<>(null,HttpStatus.BAD_REQUEST); //not sure if correct status
+        }
 
-        return new ResponseEntity<>(gruppe.getId(), HttpStatus.CREATED);
     }
 
     @GetMapping("/user/{githubHandle}/gruppen")

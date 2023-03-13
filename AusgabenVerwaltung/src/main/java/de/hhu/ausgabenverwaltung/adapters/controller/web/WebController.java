@@ -9,6 +9,7 @@ import de.hhu.ausgabenverwaltung.domain.Ausgabe;
 import de.hhu.ausgabenverwaltung.domain.Gruppe;
 import de.hhu.ausgabenverwaltung.domain.Transaktion;
 import de.hhu.ausgabenverwaltung.domain.User;
+import jakarta.validation.constraints.NotEmpty;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -49,7 +50,8 @@ public class WebController {
   }
 
   @PostMapping("/")
-  public String gruppeErstellen(String gruppenName, @AuthenticationPrincipal OAuth2User token) {
+  public String gruppeErstellen(@NotEmpty String gruppenName,
+                                @AuthenticationPrincipal OAuth2User token) {
     String githubHandle = token.getAttribute("login");
 
     try {

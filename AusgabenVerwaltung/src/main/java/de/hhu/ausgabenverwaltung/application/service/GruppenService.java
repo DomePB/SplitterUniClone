@@ -40,13 +40,14 @@ public class GruppenService {
     return gruppe;
   }
 
-  public Gruppe createGruppe(String ersteller, String name) throws Exception {
+  public Gruppe createGruppe(String ersteller, String name) throws Exception {//im Test schreiben, dass gruppenRepo.save von vreatGruppe aufgerufen wird
     return createGruppe(new HashSet<>(Set.of(ersteller)), name);
   }
 
   public void closeGruppe(UUID gruppenId) throws Exception {
     Gruppe gruppe = findById(gruppenId);
     gruppe.schliessen();
+    gruppenRepo.save(gruppe);
   }
 
   public List<Gruppe> getGruppenVonUser(String githubHandle) {
@@ -80,12 +81,14 @@ public class GruppenService {
     if (nameIsValid(githubHandle)) {
       gruppe.addMitglieder(new User(githubHandle));
     }
+    gruppenRepo.save(gruppe);
   }
 
   public void addAusgabe(UUID gruppenId, Ausgabe ausgabe) throws Exception {
     Gruppe gruppe = findById(gruppenId);
     gruppe.addAusgabe(ausgabe);
     gruppe.berechneTransaktionen(berechneSalden(gruppenId));
+    gruppenRepo.save(gruppe);
   }
 
   public boolean checkMitglied(UUID gruppenId, String githubHandle) throws Exception {

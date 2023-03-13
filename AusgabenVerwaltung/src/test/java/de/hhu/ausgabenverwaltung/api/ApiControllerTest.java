@@ -167,6 +167,4 @@ public class ApiControllerTest {
                         MockMvcRequestBuilders.get("/api/gruppen/{gruppenId}/ausgleich", UUID.randomUUID()))
                 .andExpect(status().isNotFound());
     }
-
-
 }

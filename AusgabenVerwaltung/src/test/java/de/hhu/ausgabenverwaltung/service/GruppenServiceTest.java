@@ -1,6 +1,7 @@
 package de.hhu.ausgabenverwaltung.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import de.hhu.ausgabenverwaltung.application.repo.GruppenRepository;
@@ -10,11 +11,8 @@ import de.hhu.ausgabenverwaltung.domain.Gruppe;
 import de.hhu.ausgabenverwaltung.domain.Transaktion;
 import de.hhu.ausgabenverwaltung.domain.User;
 import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -40,13 +38,25 @@ class GruppenServiceTest {
 
         //Assert
         assertThat(gruppe.getMitglieder().size()).isEqualTo(1);
+        verify(repository).save(gruppe);
+    }
+    @Test
+    @DisplayName("List von Usern wird in die Gruppe korrekt gespeichert")
+    void erstelleGruppeTest_2() throws Exception {
+        //Arrange
+        //Act
+        Gruppe gruppe = gruppenService.createGruppe(Set.of("githubName"), "gruppenName");
+
+        //Assert
+        assertThat(gruppe.getMitglieder().size()).isEqualTo(1);
+        verify(repository).save(gruppe);
     }
 
     @Test
     @DisplayName("Wird eine Gruppe korrekt geschlossen?")
     void gruppeSchliessenTest() throws Exception {
         //Arrange
-        Gruppe gruppe = gruppenService.createGruppe("test", "test");
+        Gruppe gruppe = Gruppe.createGruppe("gruppenName", Set.of());
         UUID id = gruppe.getId();
         when(repository.findById(id)).thenReturn(gruppe);
         //Act
@@ -54,6 +64,7 @@ class GruppenServiceTest {
 
         //Assert
         assertThat(gruppe.istOffen()).isFalse();
+        verify(repository).save(gruppe);
     }
 
     @Test
@@ -120,20 +131,23 @@ class GruppenServiceTest {
     @DisplayName("Mitglied wird hinzugefuegt")
     void addMitgliedTest() throws Exception {
         //Arrange
-        Gruppe gruppe = gruppenService.createGruppe("test", "testgruppe");
+        Gruppe gruppe = Gruppe.createGruppe("gruppenName", Set.of(new User("user1")));
+
         UUID id = gruppe.getId();
         when(repository.findById(id)).thenReturn(gruppe);
         //Act
         gruppenService.addMitglied(id, "test1");
         //Assert
         assertThat(gruppe.getMitglieder().size()).isEqualTo(2);
+        verify(repository).save(gruppe);
     }
 
     @Test
     @DisplayName("Ausgabe wird hinzugefuegt")
     void addAusgabe() throws Exception {
         //Arrange
-        Gruppe gruppe = gruppenService.createGruppe("test", "testgruppe");
+        Gruppe gruppe = Gruppe.createGruppe("gruppenName", Set.of());
+
         UUID id = gruppe.getId();
         User user = new User("test1");
         gruppe.addMitglieder(user);
@@ -143,6 +157,7 @@ class GruppenServiceTest {
                 new Ausgabe("ausgabe1", "ausgabe2", BigDecimal.TEN, user, List.of(user)));
         //Assert
         assertThat(gruppe.getAusgaben().size()).isEqualTo(1);
+        verify(repository).save(gruppe);
     }
 
     @Test

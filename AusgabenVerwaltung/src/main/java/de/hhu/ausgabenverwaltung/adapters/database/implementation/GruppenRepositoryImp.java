@@ -5,7 +5,6 @@ import de.hhu.ausgabenverwaltung.domain.Gruppe;
 import de.hhu.ausgabenverwaltung.domain.Transaktion;
 import de.hhu.ausgabenverwaltung.domain.User;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -18,26 +17,22 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class GruppenRepositoryImp implements GruppenRepository {
 
-  List<Gruppe> gruppen;
+  Map<UUID, Gruppe> gruppen;
 
   public GruppenRepositoryImp() {
-    this.gruppen = new ArrayList<>();
-  }
-
-  public GruppenRepositoryImp(List<Gruppe> gruppen) {
-    this.gruppen = gruppen;
+    this.gruppen = new HashMap<>();
   }
 
   @Override
   public void save(Gruppe gruppe) {
-    gruppen.add(gruppe);
+  gruppen.put(gruppe.getId(), gruppe);
   }
 
   @Override
   public List<Gruppe> getGruppenvonUser(User user) {
     List<Gruppe> gruppenVonUser = new ArrayList<>();
 
-    for (Gruppe gruppe : gruppen) {
+    for (Gruppe gruppe : gruppen.values()) {
       if (gruppe.getMitglieder().contains(user)) {
         gruppenVonUser.add(gruppe);
       }
@@ -71,22 +66,20 @@ public class GruppenRepositoryImp implements GruppenRepository {
 
   @Override
   public List<Gruppe> findAll() {
-    return Collections.unmodifiableList(gruppen);
+    return (gruppen.values().stream().toList());
   }
 
   @Override
   public Gruppe findById(UUID id) throws NoSuchElementException {
-    for (Gruppe gruppe : gruppen) {
-      if (gruppe.getId().equals(id)) {
-        return gruppe;
+      if (gruppen.containsKey(id)){
+        return gruppen.get(id);
       }
-    }
     throw new NoSuchElementException("Gruppe existiert nicht");
   }
 
   public Map<Gruppe, Set<Transaktion>> getBeteiligteTransaktionen(User user) {
     Map<Gruppe, Set<Transaktion>> userTransaktinen = new HashMap<>();
-    for (Gruppe gruppe : gruppen) {
+    for (Gruppe gruppe : gruppen.values()) {
       Set<Transaktion> temp = new HashSet<>();
       if (gruppe.getMitglieder().contains(user)) {
         Set<Transaktion> groupeTransaktionen =

@@ -23,7 +23,10 @@ public class GruppenRepositoryImpTests {
         Gruppe gruppe1 = Gruppe.createGruppe("gruppe1", Set.of(userA));
         Gruppe gruppe2 = Gruppe.createGruppe("gruppe2", Set.of(userB));
         GruppenRepositoryImp gruppenRepositoryImp =
-            new GruppenRepositoryImp(List.of(gruppe1, gruppe2));
+            new GruppenRepositoryImp();
+        gruppenRepositoryImp.save(gruppe1);
+        gruppenRepositoryImp.save(gruppe2);
+
 
         // Act
         List<Gruppe> gruppenVonA = gruppenRepositoryImp.getGruppenvonUser(userA);
@@ -42,7 +45,9 @@ public class GruppenRepositoryImpTests {
         Gruppe gruppe2 = Gruppe.createGruppe("gruppe2", Set.of(user));
         gruppe2.schliessen();
         GruppenRepositoryImp gruppenRepositoryImp =
-            new GruppenRepositoryImp(List.of(gruppe1, gruppe2));
+            new GruppenRepositoryImp();
+        gruppenRepositoryImp.save(gruppe1);
+        gruppenRepositoryImp.save(gruppe2);
 
         // Act
         List<Gruppe> offeneGruppen = gruppenRepositoryImp.getOffeneGruppenVonUser(user);

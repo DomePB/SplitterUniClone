@@ -1,15 +1,17 @@
-### Einleitung und sagen der Ziele (Geschäftsziele): Top 5 der Ziele für Stakeholder:
+### Einleitung und sagen der Ziele (Geschäftsziele):
 
--	Eine Software die über eine Git-Authentifizierung Gruppen erstellen kann, in denen Ausgaben gespeichert und Transaktionen ausgegeben werden können
--	Konten sollen dabei möglichst transparent und einfach ausgeglichen werden
+-	Eine Software die über eine Git-Authentifizierung Gruppen erstellen kann, in denen Ausgaben gespeichert und Ausgleichtransaktionen berechnet werden können
+-	Die Grupppenkonten sollen dabei möglichst transparent und einfach ausgeglichen werden
 
 #### Qualitätsziele
-Es soll möglichst Wartbar sein. Zudem wollten wir ein gewissen Grad an Accessibility gewährleisten, indem
+
+Es soll möglichst wartbar sein. Zudem wollten wir ein gewissen Grad an Accessibility gewährleisten, indem wir die einzelnen Features in der Software möglichst leicht und auffällig beschreiben. +
+Des Weiteren sollte die Software alle Vorgaben der Stakeholder zufriedenstellen (User können Ausgaben angeben, Gruppen erstellen, Teilnehmer hinzufügen und sollten zudem die möglichst minimal zu tätige Transaktion ausgeben).
 
 ### Beschränkungen/ Bedingungen
 
-- sollte minimal sein
-- Als OAuth-Provider benutzen wir GitHub.
+- Transaktionen sollten möglichst minimal sein
+- Als OAuth-Provider benutzen wir GitHub
 - Onion-Architektur als Architekturmuster
 - Die Anwendung soll als Webanwendung mit Spring Boot umgesetzt werden.
 - Die Anwendung soll auf Port 9000 laufen
@@ -17,19 +19,26 @@ Es soll möglichst Wartbar sein. Zudem wollten wir ein gewissen Grad an Accessib
 - Datenbank-Tests werden mit H2 umgesetzt und müssen auch laufen, wenn Docker ausgeschaltet ist.
 - In der Domänenschicht müssen die taktischen DDD-Muster verwendet werden.
 - Google-Styleguides sollen eingehalten werden
-- MVP, da straffer Zeitplan
+- Als MVP, da straffer Zeitplan (3 Wochen)
 
 ### Kontextabgrenzungen: Inhalt und Umfang (Äußere Systeme) / Buisness und Technologie abgrenzen
 
 package als domäne und nicht abhängig von spring Service abghängiger
 
--	Business:
+-	Business: Sehr an GitHub gebunden, da dort die ganze Authentifizierung stattfindet. +
+Zudem sind wir stark an Spring gebunden. Wir müssen
 
-### Strategien für Lösungen: zentale Entwufrsentschidungen und Lösungsstrategien
+- Fachlich: Personen können Ausgaben hinzufügen, Github überprüft die Authentifizierung über OAuth ->
+
+
+
+### Strategien für Lösungen: zentrale Entwurfsentscheidungen und Lösungsstrategien
+
 Im Vorhinein:
--Personen zu Gruppen hinzufügen und speichern
--Ausgeben speichern und in Tabelle speichern von welcher Person/an welche Person
-Algorithmus für  maximal m-1 Transaktionen (beinahe minimal): Man macht eine Art Matrix, welche die einzelnen Differenzen von Schulden bzw. Salden zwischen Personen in der selben Gruppe berechnet. Bsp:
+
+- Personen zu Gruppen hinzufügen und speichern
+- Ausgaben speichern und diese in Tabellen speichern welche Person an welche Person was schuldet.
+Algorithmus für *maximal* m-1 Transaktionen (beinahe minimal): Man macht eine Art Matrix, welche die einzelnen Differenzen von Schulden bzw. Salden zwischen Personen in der selben Gruppe berechnet. Bsp:
 
 [options="header"]
 |================
@@ -40,13 +49,14 @@ Algorithmus für  maximal m-1 Transaktionen (beinahe minimal): Man macht eine Ar
 | D | 2  | 5 | 4 | 0
 |================
 
-Vertikale Summe: Schulden, Horizontale Summe: Salden
-Als Beisoiel A schuldet B 8$
-Hierbei summieren wir zuerst die vertikalen Summen und die Horizontalen Summen pro User.
-So kommen wir beispielsweise bei A auf 13 $ schuldne und 15$ Salden. Diese rechnen wir dann zusammen (Salden-Schulden) und kommen auf 2$.
-Falls wir alle nach diesem Verfahren berechnen, kommen wir auf folgende Ergebnisse:
+Vertikale Summe: Salden, Horizontale Summe: Schulden
+
+Als Beispiel B schuldet A 8$. +
+Hierbei summieren wir zuerst die vertikalen und die horizontalen Summen pro User.
+So kommen wir beispielsweise bei A auf 13 $ Salden und 15$ Schulden. Diese rechnen wir dann zusammen (Salden-Schulden) und kommen auf -2$. +
+Falls wir alles nach diesem Verfahren berechnen, kommen wir auf folgende Ergebnisse:
 |====
-|   User   |   Schulden/Salden
+|   User   |   Salden
 | A | 2$
 | B | -1$
 | C | -7$
@@ -55,29 +65,29 @@ Falls wir alle nach diesem Verfahren berechnen, kommen wir auf folgende Ergebnis
 
 Um die Transaktionen minimal zu halten, testen wir als Erstes, ob bestimmte Salden und Schulden sich ausgleichen.
 Falls dies der Fall ist, werden diese zu Beginn berechnet und schon ausgeglichen. +
-Falls dies nicht der Fall ist gehen vergleichen wir herabsteigend alle User miteinander. +
+Falls dies nicht der Fall ist, vergleichen wir herabsteigend alle User miteinander. +
 
-So vergleichen wir in unserem Beispiel zuerst User A mit User B. Dabei sehen wir, dass User B seine ganzen Schulden bei User A egalisieren kann. +
+So vergleichen wir in unserem Beispiel zuerst User A mit User B. Dabei sehen wir, dass User B seine ganzen Salden von User A bekommen kann. +
 |====
-|   User   |   Schulden/Salden
+|   User   |   Salden
 | A | 2$
 | B | -1$
 |====
-Da User B nun bei 0 ist kann, dieser aus der Schuldigenliste entfernt werden. Nun aktualiseren wir den Wert von User A auf 1$ . +
+Da User B nun bei 0 ist, kann dieser aus der Saldenliste entfernt werden. Nun aktualisieren wir den Wert von User A auf -1$ . +
 |====
-|   User   |   Schulden/Salden
+|   User   |   Salden
 | A | 1$
 | C | -7$
 | D | 6$
 |====
-Da User B entfernt wurde vergleichen wir dies mit User C und User C überweist diesen 1$. +
+Da User B entfernt wurde vergleichen wir User A mit User C und User A überweist User C dann den restlichlichen 1$. +
 |====
-|   User   |   Schulden/Salden
+|   User   |   Salden
 
 | C | -6$
 | D | 6$
 |====
-Nun aktuaisieren wir User C und geben das restliche Geld User D. +
+Nun aktualisieren wir User C und User C gibt User D das restliche Geld. +
 So haben wir *immer* im Worst-Case _m-1_ Transaktionen. +
 
 ---
@@ -88,40 +98,58 @@ Im Vorhinein:
 -Personen zu Gruppen hinzufügen und speichern
 -Ausgeben speichern und in Tabelle speichern von welcher Person/an welche Person
 
-Man macht vom Prinzip genau wie gerade die Differenzen ausrechnen
--In diesem Fall evrgleicht man zuerst, ob es Schulden und Salden gibt, welche sich ausgleichen. +
-Falls dies nicht der Fall ist macht man als Erstes 2 Listen: 1. Liste: Alle die was bekommen, 2. Liste: Alle die was schulden +
-Man sortiert die Listen von dem kleinsten Betrag zu dem grössten.
-Man nimmt die kleinsten Schulden und summiert diese mit den 2. kleinsten Schulden und vergleicht diese mit den kleinsten Salden. Falls diese sich ausgleichen werden diese Transaktionen gespeichert. +
-Falls die Summe dieser Schulden jedoch kleiner ist als die geringsten Salden, wird die Summe mit den 2. kleinsten Salden verglichen. Falls das wieder kleiner ist wird dies mit den 3. kleinsten vergliche usw. +
-Falls dann nach einer Zeit jedoch die summierte Summe grösser ist, wird der
+Da es sich hierbei, um ein NP-Vollständiges Problem handelt, könnte dies zu immensen Laufzeitproblemen führen. +
+Hierbei würde man wie gerade eine Matrix im Vorhinein erstellen und dabei die einzelnen Differenzen für jeden User erstellen. +
+Nun vergleicht man aber jede nur mögliche Transaktion miteinander. So würde man hierbei aber 2 Listen machen (Eine für die der Schuldigeren und eine für die der Gläubiger). +
+So würde man jede mögliche Kombination der Listen mit jeder möglichen Kombination der anderen Liste vergleichen. Falls dabei eine Kombination sich mit einer der anderen Gruppe ausgleicht, werden diese schon im Vorhinein entfernt.
 
-### Hierrarchische Struktur des Codes: Zerlegung des Systems alles erklären, tiefer rein in die Blöcke, rein in weitere Blöcke von 2
+### Hierarchische Struktur des Codes: Zerlegung des Systems alles erklären, tiefer rein in die Blöcke, rein in weitere Blöcke von 2
 
-Application
-Adapters
-Domain
-
+- Web: Controller gespeichert
+- Application: GruppenService und greift auf Domain auf. Hier werden Abfragen weitergelitet von dem Controller an die Domain.
+- Domain: Hier werden Ausgaben, Gruppen, Transaktiomem und User geladen. Zudem haben wir in dieser Schicht unsere Services für die einzelnen Modelattribute geladen.
+- Persistenz: speicherung von Daten.
 
 ### Laufzeiten: wie arbeiten Systembausteine mit nachbarsystemen zusammen? Wie werden diese ausgeführt
 
 Onion arbeitet wie folgt miteinander
 
+
 ### Technische Infrastruktur zb hardware, Entwicklungsumgebung, Testumgebung, Produktionsumgebung
 
 Wir haben vertikal gearbeitet
+H2 als Datenbank, Docker, gradle , Javaversion etc
 Test was testen wir alles?
 
 
 ### Bereichsübergreifende konzepte
 
-
+Profilbild, etc möglich
+Da wir sehr struktiert nach Onion-Architektur gearbeitet haben. Sind html und Logik strikt getrennnr
 
 ### Architekturentscheidungen: wichtige, teure oder kritische oder riskante Architekturentscheidungen, die zentrale Bedeutung für das Gesamtsystem haben, mit Begründungen für diese Entscheidungen.
 
-### Qualitätsanforderungen: weitere ziele als 1 und wurden diese alle erreicht
+Wie stellen wir sicher, dass die Transaktionen minimal gehalten werden?
+Alle Ausgaben und Einnahmen miteinander zusammenrechenen und möglichst schnell alles Ausgaben und Einnahmen ausgleichen.
+Wie können wir alle Ausgaben für  die User erstellen und berechnen lassen?
+Ausgaben speichern pro Gruppe und diese Werte speichern. Am leichtesten mit einzelnen Ids.
+Wie sollten die Gruppen aufgebaut sein?
+Haben uns entschieden , dass jeder jeden Teilnehmer hinzufügen kann.
 
-### Schwächen, risiken, welche probleme könnte es geben
+### Qualitätsanforderungen: weitere Ziele als 1 und wurden diese alle erreicht
+
+Testbar: Haben viele Teste geschrieben und sind konsequent nach TDD gegenagen
+Effizent: Geschaut, dass Laufzeit nicht zu lange ist. Sollte uzdem auch für schwache Rechner funktionieren.
+Nutzbarkeit: Haben alle einzelnen Aktionen die die Teilnehmer machen möglichst einfach versucht darzustellen.
+Accessibility: Haben versucht die Anwendung auch möglichst klein zu halten. ZUdem haben wir versucht, unsere Anwendungen auch durch gute Konstraste anzubieten.
+Code-Verständlichkeit: Unser Code sollte durch Kommentare, gute Strukturierung und einfache Methodennamen möglichst leicht nachzuvollziehen zu sein.
+Fehlerhandling: Man sollte durch eine einfache Beschreibung der Fehler erkenn was falsch sein sollte und was man tun muss, diese zu egalisieren.
+
+### Schwächen, Risiken, welche probleme könnte es geben
+
+Wir haben versucht, dass  so wenig wie möglich Schwierigkeiten auftreten könnten. Problematisch ist, dsss es Fälle gibt, wo wir nicht die absolut minimale Transaktionsgrösse vorweisen.
+Dies könnte aber auch Laufzeittechnisch zu Problemen führen.
+Bei der Erstellung der Ausgaben könnte es bei dem Runden zu Problemen führen, da niemand weiß wer bspw bei einer Rechnung von 100$ bei 3 Personen den Extrapfennig bezahlt.
 
 ### 1.	Glossar: Wichtige Domänenbegriffe und technische Begriffe, die Stakeholder kennen sollten, wenn sie über die Architektur des Systems diskutieren. Manchmal auch Übersetzungstabellen, wenn in einer mehrsprachigen Umgebung gerarbeitet
 

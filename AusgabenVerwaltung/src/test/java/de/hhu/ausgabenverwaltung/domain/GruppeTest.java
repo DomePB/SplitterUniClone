@@ -75,9 +75,9 @@ class GruppeTest {
                 new ArrayList<>(List.of(user1, user2)));
       Ausgabe ausgabe2 = new Ausgabe("ausgabe1", "Kino", new BigDecimal(30), user2,
           new ArrayList<>(List.of(user1, user2)));
-      Gruppe gruppe = Gruppe.gruppeErstellen("gruppe", Set.of(user1, user2));
-        gruppe.ausgabeHinzufuegen(ausgabe1);
-        gruppe.ausgabeHinzufuegen(ausgabe2);
+      Gruppe gruppe = Gruppe.createGruppe("gruppe", Set.of(user1, user2));
+        gruppe.addAusgabe(ausgabe1);
+        gruppe.addAusgabe(ausgabe2);
 
         //Act
         var listVonSchuldigen = gruppe.alleSchuldenBerechnen();
@@ -100,7 +100,7 @@ class GruppeTest {
               true, UUID.randomUUID());
 
         // Act
-        gruppe.ausgabeHinzufuegen(ausgabe);
+        gruppe.addAusgabe(ausgabe);
 
         // Assert
         assertThat(gruppe.getAusgaben().size()).isEqualTo(1);
@@ -174,7 +174,7 @@ class GruppeTest {
           new Gruppe("gruppeName", new ArrayList<>(), new HashSet<>(Set.of(user1, user2)),
               false, UUID.randomUUID());
         //Act
-        gruppe.ausgabeHinzufuegen(ausgabe1);
+        gruppe.addAusgabe(ausgabe1);
         //Assert
         assertThat(gruppe.getAusgaben().size()).isEqualTo(0);
 
@@ -188,8 +188,8 @@ class GruppeTest {
         User userC = new User("githubname3");
         Ausgabe ausgabe1 = new Ausgabe("ausgabe1", "Ausgabe1", new BigDecimal(100), userA, new ArrayList<>(List.of(userA,userB,userC)));
 
-      Gruppe gruppe = Gruppe.gruppeErstellen("test", Set.of(userA, userB, userC));
-        gruppe.ausgabeHinzufuegen(ausgabe1);
+      Gruppe gruppe = Gruppe.createGruppe("test", Set.of(userA, userB, userC));
+        gruppe.addAusgabe(ausgabe1);
 
         //Act
         HashMap<User, BigDecimal> mussBezahlen = gruppe.mussBezahlenVonUser(userA);
@@ -220,18 +220,18 @@ class GruppeTest {
         Ausgabe ausgabe11 = new Ausgabe("ausgabe11", "Ausgabe2", new BigDecimal(5), userD, new ArrayList<>(List.of(userB)));
         Ausgabe ausgabe12 = new Ausgabe("ausgabe12", "Ausgabe2", new BigDecimal(4), userD, new ArrayList<>(List.of(userC)));
 
-      Gruppe gruppe = Gruppe.gruppeErstellen("gruppe", Set.of(userA, userB, userC, userD));
-        gruppe.ausgabeHinzufuegen(ausgabe1);
-        gruppe.ausgabeHinzufuegen(ausgabe2);
-        gruppe.ausgabeHinzufuegen(ausgabe4);
-        gruppe.ausgabeHinzufuegen(ausgabe5);
-        gruppe.ausgabeHinzufuegen(ausgabe6);
-        gruppe.ausgabeHinzufuegen(ausgabe7);
-        gruppe.ausgabeHinzufuegen(ausgabe8);
-        gruppe.ausgabeHinzufuegen(ausgabe9);
-        gruppe.ausgabeHinzufuegen(ausgabe10);
-        gruppe.ausgabeHinzufuegen(ausgabe11);
-        gruppe.ausgabeHinzufuegen(ausgabe12);
+      Gruppe gruppe = Gruppe.createGruppe("gruppe", Set.of(userA, userB, userC, userD));
+        gruppe.addAusgabe(ausgabe1);
+        gruppe.addAusgabe(ausgabe2);
+        gruppe.addAusgabe(ausgabe4);
+        gruppe.addAusgabe(ausgabe5);
+        gruppe.addAusgabe(ausgabe6);
+        gruppe.addAusgabe(ausgabe7);
+        gruppe.addAusgabe(ausgabe8);
+        gruppe.addAusgabe(ausgabe9);
+        gruppe.addAusgabe(ausgabe10);
+        gruppe.addAusgabe(ausgabe11);
+        gruppe.addAusgabe(ausgabe12);
 
 
         //Act
@@ -251,7 +251,7 @@ class GruppeTest {
         //Arrange
         User userA = new User("githubname1");
       User userB = new User("githubname2");
-      Gruppe gruppe = Gruppe.gruppeErstellen("gruppe", Set.of(userA, userB));
+      Gruppe gruppe = Gruppe.createGruppe("gruppe", Set.of(userA, userB));
 
         //Act
         var alleTransaktionen = gruppe.berechneTransaktionen(new HashMap<>(Map.of(userA, new BigDecimal(5), userB, new BigDecimal(-5))));
@@ -265,7 +265,7 @@ class GruppeTest {
         //Arrange
         User userA = new User("githubname1");
       User userB = new User("githubname2");
-      Gruppe gruppe = Gruppe.gruppeErstellen("gruppe", Set.of(userA, userB));
+      Gruppe gruppe = Gruppe.createGruppe("gruppe", Set.of(userA, userB));
 
         //Act
         var alleTransaktionen = gruppe.berechneTransaktionen(new HashMap<>(Map.of(userA, new BigDecimal(5), userB, new BigDecimal(-3))));
@@ -280,7 +280,7 @@ class GruppeTest {
         //Arrange
         User userA = new User("githubname1");
       User userB = new User("githubname2");
-      Gruppe gruppe = Gruppe.gruppeErstellen("gruppe", Set.of(userA, userB));
+      Gruppe gruppe = Gruppe.createGruppe("gruppe", Set.of(userA, userB));
 
         //Act
         var alleTransaktionen = gruppe.berechneTransaktionen(new HashMap<>(Map.of(userA, new BigDecimal(-5), userB, new BigDecimal(6))));
@@ -295,7 +295,7 @@ class GruppeTest {
       //Arrange
       User userA = new User("githubname1");
       User userB = new User("githubname2");
-      Gruppe gruppe = Gruppe.gruppeErstellen("gruppe", Set.of(userA, userB));
+      Gruppe gruppe = Gruppe.createGruppe("gruppe", Set.of(userA, userB));
 
       //Act
       var alleTransaktionen = gruppe.berechneTransaktionen(
@@ -312,7 +312,7 @@ class GruppeTest {
       //Arrange
       User userA = new User("A");
       User userB = new User("B");
-      Gruppe gruppe = Gruppe.gruppeErstellen("gruppe", Set.of(userA, userB));
+      Gruppe gruppe = Gruppe.createGruppe("gruppe", Set.of(userA, userB));
 
       //Act
       var alleTransaktionen = gruppe.berechneTransaktionen(
@@ -333,9 +333,9 @@ class GruppeTest {
         Ausgabe ausgabe1 = new Ausgabe("ausgabe1", "Ausgabe1", new BigDecimal(10), userA, new ArrayList<>(List.of(userA, userB)));
         Ausgabe ausgabe2 = new Ausgabe("ausgabe2", "Ausgabe2", new BigDecimal(20), userA, new ArrayList<>(List.of(userA, userB)));
 
-      Gruppe gruppe = Gruppe.gruppeErstellen("gruppe", Set.of(userA, userB));
-        gruppe.ausgabeHinzufuegen(ausgabe1);
-        gruppe.ausgabeHinzufuegen(ausgabe2);
+      Gruppe gruppe = Gruppe.createGruppe("gruppe", Set.of(userA, userB));
+        gruppe.addAusgabe(ausgabe1);
+        gruppe.addAusgabe(ausgabe2);
 
         //Act
         var alleTransaktionen = gruppe.berechneTransaktionen(gruppe.berechneSalden(gruppe.alleSchuldenBerechnen()));
@@ -353,9 +353,9 @@ class GruppeTest {
         Ausgabe ausgabe1 = new Ausgabe("ausgabe1", "Ausgabe1", new BigDecimal(10), userA, new ArrayList<>(List.of(userA, userB)));
         Ausgabe ausgabe2 = new Ausgabe("ausgabe2", "Ausgabe2", new BigDecimal(20), userB, new ArrayList<>(List.of(userA, userB)));
 
-      Gruppe gruppe = Gruppe.gruppeErstellen("gruppe", Set.of(userA, userB));
-        gruppe.ausgabeHinzufuegen(ausgabe1);
-        gruppe.ausgabeHinzufuegen(ausgabe2);
+      Gruppe gruppe = Gruppe.createGruppe("gruppe", Set.of(userA, userB));
+        gruppe.addAusgabe(ausgabe1);
+        gruppe.addAusgabe(ausgabe2);
 
         //Act
         var alleTransaktionen = gruppe.berechneTransaktionen(gruppe.berechneSalden(gruppe.alleSchuldenBerechnen()));
@@ -373,9 +373,9 @@ class GruppeTest {
         Ausgabe ausgabe1 = new Ausgabe("ausgabe1", "Ausgabe1", new BigDecimal(10), userA, new ArrayList<>(List.of(userB)));
         Ausgabe ausgabe2 = new Ausgabe("ausgabe2", "Ausgabe2", new BigDecimal(20), userA, new ArrayList<>(List.of(userA, userB)));
 
-      Gruppe gruppe = Gruppe.gruppeErstellen("gruppe", Set.of(userA, userB));
-        gruppe.ausgabeHinzufuegen(ausgabe1);
-        gruppe.ausgabeHinzufuegen(ausgabe2);
+      Gruppe gruppe = Gruppe.createGruppe("gruppe", Set.of(userA, userB));
+        gruppe.addAusgabe(ausgabe1);
+        gruppe.addAusgabe(ausgabe2);
 
         //Act
         var alleTransaktionen = gruppe.berechneTransaktionen(gruppe.berechneSalden(gruppe.alleSchuldenBerechnen()));
@@ -395,10 +395,10 @@ class GruppeTest {
         Ausgabe ausgabe2 = new Ausgabe("ausgabe2", "Ausgabe2", new BigDecimal(10), userB, new ArrayList<>(List.of(userB, userC)));
         Ausgabe ausgabe3 = new Ausgabe("ausgabe3", "Ausgabe3", new BigDecimal(10), userC, new ArrayList<>(List.of(userA, userC)));
 
-      Gruppe gruppe = Gruppe.gruppeErstellen("gruppe", Set.of(userA, userB, userC));
-        gruppe.ausgabeHinzufuegen(ausgabe1);
-        gruppe.ausgabeHinzufuegen(ausgabe2);
-        gruppe.ausgabeHinzufuegen(ausgabe3);
+      Gruppe gruppe = Gruppe.createGruppe("gruppe", Set.of(userA, userB, userC));
+        gruppe.addAusgabe(ausgabe1);
+        gruppe.addAusgabe(ausgabe2);
+        gruppe.addAusgabe(ausgabe3);
 
 
         //Act
@@ -419,10 +419,10 @@ class GruppeTest {
         Ausgabe ausgabe2 = new Ausgabe("ausgabe2", "Ausgabe2", new BigDecimal(30), berta, new ArrayList<>(List.of(anton, berta, christian)));
         Ausgabe ausgabe3 = new Ausgabe("ausgabe3", "Ausgabe3", new BigDecimal(100), christian, new ArrayList<>(List.of(berta, christian)));
 
-      Gruppe gruppe = Gruppe.gruppeErstellen("gruppe", Set.of(anton, berta, christian));
-        gruppe.ausgabeHinzufuegen(ausgabe1);
-        gruppe.ausgabeHinzufuegen(ausgabe2);
-        gruppe.ausgabeHinzufuegen(ausgabe3);
+      Gruppe gruppe = Gruppe.createGruppe("gruppe", Set.of(anton, berta, christian));
+        gruppe.addAusgabe(ausgabe1);
+        gruppe.addAusgabe(ausgabe2);
+        gruppe.addAusgabe(ausgabe3);
 
         //Act
         var alleTransaktionen = gruppe.berechneTransaktionen(gruppe.berechneSalden(gruppe.alleSchuldenBerechnen()));
@@ -450,13 +450,13 @@ class GruppeTest {
         Ausgabe ausgabe6 = new Ausgabe("ausgabe6", "Theatervorstellung", new BigDecimal("95.37"), userF, new ArrayList<>(List.of(userB, userE, userF)));
 
       Gruppe gruppe =
-          Gruppe.gruppeErstellen("gruppe", Set.of(userA, userB, userC, userD, userE, userF));
-        gruppe.ausgabeHinzufuegen(ausgabe1);
-        gruppe.ausgabeHinzufuegen(ausgabe2);
-        gruppe.ausgabeHinzufuegen(ausgabe3);
-        gruppe.ausgabeHinzufuegen(ausgabe4);
-        gruppe.ausgabeHinzufuegen(ausgabe5);
-        gruppe.ausgabeHinzufuegen(ausgabe6);
+          Gruppe.createGruppe("gruppe", Set.of(userA, userB, userC, userD, userE, userF));
+        gruppe.addAusgabe(ausgabe1);
+        gruppe.addAusgabe(ausgabe2);
+        gruppe.addAusgabe(ausgabe3);
+        gruppe.addAusgabe(ausgabe4);
+        gruppe.addAusgabe(ausgabe5);
+        gruppe.addAusgabe(ausgabe6);
 
 
         //Act
@@ -492,16 +492,16 @@ class GruppeTest {
         Ausgabe ausgabe7 = new Ausgabe("ausgabe7", "Ausgabe7", new BigDecimal("5"), userF, new ArrayList<>(List.of(userC)));
         Ausgabe ausgabe8 = new Ausgabe("ausgabe8", "Ausgabe8", new BigDecimal("30"), userG, new ArrayList<>(List.of(userA)));
 
-      Gruppe gruppe = Gruppe.gruppeErstellen("gruppe",
+      Gruppe gruppe = Gruppe.createGruppe("gruppe",
           Set.of(userA, userB, userC, userD, userE, userF, userG));
-        gruppe.ausgabeHinzufuegen(ausgabe1);
-        gruppe.ausgabeHinzufuegen(ausgabe2);
-        gruppe.ausgabeHinzufuegen(ausgabe3);
-        gruppe.ausgabeHinzufuegen(ausgabe4);
-        gruppe.ausgabeHinzufuegen(ausgabe5);
-        gruppe.ausgabeHinzufuegen(ausgabe6);
-        gruppe.ausgabeHinzufuegen(ausgabe7);
-        gruppe.ausgabeHinzufuegen(ausgabe8);
+        gruppe.addAusgabe(ausgabe1);
+        gruppe.addAusgabe(ausgabe2);
+        gruppe.addAusgabe(ausgabe3);
+        gruppe.addAusgabe(ausgabe4);
+        gruppe.addAusgabe(ausgabe5);
+        gruppe.addAusgabe(ausgabe6);
+        gruppe.addAusgabe(ausgabe7);
+        gruppe.addAusgabe(ausgabe8);
 
 
         //Act

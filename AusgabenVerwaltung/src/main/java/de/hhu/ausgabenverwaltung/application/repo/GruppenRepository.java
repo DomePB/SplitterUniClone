@@ -13,11 +13,11 @@ public interface GruppenRepository {
 
   void save(Gruppe gruppe);
 
-  List<Gruppe> vonUser(User user);
+  List<Gruppe> getGruppenvonUser(User user);
 
-  List<Gruppe> offenVonUser(User user);
+  List<Gruppe> getOffeneGruppenVonUser(User user);
 
-  List<Gruppe> geschlossenVonUser(User user);
+  List<Gruppe> getGeschlosseneGruppenVonUser(User user);
 
   List<Gruppe> findAll();
 

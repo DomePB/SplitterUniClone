@@ -28,7 +28,7 @@ public class Gruppe {
     this.id = id;
   }
 
-  public static Gruppe gruppeErstellen(String name, Set<User> mitglieder) {
+  public static Gruppe createGruppe(String name, Set<User> mitglieder) {
     return new Gruppe(name, new ArrayList<>(), new HashSet<>(mitglieder), true,
         UUID.randomUUID());
   }
@@ -66,7 +66,7 @@ public class Gruppe {
   }
 
 
-  public void ausgabeHinzufuegen(Ausgabe ausgabe) {
+  public void addAusgabe(Ausgabe ausgabe) {
     if (!offen) {
       return;
     }
@@ -118,7 +118,7 @@ public class Gruppe {
     return schulden;
   }
 
-  public HashMap<User, BigDecimal> berechneSalden(
+  public HashMap<User, BigDecimal> berechneSalden(  // -Betrag bekommt der Nutzer noch, +Betrag muss der Nutzer noch zahlen
       HashMap<User, HashMap<User, BigDecimal>> alleSchulden) {
     HashMap<User, BigDecimal> schuldenSumme = new HashMap<>();
     // Iteriere durch alle Spalten der Tabelle
@@ -127,13 +127,13 @@ public class Gruppe {
       BigDecimal summe = schuldenSumme.getOrDefault(aktuellerUser, BigDecimal.ZERO);
       // Iteriere durch alle Zeilen der Tabelle
       for (var userSchulden : entry.getValue().entrySet()) {
-        // Subtrahiere Schulden des Ziel Users
+        // Addieren Schulden des Ziel Users
         User zielUser = userSchulden.getKey();
         BigDecimal zielSumme = schuldenSumme.getOrDefault(zielUser, BigDecimal.ZERO);
         zielSumme = zielSumme.add(userSchulden.getValue());
         schuldenSumme.put(zielUser, zielSumme);
 
-        // Addiere Einnahmen des aktuellen User
+        // Subtrahiere Einnahmen des aktuellen User
         summe = summe.subtract(userSchulden.getValue());
       }
       schuldenSumme.put(aktuellerUser, summe);

@@ -9,6 +9,7 @@ import de.hhu.ausgabenverwaltung.domain.Ausgabe;
 import de.hhu.ausgabenverwaltung.domain.Gruppe;
 import de.hhu.ausgabenverwaltung.domain.Transaktion;
 import de.hhu.ausgabenverwaltung.domain.User;
+import jakarta.validation.Valid;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -41,9 +42,9 @@ public class WebController {
 
     model.addAttribute("beteiligteTransaktionen", beteiligteTransaktionen);
     model.addAttribute("user", token.getAttribute("login"));
-    model.addAttribute("offeneGruppen", service.offenVonUser(token.getAttribute("login")));
+    model.addAttribute("offeneGruppen", service.getOffeneGruppenVonUser(token.getAttribute("login")));
     model.addAttribute("geschlosseneGruppen",
-        service.geschlossenVonUser(token.getAttribute("login")));
+        service.getGeschlossenGruppenVonUser(token.getAttribute("login")));
 
     return "start";
   }
@@ -54,7 +55,7 @@ public class WebController {
     String githubHandle = token.getAttribute("login");
 
     try {
-      service.gruppeErstellen(githubHandle, gruppenName);
+      service.createGruppe(githubHandle, gruppenName);
     } catch (Exception e) {
       throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, e.toString());
     }
@@ -90,15 +91,12 @@ public class WebController {
   }
 
   @PostMapping("/gruppe/ausgaben")
-  public String ausgabeHinzufuegen(@RequestParam UUID id, @Validated AusgabeForm ausgabe,
+  public String ausgabeHinzufuegen(@RequestParam UUID id, @Valid AusgabeForm ausgabe,
                                    RedirectAttributes attrs) {
     try {
       Gruppe gruppe = service.findById(id);
 
-      Ausgabe ausgabe1 =
-          new Ausgabe(ausgabe.ausgabeName(), ausgabe.ausgabeBeschreibung(), ausgabe.ausgabeBetrag(),
-              new User(ausgabe.bezahltVon()),
-              ausgabe.beteiligte().stream().map(User::new).collect(Collectors.toList()));
+      Ausgabe ausgabe1 = ausgabe.toAusgabe();
       service.addAusgabe(id, ausgabe1);
 
       attrs.addAttribute("id", gruppe.getId());
@@ -128,7 +126,7 @@ public class WebController {
     attrs.addAttribute("id", id);
 
     try {
-      service.gruppeSchliessen(id);
+      service.closeGruppe(id);
 
       return "redirect:/gruppe";
     } catch (Exception e) {

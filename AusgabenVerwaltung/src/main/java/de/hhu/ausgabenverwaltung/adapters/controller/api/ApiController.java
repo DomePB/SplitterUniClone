@@ -42,7 +42,7 @@ public class ApiController {
     public ResponseEntity<UUID> gruppeErstellen(@Valid @RequestBody GruppeModel gruppeModel) {
         try {
             Gruppe gruppe =
-                gruppenService.gruppeErstellen(gruppeModel.personen(), gruppeModel.name());
+                gruppenService.createGruppe(gruppeModel.personen(), gruppeModel.name());
             return new ResponseEntity<>(gruppe.getId(), HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST); //not sure if correct status
@@ -52,7 +52,7 @@ public class ApiController {
 
     @GetMapping("/user/{githubHandle}/gruppen")
     public ResponseEntity<List<GruppeModel>> gruppenAnzeigen(@PathVariable String githubHandle) {
-        List<Gruppe> gruppen = gruppenService.gruppenVonUser(githubHandle);
+        List<Gruppe> gruppen = gruppenService.getGruppenVonUser(githubHandle);
         List<GruppeModel> gruppeModels =
             gruppen.stream().map(GruppeModel::fromGruppe).collect(Collectors.toList());
 
@@ -73,7 +73,7 @@ public class ApiController {
     @PostMapping("/gruppen/{gruppenId}/schliessen")
     public ResponseEntity<String> gruppeSchliessen(@PathVariable String gruppenId) {
         try {
-            gruppenService.gruppeSchliessen(UUID.fromString(gruppenId));
+            gruppenService.closeGruppe(UUID.fromString(gruppenId));
             return new ResponseEntity<>("Gruppe geschlossen", HttpStatus.OK);
         } catch (Exception ex) {
             return new ResponseEntity<>("Gruppe nicht gefunden", HttpStatus.NOT_FOUND);

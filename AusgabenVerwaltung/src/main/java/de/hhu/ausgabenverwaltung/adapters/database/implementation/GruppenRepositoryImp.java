@@ -34,7 +34,7 @@ public class GruppenRepositoryImp implements GruppenRepository {
   }
 
   @Override
-  public List<Gruppe> vonUser(User user) {
+  public List<Gruppe> getGruppenvonUser(User user) {
     List<Gruppe> gruppenVonUser = new ArrayList<>();
 
     for (Gruppe gruppe : gruppen) {
@@ -46,10 +46,10 @@ public class GruppenRepositoryImp implements GruppenRepository {
   }
 
   @Override
-  public List<Gruppe> offenVonUser(User user) {
+  public List<Gruppe> getOffeneGruppenVonUser(User user) {
     List<Gruppe> offeneGruppen = new ArrayList<>();
 
-    for (Gruppe gruppe : vonUser(user)) {
+    for (Gruppe gruppe : getGruppenvonUser(user)) {
       if (gruppe.istOffen()) {
         offeneGruppen.add(gruppe);
       }
@@ -58,10 +58,10 @@ public class GruppenRepositoryImp implements GruppenRepository {
   }
 
   @Override
-  public List<Gruppe> geschlossenVonUser(User user) {
+  public List<Gruppe> getGeschlosseneGruppenVonUser(User user) {
     List<Gruppe> offeneGruppen = new ArrayList<>();
 
-    for (Gruppe gruppe : vonUser(user)) {
+    for (Gruppe gruppe : getGruppenvonUser(user)) {
       if (!gruppe.istOffen()) {
         offeneGruppen.add(gruppe);
       }

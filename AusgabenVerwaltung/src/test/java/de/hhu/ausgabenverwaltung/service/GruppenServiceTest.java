@@ -36,7 +36,7 @@ class GruppenServiceTest {
     void erstelleGruppeTest() throws Exception {
         //Arrange
         //Act
-        Gruppe gruppe = gruppenService.gruppeErstellen("githubname", "gruppenName");
+        Gruppe gruppe = gruppenService.createGruppe("githubname", "gruppenName");
 
         //Assert
         assertThat(gruppe.getMitglieder().size()).isEqualTo(1);
@@ -46,11 +46,11 @@ class GruppenServiceTest {
     @DisplayName("Wird eine Gruppe korrekt geschlossen?")
     void gruppeSchliessenTest() throws Exception {
         //Arrange
-        Gruppe gruppe = gruppenService.gruppeErstellen("test", "test");
+        Gruppe gruppe = gruppenService.createGruppe("test", "test");
         UUID id = gruppe.getId();
         when(repository.findById(id)).thenReturn(gruppe);
         //Act
-        gruppenService.gruppeSchliessen(id);
+        gruppenService.closeGruppe(id);
 
         //Assert
         assertThat(gruppe.istOffen()).isFalse();
@@ -60,11 +60,11 @@ class GruppenServiceTest {
     @DisplayName("Werden die geschlossenen Gruppen von User richtig rausgegeben")
     void geschlossenVonUserTest() throws Exception {
         //Arrange
-        Gruppe gruppe = gruppenService.gruppeErstellen("test", "testgruppe");
+        Gruppe gruppe = gruppenService.createGruppe("test", "testgruppe");
         gruppe.schliessen();
-        when(repository.geschlossenVonUser(new User("test"))).thenReturn(List.of(gruppe));
+        when(repository.getGeschlosseneGruppenVonUser(new User("test"))).thenReturn(List.of(gruppe));
         //Act
-        List<Gruppe> geschlossenVonUser = gruppenService.geschlossenVonUser("test");
+        List<Gruppe> geschlossenVonUser = gruppenService.getGeschlossenGruppenVonUser("test");
 
         //Assert
         assertThat(geschlossenVonUser).contains(gruppe);
@@ -74,10 +74,10 @@ class GruppenServiceTest {
     @DisplayName("Werden die offenen Gruppen von User richtig rausgegeben")
     void offenVonUserTest() throws Exception {
         //Arrange
-        Gruppe gruppe = gruppenService.gruppeErstellen("test", "testgruppe");
-        when(repository.offenVonUser(new User("test"))).thenReturn(List.of(gruppe));
+        Gruppe gruppe = gruppenService.createGruppe("test", "testgruppe");
+        when(repository.getOffeneGruppenVonUser(new User("test"))).thenReturn(List.of(gruppe));
         //Act
-        List<Gruppe> offenVonUser = gruppenService.offenVonUser("test");
+        List<Gruppe> offenVonUser = gruppenService.getOffeneGruppenVonUser("test");
         //Assert
         assertThat(offenVonUser).contains(gruppe);
     }
@@ -86,7 +86,7 @@ class GruppenServiceTest {
     @DisplayName("Die richtige Gruppe wird mit id gefunden")
     void findByIdTest() throws Exception {
         //Arrange
-        Gruppe gruppe = gruppenService.gruppeErstellen("test", "testgruppe");
+        Gruppe gruppe = gruppenService.createGruppe("test", "testgruppe");
         UUID id = gruppe.getId();
         when(repository.findById(id)).thenReturn(gruppe);
         //Act
@@ -99,12 +99,12 @@ class GruppenServiceTest {
     @DisplayName("Die Salden werden richtig zurueckgegeben")
     void berechneSaldenTest() throws Exception {
         //Arrange
-        Gruppe gruppe = gruppenService.gruppeErstellen("test", "testgruppe");
+        Gruppe gruppe = gruppenService.createGruppe("test", "testgruppe");
         User test1 = new User("test1");
         User test2 = new User("test2");
         gruppe.addMitglieder(test1);
         gruppe.addMitglieder(test2);
-        gruppe.ausgabeHinzufuegen(
+        gruppe.addAusgabe(
                 new Ausgabe("ausgabe1", "ausgabe2", BigDecimal.TEN, test1, List.of(test2)));
         UUID id = gruppe.getId();
         when(repository.findById(id)).thenReturn(gruppe);
@@ -120,7 +120,7 @@ class GruppenServiceTest {
     @DisplayName("Mitglied wird hinzugefuegt")
     void addMitgliedTest() throws Exception {
         //Arrange
-        Gruppe gruppe = gruppenService.gruppeErstellen("test", "testgruppe");
+        Gruppe gruppe = gruppenService.createGruppe("test", "testgruppe");
         UUID id = gruppe.getId();
         when(repository.findById(id)).thenReturn(gruppe);
         //Act
@@ -133,7 +133,7 @@ class GruppenServiceTest {
     @DisplayName("Ausgabe wird hinzugefuegt")
     void addAusgabe() throws Exception {
         //Arrange
-        Gruppe gruppe = gruppenService.gruppeErstellen("test", "testgruppe");
+        Gruppe gruppe = gruppenService.createGruppe("test", "testgruppe");
         UUID id = gruppe.getId();
         User user = new User("test1");
         gruppe.addMitglieder(user);
@@ -149,7 +149,7 @@ class GruppenServiceTest {
     @DisplayName("Mitglieder Check")
     void checkMitglied() throws Exception {
         //Arrange
-        Gruppe gruppe = gruppenService.gruppeErstellen("test", "testgruppe");
+        Gruppe gruppe = gruppenService.createGruppe("test", "testgruppe");
         UUID id = gruppe.getId();
         User user = new User("test1");
         gruppe.addMitglieder(user);
@@ -173,7 +173,7 @@ class GruppenServiceTest {
     @DisplayName("Prueft ob Gruppe offen ist")
     void istOffen() throws Exception {
         //Arrange
-        Gruppe gruppe = gruppenService.gruppeErstellen("test", "testgruppe");
+        Gruppe gruppe = gruppenService.createGruppe("test", "testgruppe");
         UUID id = gruppe.getId();
         when(repository.findById(id)).thenReturn(gruppe);
         //Act
@@ -185,7 +185,7 @@ class GruppenServiceTest {
     @DisplayName("berechneTransaktionen set")
     void berechneTransaktionen() throws Exception {
         //Arrange
-        Gruppe gruppe = gruppenService.gruppeErstellen("test", "testgruppe");
+        Gruppe gruppe = gruppenService.createGruppe("test", "testgruppe");
         UUID id = gruppe.getId();
         when(repository.findById(id)).thenReturn(gruppe);
         //Act

@@ -20,13 +20,13 @@ public class GruppenRepositoryImpTests {
         //Arrange
         User userA = new User("githubname1");
         User userB = new User("githubname2");
-        Gruppe gruppe1 = Gruppe.gruppeErstellen("gruppe1", Set.of(userA));
-        Gruppe gruppe2 = Gruppe.gruppeErstellen("gruppe2", Set.of(userB));
+        Gruppe gruppe1 = Gruppe.createGruppe("gruppe1", Set.of(userA));
+        Gruppe gruppe2 = Gruppe.createGruppe("gruppe2", Set.of(userB));
         GruppenRepositoryImp gruppenRepositoryImp =
             new GruppenRepositoryImp(List.of(gruppe1, gruppe2));
 
         // Act
-        List<Gruppe> gruppenVonA = gruppenRepositoryImp.vonUser(userA);
+        List<Gruppe> gruppenVonA = gruppenRepositoryImp.getGruppenvonUser(userA);
 
         // Assert
         assertThat(gruppenVonA).containsExactly(gruppe1);
@@ -38,15 +38,15 @@ public class GruppenRepositoryImpTests {
         //Arrange
         User user = new User("githubname");
 
-        Gruppe gruppe1 = Gruppe.gruppeErstellen("gruppe1", Set.of(user));
-        Gruppe gruppe2 = Gruppe.gruppeErstellen("gruppe2", Set.of(user));
+        Gruppe gruppe1 = Gruppe.createGruppe("gruppe1", Set.of(user));
+        Gruppe gruppe2 = Gruppe.createGruppe("gruppe2", Set.of(user));
         gruppe2.schliessen();
         GruppenRepositoryImp gruppenRepositoryImp =
             new GruppenRepositoryImp(List.of(gruppe1, gruppe2));
 
         // Act
-        List<Gruppe> offeneGruppen = gruppenRepositoryImp.offenVonUser(user);
-        List<Gruppe> geschlosseneGruppen = gruppenRepositoryImp.geschlossenVonUser(user);
+        List<Gruppe> offeneGruppen = gruppenRepositoryImp.getOffeneGruppenVonUser(user);
+        List<Gruppe> geschlosseneGruppen = gruppenRepositoryImp.getGeschlosseneGruppenVonUser(user);
 
         // Assert
         assertThat(offeneGruppen).containsExactly(gruppe1);

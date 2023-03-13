@@ -18,13 +18,13 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class GruppenService {
-  private final GruppenRepository gruppen;
+  private final GruppenRepository gruppenRepo;
 
-  public GruppenService(GruppenRepository gruppen) {
-    this.gruppen = gruppen;
+  public GruppenService(GruppenRepository gruppenRepo) {
+    this.gruppenRepo = gruppenRepo;
   }
 
-  public Gruppe gruppeErstellen(Set<String> mitglieder, String name) throws Exception {
+  public Gruppe createGruppe(Set<String> mitglieder, String name) throws Exception {
     if (name.isEmpty()) {
       throw new InvalidNameException();
     }
@@ -33,36 +33,36 @@ public class GruppenService {
       nameIsValid(mitglied);
     }
 
-    Gruppe gruppe = Gruppe.gruppeErstellen(name,
+    Gruppe gruppe = Gruppe.createGruppe(name,
         mitglieder.stream().map(User::new).collect(Collectors.toSet()));
-    gruppen.save(gruppe);
+    gruppenRepo.save(gruppe);
 
     return gruppe;
   }
 
-  public Gruppe gruppeErstellen(String ersteller, String name) throws Exception {
-    return gruppeErstellen(new HashSet<>(Set.of(ersteller)), name);
+  public Gruppe createGruppe(String ersteller, String name) throws Exception {
+    return createGruppe(new HashSet<>(Set.of(ersteller)), name);
   }
 
-  public void gruppeSchliessen(UUID gruppenId) throws Exception {
+  public void closeGruppe(UUID gruppenId) throws Exception {
     Gruppe gruppe = findById(gruppenId);
     gruppe.schliessen();
   }
 
-  public List<Gruppe> gruppenVonUser(String githubHandle) {
-    return gruppen.vonUser(new User(githubHandle));
+  public List<Gruppe> getGruppenVonUser(String githubHandle) {
+    return gruppenRepo.getGruppenvonUser(new User(githubHandle));
   }
 
-  public List<Gruppe> geschlossenVonUser(String githubHandle) {
-    return gruppen.geschlossenVonUser(new User(githubHandle));
+  public List<Gruppe> getGeschlossenGruppenVonUser(String githubHandle) {
+    return gruppenRepo.getGeschlosseneGruppenVonUser(new User(githubHandle));
   }
 
-  public List<Gruppe> offenVonUser(String githubHandle) {
-    return gruppen.offenVonUser(new User(githubHandle));
+  public List<Gruppe> getOffeneGruppenVonUser(String githubHandle) {
+    return gruppenRepo.getOffeneGruppenVonUser(new User(githubHandle));
   }
 
   public Gruppe findById(UUID gruppenId) throws Exception { //Application Service
-    return gruppen.findById(gruppenId);
+    return gruppenRepo.findById(gruppenId);
   }
 
   public boolean istOffen(UUID gruppenId) throws Exception {
@@ -84,7 +84,7 @@ public class GruppenService {
 
   public void addAusgabe(UUID gruppenId, Ausgabe ausgabe) throws Exception {
     Gruppe gruppe = findById(gruppenId);
-    gruppe.ausgabeHinzufuegen(ausgabe);
+    gruppe.addAusgabe(ausgabe);
     gruppe.berechneTransaktionen(berechneSalden(gruppenId));
   }
 
@@ -99,7 +99,7 @@ public class GruppenService {
   }
 
   public Map<Gruppe, Set<Transaktion>> getBeteiligteTransaktionen(String githubHandle) {
-    return gruppen.getBeteiligteTransaktionen(new User(githubHandle));
+    return gruppenRepo.getBeteiligteTransaktionen(new User(githubHandle));
   }
 
   public boolean nameIsValid(String githubHandle) throws Exception {

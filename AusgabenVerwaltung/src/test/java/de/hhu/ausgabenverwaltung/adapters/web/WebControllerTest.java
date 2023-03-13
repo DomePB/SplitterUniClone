@@ -1,4 +1,4 @@
-package de.hhu.ausgabenverwaltung.web;
+package de.hhu.ausgabenverwaltung.adapters.web;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
@@ -11,10 +11,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import de.hhu.ausgabenverwaltung.adapters.controller.web.WebController;
 import de.hhu.ausgabenverwaltung.adapters.controller.web.forms.AusgabeForm;
-import de.hhu.ausgabenverwaltung.domain.Ausgabe;
 import de.hhu.ausgabenverwaltung.domain.Gruppe;
 import de.hhu.ausgabenverwaltung.domain.User;
-import de.hhu.ausgabenverwaltung.helper.WithMockOAuth2User;
+import de.hhu.ausgabenverwaltung.config.helper.WithMockOAuth2User;
 import java.util.Set;
 import de.hhu.ausgabenverwaltung.application.service.GruppenService;
 
@@ -27,7 +26,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.util.LinkedMultiValueMap;
 
 @AutoConfigureMockMvc(addFilters = false)
 @WebMvcTest(controllers = WebController.class)

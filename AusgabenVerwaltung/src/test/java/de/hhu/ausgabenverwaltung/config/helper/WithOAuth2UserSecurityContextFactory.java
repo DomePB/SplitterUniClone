@@ -1,4 +1,4 @@
-package de.hhu.ausgabenverwaltung.helper;
+package de.hhu.ausgabenverwaltung.config.helper;
 
 import java.util.ArrayList;
 import java.util.Arrays;

@@ -1,4 +1,4 @@
-package de.hhu.ausgabenverwaltung.api;
+package de.hhu.ausgabenverwaltung.adapters.api;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;

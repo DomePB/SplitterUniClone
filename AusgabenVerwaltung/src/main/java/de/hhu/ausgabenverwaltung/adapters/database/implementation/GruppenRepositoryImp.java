@@ -3,7 +3,6 @@ package de.hhu.ausgabenverwaltung.adapters.database.implementation;
 import de.hhu.ausgabenverwaltung.application.repo.GruppenRepository;
 import de.hhu.ausgabenverwaltung.domain.Gruppe;
 import de.hhu.ausgabenverwaltung.domain.User;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,8 +27,6 @@ public class GruppenRepositoryImp implements GruppenRepository {
 
   @Override
   public List<Gruppe> getGruppenvonUser(User user) {
-    List<Gruppe> gruppenVonUser = new ArrayList<>();
-
     return gruppen.values().stream()
             .filter(gruppe -> gruppe.getMitglieder().contains(user))
             .collect(Collectors.toList());
@@ -38,8 +35,6 @@ public class GruppenRepositoryImp implements GruppenRepository {
 
   @Override
   public List<Gruppe> getOffeneGruppenVonUser(User user) {
-    List<Gruppe> offeneGruppen = new ArrayList<>();
-
     return getGruppenvonUser(user).stream()
             .filter(Gruppe::istOffen)
             .collect(Collectors.toList());
@@ -47,7 +42,6 @@ public class GruppenRepositoryImp implements GruppenRepository {
 
   @Override
   public List<Gruppe> getGeschlosseneGruppenVonUser(User user) {
-    List<Gruppe> offeneGruppen = new ArrayList<>();
     return getGruppenvonUser(user).stream()
             .filter(gruppe -> !gruppe.istOffen())
             .collect(Collectors.toList());

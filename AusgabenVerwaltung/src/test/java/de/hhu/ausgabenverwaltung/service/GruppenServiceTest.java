@@ -11,8 +11,11 @@ import de.hhu.ausgabenverwaltung.domain.Gruppe;
 import de.hhu.ausgabenverwaltung.domain.Transaktion;
 import de.hhu.ausgabenverwaltung.domain.User;
 import java.math.BigDecimal;
-import java.util.*;
-
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -207,5 +210,27 @@ class GruppenServiceTest {
         Set<Transaktion> transaktionen = gruppenService.berechneTransaktionen(id);
         //Assert
         assertThat(transaktionen.size()).isEqualTo(0);
+    }
+
+    @Test
+    @DisplayName("User Transaktionen werden richtig angezeigt")
+    void transaktionenFilternProUser() {
+
+        //Arrange
+        User userA = new User("githubname1");
+        User userB = new User("githubname2");
+
+        Gruppe gruppe1 = Gruppe.createGruppe("gruppe1",Set.of(userA,userB));
+        Ausgabe ausgabe = new Ausgabe("Ausgabe","",BigDecimal.TEN,userA,List.of(userB));
+        Transaktion transaktion = new Transaktion(userB,userA, new BigDecimal("10.00"));
+        gruppe1.addAusgabe(ausgabe);
+        when(repository.getGruppenvonUser(userA)).thenReturn(List.of(gruppe1));
+
+        //Act
+        var userTransaktionen = gruppenService.getBeteiligteTransaktionen(userA.githubHandle());
+
+        //Assert
+        assertThat(userTransaktionen.size()).isEqualTo(1);
+        assertThat(userTransaktionen).containsEntry(gruppe1, Set.of(transaktion));
     }
 }

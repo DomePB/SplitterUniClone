@@ -25,6 +25,10 @@ public class GruppenService {
   }
 
   public Gruppe gruppeErstellen(Set<String> mitglieder, String name) throws Exception {
+    if (name.isEmpty()) {
+      throw new InvalidNameException();
+    }
+
     for (String mitglied : mitglieder) {
       nameIsValid(mitglied);
     }

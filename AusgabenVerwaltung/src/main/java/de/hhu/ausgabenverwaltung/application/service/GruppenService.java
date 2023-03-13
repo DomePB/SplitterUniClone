@@ -102,8 +102,23 @@ public class GruppenService {
   }
 
   public Map<Gruppe, Set<Transaktion>> getBeteiligteTransaktionen(String githubHandle) {
-    return gruppenRepo.getBeteiligteTransaktionen(new User(githubHandle));
-  }
+      Map<Gruppe, Set<Transaktion>> userTransaktinen = new HashMap<>();
+      for (Gruppe gruppe : getGruppenVonUser(githubHandle)) {
+        Set<Transaktion> temp = new HashSet<>();
+          Set<Transaktion> groupeTransaktionen =
+                  gruppe.berechneTransaktionen(
+                          gruppe.berechneSalden(gruppe.alleSchuldenBerechnen()));
+          for (Transaktion t : groupeTransaktionen) {
+            if (t.sender().githubHandle().equals(githubHandle) || t.empfaenger().githubHandle().equals(githubHandle)){
+              temp.add(t);
+            }
+          }
+          userTransaktinen.put(gruppe, temp);
+      }
+      return userTransaktinen;
+    }
+
+
 
   public boolean nameIsValid(String githubHandle) throws Exception {
     String regex = "(^[a-zA-Z\\d](?:[a-zA-Z\\d]|-(?=[a-zA-Z\\d])){0,38}$)";

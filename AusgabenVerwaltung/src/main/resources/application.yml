@@ -13,3 +13,7 @@ spring:
           github:
             client-id: ${CLIENT_ID}
             client-secret: ${CLIENT_SECRET}
+  datasource:
+    password: ${DB_PASSWORD}
+    username: ${DB_USER}
+    url: jdbc:postgresql://localhost:5432/db

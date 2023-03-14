@@ -15,7 +15,9 @@ public class CustomErrorController implements ErrorController {
     Object status = request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE);
 
     if (status != null) {
-      model.addAttribute("status", Integer.valueOf(status.toString()));
+      model.addAttribute("status", status.toString());
+    } else {
+      model.addAttribute("status", "400");
     }
 
     return "error";

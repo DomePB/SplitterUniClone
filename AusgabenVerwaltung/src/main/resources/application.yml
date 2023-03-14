@@ -16,4 +16,4 @@ spring:
   datasource:
     password: ${DB_PASSWORD}
     username: ${DB_USER}
-    url: jdbc:postgresql://localhost:5432/db
+    url: jdbc:postgresql://localhost:5432/Splitter

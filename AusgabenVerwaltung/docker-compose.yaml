@@ -5,6 +5,6 @@ services:
     ports:
       - "5432:5432"
     environment:
-      - "POSTGRES_USER=${USER}"
-      - "POSTGRES_PASSWORD=${PASSWORD}"
+      - "POSTGRES_USER=${DB_USER}"
+      - "POSTGRES_PASSWORD=${DB_PASSWORD}"
       - "POSTGRES_DB=Splitter"

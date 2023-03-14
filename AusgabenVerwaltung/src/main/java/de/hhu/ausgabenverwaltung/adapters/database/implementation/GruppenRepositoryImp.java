@@ -5,7 +5,6 @@ import de.hhu.ausgabenverwaltung.adapters.database.dataaccess.dto.GruppeDto;
 import de.hhu.ausgabenverwaltung.application.repo.GruppenRepository;
 import de.hhu.ausgabenverwaltung.domain.Gruppe;
 import de.hhu.ausgabenverwaltung.domain.User;
-
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.UUID;
@@ -28,18 +27,21 @@ public class GruppenRepositoryImp implements GruppenRepository {
 
   @Override
   public List<Gruppe> getGruppenvonUser(User user) {
-    return gruppeDao.findBygithubHandle(user.githubHandle()).stream().map(GruppeDto::toGruppe).collect(Collectors.toList());
+    return gruppeDao.getGruppenvonUser(user.githubHandle()).stream().map(GruppeDto::toGruppe)
+        .collect(Collectors.toList());
     }
 
   @Override
   public List<Gruppe> getOffeneGruppenVonUser(User user) {
-    return gruppeDao.findBygithubHandleAndOffenTrue(user.githubHandle()).stream().map(GruppeDto::toGruppe).collect(Collectors.toList());
+    return gruppeDao.getOffeneGruppenVonUser(user.githubHandle()).stream().map(GruppeDto::toGruppe)
+        .collect(Collectors.toList());
 
   }
 
   @Override
   public List<Gruppe> getGeschlosseneGruppenVonUser(User user) {
-    return gruppeDao.findBygithubHandleAndOffenFalse(user.githubHandle()).stream().map(GruppeDto::toGruppe).collect(Collectors.toList());
+    return gruppeDao.getGeschlosseneGruppenVonUser(user.githubHandle()).stream()
+        .map(GruppeDto::toGruppe).collect(Collectors.toList());
 
   }
 

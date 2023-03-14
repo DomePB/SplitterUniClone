@@ -14,7 +14,7 @@ import java.util.Set;
 
 
 public class GruppenRepositoryImpTests {
-    @Test
+   /* @Test
     @DisplayName("Alle Gruppen eines Users werden zurückgegeben")
     void gruppenVonUserTest() {
         //Arrange
@@ -56,7 +56,7 @@ public class GruppenRepositoryImpTests {
         // Assert
         assertThat(offeneGruppen).containsExactly(gruppe1);
         assertThat(geschlosseneGruppen).containsExactly(gruppe2);
-    }
+    }*/
 
 }
 

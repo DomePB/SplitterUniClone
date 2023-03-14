@@ -1,16 +1,21 @@
 package de.hhu.ausgabenverwaltung.adapters.database.dataaccess.dao;
 
 import de.hhu.ausgabenverwaltung.adapters.database.dataaccess.dto.GruppeDto;
+
+import java.util.List;
 import java.util.Optional;
-import org.springframework.data.jdbc.repository.query.Query;
+import java.util.UUID;
+
 import org.springframework.data.repository.CrudRepository;
-import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
-public interface GruppeDao extends CrudRepository<GruppeDto, Long> {
+@Repository
+public interface GruppeDao extends CrudRepository<GruppeDto, UUID> {
 
-  Optional<GruppeDto> findById(Long Id);
+  List<GruppeDto> findBygithubHandle(String githubHandle);
 
-  @Query("SELECT * FROM GRUPPE WHERE ID = :Id")
-  GruppeDto find(@Param("Id") Long id);
+  List<GruppeDto> findBygithubHandleAndOffenFalse(String githubHandle);
+
+  List<GruppeDto> findBygithubHandleAndOffenTrue(String githubHandle);
 
 }

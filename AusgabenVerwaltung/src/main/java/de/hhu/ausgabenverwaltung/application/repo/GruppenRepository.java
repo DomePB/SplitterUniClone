@@ -16,8 +16,6 @@ public interface GruppenRepository {
 
   List<Gruppe> getGeschlosseneGruppenVonUser(User user);
 
-  List<Gruppe> findAll();
-
   Gruppe findById(UUID id) throws Exception;
 
 }

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <meta charset="UTF-8">
+    <title>Splitter- Fehler</title>
+</head>
+
+<body>
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <a class="btn btn-outline-secondary btn-sm" role="button" th:href="@{/}">Zurück</a>
+        <h2>Ein Fehler ist aufgetreten</h2>
+        <div></div>
+    </div>
+
+    <th:block th:switch="${status}">
+        <div class="alert alert-warning" role="alert" th:case="400">
+            Die Anfrage war ungültig!
+        </div>
+        <div class="alert alert-warning" role="alert" th:case="401">
+            Sie sind nicht authorisiert!
+        </div>
+        <div class="alert alert-warning" role="alert" th:case="404">
+            Die Seite wurde nicht gefunden!
+        </div>
+        <div class="alert alert-warning" role="alert" th:case="409">
+            Ein Konflikt ist aufgetretten!
+        </div>
+        <div class="alert alert-warning" role="alert" th:case="500">
+            Ein interner Server-Fehler ist aufgetreten!
+        </div>
+    </th:block>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

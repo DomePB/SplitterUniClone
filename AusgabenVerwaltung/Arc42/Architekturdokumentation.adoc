@@ -1,14 +1,18 @@
-### Einleitung und sagen der Ziele (Geschäftsziele):
+### Voraussetzungen:
+
+- Umgebungsvariablen: CLIENT_ID und CLIENT_SECRET für GitHub OAuth
+
+### Einleitung:
 
 -	Eine Software die über eine Git-Authentifizierung Gruppen erstellen kann, in denen Ausgaben gespeichert und Ausgleichtransaktionen berechnet werden können
--	Die Grupppenkonten sollen dabei möglichst transparent und einfach ausgeglichen werden
+-	Die Gruppenkonten sollen dabei möglichst transparent und einfach ausgeglichen werden
 
-#### Qualitätsziele
+#### Qualitätsziele:
 
 Es soll möglichst wartbar sein. Zudem wollten wir ein gewissen Grad an Accessibility gewährleisten, indem wir die einzelnen Features in der Software möglichst leicht und auffällig beschreiben. +
 Des Weiteren sollte die Software alle Vorgaben der Stakeholder zufriedenstellen (User können Ausgaben angeben, Gruppen erstellen, Teilnehmer hinzufügen und sollten zudem die möglichst minimal zu tätige Transaktion ausgeben).
 
-### Beschränkungen/ Bedingungen
+### Beschränkungen/ Bedingungen:
 
 - Transaktionen sollten möglichst minimal sein
 - Als OAuth-Provider benutzen wir GitHub
@@ -21,18 +25,11 @@ Des Weiteren sollte die Software alle Vorgaben der Stakeholder zufriedenstellen 
 - Google-Styleguides sollen eingehalten werden
 - Als MVP, da straffer Zeitplan (3 Wochen)
 
-### Kontextabgrenzungen: Inhalt und Umfang (Äußere Systeme) / Buisness und Technologie abgrenzen
+### Kontextabgrenzungen:
 
-package als domäne und nicht abhängig von spring Service abghängiger
+image::Kontextabgrenzung.png[]
 
--	Business: Sehr an GitHub gebunden, da dort die ganze Authentifizierung stattfindet. +
-Zudem sind wir stark an Spring gebunden. Wir müssen
-
-- Fachlich: Personen können Ausgaben hinzufügen, Github überprüft die Authentifizierung über OAuth ->
-
-
-
-### Strategien für Lösungen: zentrale Entwurfsentscheidungen und Lösungsstrategien
+### Strategien für Lösungen: zentrale Entwurfsentscheidungen und Lösungsstrategien:
 
 Im Vorhinein:
 
@@ -58,8 +55,8 @@ Falls wir alles nach diesem Verfahren berechnen, kommen wir auf folgende Ergebni
 |====
 |   User   |   Salden
 | A | 2$
-| B | -1$
-| C | -7$
+| B | -7$
+| C | -1$
 | D | 6$
 |====
 
@@ -67,90 +64,111 @@ Um die Transaktionen minimal zu halten, testen wir als Erstes, ob bestimmte Sald
 Falls dies der Fall ist, werden diese zu Beginn berechnet und schon ausgeglichen. +
 Falls dies nicht der Fall ist, vergleichen wir herabsteigend alle User miteinander. +
 
-So vergleichen wir in unserem Beispiel zuerst User A mit User B. Dabei sehen wir, dass User B seine ganzen Salden von User A bekommen kann. +
+So vergleichen wir in unserem Beispiel zuerst User A mit User B. Dabei sehen wir, dass User B 2$ seiner Salden von User A bekommen kann. +
 |====
 |   User   |   Salden
 | A | 2$
-| B | -1$
+| B | -7$
 |====
-Da User B nun bei 0 ist, kann dieser aus der Saldenliste entfernt werden. Nun aktualisieren wir den Wert von User A auf -1$ . +
+Da User A nun bei 0$ ist, kann dieser aus der Saldenliste entfernt werden. Nun aktualisieren wir den Wert von User B auf -5$ . +
 |====
 |   User   |   Salden
-| A | 1$
-| C | -7$
+| B | -5$
+| C | -1$
 | D | 6$
 |====
-Da User B entfernt wurde vergleichen wir User A mit User C und User A überweist User C dann den restlichlichen 1$. +
+Da User A entfernt wurde vergleichen wir nun User B mit User D und User D überweist User B dann 5$. +
 |====
 |   User   |   Salden
 
-| C | -6$
-| D | 6$
+| C | -1$
+| D | 1$
 |====
-Nun aktualisieren wir User C und User C gibt User D das restliche Geld. +
+Nun aktualisieren wir User D und User D gibt User C das restliche Geld. +
 So haben wir *immer* im Worst-Case _m-1_ Transaktionen. +
 
 ---
+
+Beispiel für ein best-case: m/2 Transaktionen:
+
+Man bekommt folgende Ausgabenliste:
+|====
+|   User   |   Salden
+| A | 2$
+| B | -2$
+| C | -6$
+| D | 6$
+|====
+
+Hier hat man durch den anfänglichen Algorithmus, indem man schaut, dass gleiche Beträge sich ausgleichen nur 2 Transaktionen. +
+Hier: User A überweist User B 2$ und User D überweist User C 6$.
 
 #### 2. Version: Minimale Ausgabe
 
 Im Vorhinein:
 -Personen zu Gruppen hinzufügen und speichern
--Ausgeben speichern und in Tabelle speichern von welcher Person/an welche Person
+-Ausgaben speichern und in Tabelle speichern von welcher Person/an welche Person
 
 Da es sich hierbei, um ein NP-Vollständiges Problem handelt, könnte dies zu immensen Laufzeitproblemen führen. +
 Hierbei würde man wie gerade eine Matrix im Vorhinein erstellen und dabei die einzelnen Differenzen für jeden User erstellen. +
-Nun vergleicht man aber jede nur mögliche Transaktion miteinander. So würde man hierbei aber 2 Listen machen (Eine für die der Schuldigeren und eine für die der Gläubiger). +
-So würde man jede mögliche Kombination der Listen mit jeder möglichen Kombination der anderen Liste vergleichen. Falls dabei eine Kombination sich mit einer der anderen Gruppe ausgleicht, werden diese schon im Vorhinein entfernt.
+Nun vergleicht man aber jede nur mögliche Transaktion miteinander. So würde man hierbei  2 Listen machen (Eine für die der Schuldigeren und eine für die der Gläubiger). +
+So würde man jede mögliche Kombination der Listen mit jeder möglichen Kombination der anderen Liste vergleichen. Falls dabei eine Kombination sich mit einer der anderen Liste ausgleicht, werden diese schon im Vorhinein entfernt.
 
-### Hierarchische Struktur des Codes: Zerlegung des Systems alles erklären, tiefer rein in die Blöcke, rein in weitere Blöcke von 2
+### Hierarchische Struktur des Codes:
 
-- Web: Controller gespeichert
-- Application: GruppenService und greift auf Domain auf. Hier werden Abfragen weitergelitet von dem Controller an die Domain.
-- Domain: Hier werden Ausgaben, Gruppen, Transaktiomem und User geladen. Zudem haben wir in dieser Schicht unsere Services für die einzelnen Modelattribute geladen.
-- Persistenz: speicherung von Daten.
+- Domain: Hier werden Ausgaben, Gruppen (Aggregat), Transaktionen und User geladen. Zudem haben wir in dieser Schicht unsere Services für die einzelnen Modelattribute geladen. +
+Insgesamt laden wir hier den inneren Teil der Onion-Architektur. Hier werden zudem erste Regeln und Standartmethoden deklariert. Unser Aggregat hierbei ist die Gruppe und bei Ausgaben, Transaktionen und User handelt es sich um Wertobjekte.
+- Web: Hier wird der Controller gespeichert. Leitet Informationen von Aufrufen der Clients an die Geschäftslogik weiter. +
+Greift auf Application und Domain zu.
+- Application: Greift auf die Domain zu. Hier werden Abfragen weitergeleitet durch Methoden von dem Controller an die Domain.
+- Persistenz: Speicherung von Daten.
 
-### Laufzeiten: wie arbeiten Systembausteine mit nachbarsystemen zusammen? Wie werden diese ausgeführt
+### Laufzeiten: Wie arbeiten Systembausteine mit Nachbarsystemen zusammen? Wie werden diese ausgeführt?
 
-Onion arbeitet wie folgt miteinander
+1. Client macht einen Aufruf.
+2. Methode wird im WebController aufgerufen. Jetzt finden erst Checks statt in Form von notwendigen Authentifizierungen.
+3. Nach der Authentifizierung werden einzelne Methoden von der Application-Schicht aufgerufen und der Client  kann beispielsweise neue Ausgaben erstellen, Gruppen hinzufügen, nach Transaktionen fragen etc.
 
+### Technische Infrastruktur:
 
-### Technische Infrastruktur zb hardware, Entwicklungsumgebung, Testumgebung, Produktionsumgebung
+- Mob/Pair-programming
+- Framework Spring Boot
+- Postgres als Datenbank
+- Tests laufen über H2
+- Docker und Gradle benutzt
+- Javaversion 17 benutzt
+- ALs IDE IntelliJ
+- Git als zentrale Versionsverwaltung
+- Goggle-Checkstyle
 
-Wir haben vertikal gearbeitet
-H2 als Datenbank, Docker, gradle , Javaversion etc
-Test was testen wir alles?
+### Architekturentscheidungen:
 
+- Wie stellen wir sicher, dass die Transaktionen minimal gehalten werden?
+Alle Ausgaben und Einnahmen werden miteinander zusammengerechnet. Es wird versucht möglichst schnell alle Ausgaben und Einnahmen auszugleichen, um diese auf 0$ zu setzen.
+- Wie können wir alle Ausgaben für die User speichern und möglichst genau zusammenrechnen?
+Alle Werte der Ausgaben werden pro Gruppe gespeichert. Dabei haben diese einzelne Ids. Rechnungen erfolgen zudem mit BIGDECIMAL.
+- Wie sollten die Gruppen aufgebaut sein?
+Haben uns entschieden, dass jeder Teilnehmer einer Gruppe beliebig viele Teilnehmer hinzufügen kann. Dies ist aber auch nur möglich bis die erste Ausgabe hinzugefügt wird.
+- Wieso haben wir uns für künstliche Schlüssel entschieden?
+Um eindeutige Attribute in der Gruppe zu haben. Zudem ist es besser Wartbar.
 
-### Bereichsübergreifende konzepte
+### Qualitätsanforderungen:
 
-Profilbild, etc möglich
-Da wir sehr struktiert nach Onion-Architektur gearbeitet haben. Sind html und Logik strikt getrennnr
+- Wartbarkeit: Unser System ist wartbar.
+- Erweiterbarkeit: Da wir strikt nach der Onion-Architektur vorgegangen sind, müsste das System auch für andere Programmierer leicht erweiterbar sein.
+- Code-Smell: Haben darauf geachtet, keine Code-Smells einzubauen.
+- Testbar: Haben viele Teste geschrieben und sind konsequent nach TDD vorgegangen.
+- Effizienz: Wir haben geschaut, dass unsere Laufzeit nicht zu lange ist. So sollte das System zudem auch für schwache Rechner funktionieren.
+- Nutzbarkeit: Haben alle einzelnen Aktionen, die die Teilnehmer ausführen können, möglichst einfach versucht darzustellen.
+- Accessibility: Haben versucht die Anwendung auch möglichst klein zuhalten. Zudem haben wir versucht, es sehr bedienlich zu halten.
+- Code-Verständlichkeit: Unser Code sollte durch Kommentare, gute Strukturierung und einfache Methodennamen möglichst leicht nachzuvollziehen zu sein.
+- Fehlerhandling: Man sollte durch eine einfache Beschreibung der Fehler erkennen, was falsch sein sollte.
 
-### Architekturentscheidungen: wichtige, teure oder kritische oder riskante Architekturentscheidungen, die zentrale Bedeutung für das Gesamtsystem haben, mit Begründungen für diese Entscheidungen.
+### Schwächen, Risiken, Welche probleme könnte es geben?
 
-Wie stellen wir sicher, dass die Transaktionen minimal gehalten werden?
-Alle Ausgaben und Einnahmen miteinander zusammenrechenen und möglichst schnell alles Ausgaben und Einnahmen ausgleichen.
-Wie können wir alle Ausgaben für  die User erstellen und berechnen lassen?
-Ausgaben speichern pro Gruppe und diese Werte speichern. Am leichtesten mit einzelnen Ids.
-Wie sollten die Gruppen aufgebaut sein?
-Haben uns entschieden , dass jeder jeden Teilnehmer hinzufügen kann.
+Wir haben versucht, dass möglichst wenige Schwierigkeiten auftreten könnten. Problematisch ist, dass es Fälle gibt, wo wir nicht die absolut minimale Transaktionsgrösse vorweisen.
+Jedoch könnte die minimale Transaktionsgröße aber auch Laufzeittechnisch zu enormen Problemen führen (NP-vollständiges Problem).
 
-### Qualitätsanforderungen: weitere Ziele als 1 und wurden diese alle erreicht
+### Glossar:
 
-Testbar: Haben viele Teste geschrieben und sind konsequent nach TDD gegenagen
-Effizent: Geschaut, dass Laufzeit nicht zu lange ist. Sollte uzdem auch für schwache Rechner funktionieren.
-Nutzbarkeit: Haben alle einzelnen Aktionen die die Teilnehmer machen möglichst einfach versucht darzustellen.
-Accessibility: Haben versucht die Anwendung auch möglichst klein zu halten. ZUdem haben wir versucht, unsere Anwendungen auch durch gute Konstraste anzubieten.
-Code-Verständlichkeit: Unser Code sollte durch Kommentare, gute Strukturierung und einfache Methodennamen möglichst leicht nachzuvollziehen zu sein.
-Fehlerhandling: Man sollte durch eine einfache Beschreibung der Fehler erkenn was falsch sein sollte und was man tun muss, diese zu egalisieren.
-
-### Schwächen, Risiken, welche probleme könnte es geben
-
-Wir haben versucht, dass  so wenig wie möglich Schwierigkeiten auftreten könnten. Problematisch ist, dsss es Fälle gibt, wo wir nicht die absolut minimale Transaktionsgrösse vorweisen.
-Dies könnte aber auch Laufzeittechnisch zu Problemen führen.
-Bei der Erstellung der Ausgaben könnte es bei dem Runden zu Problemen führen, da niemand weiß wer bspw bei einer Rechnung von 100$ bei 3 Personen den Extrapfennig bezahlt.
-
-### 1.	Glossar: Wichtige Domänenbegriffe und technische Begriffe, die Stakeholder kennen sollten, wenn sie über die Architektur des Systems diskutieren. Manchmal auch Übersetzungstabellen, wenn in einer mehrsprachigen Umgebung gerarbeitet
-
-Haben keine schwierigen Begriffe benutzt
+Haben keine schwierigen Begriffe benutzt, weshalb dies keine Probleme darstellen müsste.

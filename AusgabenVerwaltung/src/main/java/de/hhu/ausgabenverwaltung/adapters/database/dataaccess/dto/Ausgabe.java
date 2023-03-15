@@ -10,8 +10,8 @@ public record Ausgabe(String name,
                       String beschreibung,
                       BigDecimal betrag,
                       String bezahltVon,
-                      @MappedCollection(idColumn = "AUSGABEID")
-                         List<Beteiligt> beteiligte) {
+                      @MappedCollection(idColumn = "ausgabeid")
+                         List<Beteiligt> beteiligt) {
 
   public static Ausgabe fromAusgabe(de.hhu.ausgabenverwaltung.domain.Ausgabe ausgabe) {
     return new Ausgabe(ausgabe.name(),
@@ -26,7 +26,7 @@ public record Ausgabe(String name,
         beschreibung,
         betrag,
         new User(bezahltVon),
-        beteiligte.stream().map(Beteiligt::githubhandle).map(User::new).collect(Collectors.toList()));
+        beteiligt.stream().map(Beteiligt::githubhandle).map(User::new).collect(Collectors.toList()));
   }
 
 }

@@ -1,31 +1,28 @@
 package de.hhu.ausgabenverwaltung.adapters.database.dataaccess.dto;
 
-import de.hhu.ausgabenverwaltung.domain.Ausgabe;
 import de.hhu.ausgabenverwaltung.domain.User;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.data.relational.core.mapping.MappedCollection;
-import org.springframework.data.relational.core.mapping.Table;
 
-@Table("AUSGABE")
-public record AusgabeDto(String name,
-                         String beschreibung,
-                         BigDecimal betrag,
-                         String bezahltVon,
-                         @MappedCollection(idColumn = "AUSGABEID")
+public record Ausgabe(String name,
+                      String beschreibung,
+                      BigDecimal betrag,
+                      String bezahltVon,
+                      @MappedCollection(idColumn = "AUSGABEID")
                          List<Beteiligt> beteiligte) {
 
-  public static AusgabeDto fromAusgabe(Ausgabe ausgabe) {
-    return new AusgabeDto(ausgabe.name(),
+  public static Ausgabe fromAusgabe(de.hhu.ausgabenverwaltung.domain.Ausgabe ausgabe) {
+    return new Ausgabe(ausgabe.name(),
         ausgabe.beschreibung(),
         ausgabe.betrag(),
         ausgabe.bezahltVon().githubHandle(),
         ausgabe.beteiligte().stream().map(User::githubHandle).map(Beteiligt::new).collect(Collectors.toList()));
   }
 
-  public Ausgabe toAusgabe() {
-    return new Ausgabe(name,
+  public de.hhu.ausgabenverwaltung.domain.Ausgabe toAusgabe() {
+    return new de.hhu.ausgabenverwaltung.domain.Ausgabe(name,
         beschreibung,
         betrag,
         new User(bezahltVon),

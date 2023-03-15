@@ -10,13 +10,13 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.MappedCollection;
 import org.springframework.data.relational.core.mapping.Table;
 
-@Table("GRUPPE")
+@Table("gruppe")
 public record GruppeDto(@Id UUID id,
                         String name,
                         boolean offen,
-                        @MappedCollection(idColumn = "GRUPPENID", keyColumn = "ID")
-                        List<AusgabeDto> ausgabe,
-                        @MappedCollection(idColumn = "GRUPPENID")
+                        @MappedCollection(idColumn = "gruppenid", keyColumn = "id")
+                        List<Ausgabe> ausgabe,
+                        @MappedCollection(idColumn = "gruppenid")
                         Set<Mitglied> mitglied
 ) {
   public static GruppeDto fromGruppe(Gruppe gruppe) {
@@ -25,14 +25,14 @@ public record GruppeDto(@Id UUID id,
     return new GruppeDto(gruppe.getId(),
         gruppe.getName(),
         gruppe.istOffen(),
-        gruppe.getAusgaben().stream().map(AusgabeDto::fromAusgabe).collect(Collectors.toList()),
+        gruppe.getAusgaben().stream().map(Ausgabe::fromAusgabe).collect(Collectors.toList()),
         mitgliederGruppe);
   }
 
   public Gruppe toGruppe() {
     Set<User> mitgliederGruppe = mitglied.stream().map(Mitglied::githubhandle).map(User::new).collect(Collectors.toSet());
     return new Gruppe(name,
-        ausgabe.stream().map(AusgabeDto::toAusgabe).collect(Collectors.toList()),
+        ausgabe.stream().map(Ausgabe::toAusgabe).collect(Collectors.toList()),
         mitgliederGruppe,
         offen,
        id);

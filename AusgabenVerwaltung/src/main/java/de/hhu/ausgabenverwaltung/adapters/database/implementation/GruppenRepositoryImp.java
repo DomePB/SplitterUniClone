@@ -22,16 +22,16 @@ public class GruppenRepositoryImp implements GruppenRepository {
 
   @Override
   public void save(Gruppe gruppe) {
-  //  GruppeDto gruppeDto = GruppeDto.fromGruppe(gruppe);
-   // gruppeDao.save(gruppeDto);
+  // GruppeDto gruppeDto = GruppeDto.fromGruppe(gruppe);
+ //  gruppeDao.save(gruppeDto);
     gruppeDao.insertGruppe(gruppe.getId(),gruppe.getName(),gruppe.istOffen());
-    gruppeDao.insertMITGLIED(gruppe.getId(),gruppe.getMitglieder().iterator().next().githubHandle());
+   gruppeDao.insertMITGLIED(gruppe.getId(),gruppe.getMitglieder().iterator().next().githubHandle());
   }
 
   @Override
   public List<Gruppe> getGruppenvonUser(User user) {
-    List<UUID> gruppenvonUser = gruppeDao.getGruppenvonUser(user.githubHandle());
-    return gruppenvonUser.stream().map(gruppeDao::findById).map(Optional::get).map(GruppeDto::toGruppe).toList();
+    return gruppeDao.getGruppenvonUser(user.githubHandle()).stream().map(GruppeDto::toGruppe).toList();
+    //return gruppenvonUser.stream().map(gruppeDao::findById).filter(Optional::isPresent).map(Optional::get).map(GruppeDto::toGruppe).toList();
     }
 
   @Override
@@ -45,7 +45,6 @@ public class GruppenRepositoryImp implements GruppenRepository {
   public List<Gruppe> getGeschlosseneGruppenVonUser(User user) {
     return gruppeDao.getGeschlosseneGruppenVonUser(user.githubHandle()).stream()
         .map(GruppeDto::toGruppe).collect(Collectors.toList());
-
   }
 
   @Override

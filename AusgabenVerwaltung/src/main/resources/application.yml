@@ -18,10 +18,10 @@ spring:
             client-id: ${CLIENT_ID}
             client-secret: ${CLIENT_SECRET}
   datasource:
-    username: ${DB_USER}
-    password: ${DB_PASSWORD}
+    username: dbUser
+    password: dbPassword
     url: jdbc:postgresql://localhost:5432/Splitter
   flyway:
-    user: ${DB_USER}
-    password: ${DB_PASSWORD}
+    user: dbUser
+    password: dbPassword
     url: jdbc:postgresql://localhost:5432/Splitter

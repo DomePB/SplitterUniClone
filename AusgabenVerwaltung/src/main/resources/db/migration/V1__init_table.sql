@@ -1,26 +1,26 @@
-create table if not exists GRUPPE(
-    id uuid PRIMARY key,
-    name varchar(50) NOT NULL,
-    offen boolean default true
+CREATE TABLE IF NOT EXISTS GRUPPE(
+    ID UUID PRIMARY KEY,
+    NAME VARCHAR(50) NOT NULL,
+    OFFEN BOOLEAN DEFAULT TRUE
 );
-create table if not exists AUSGABE(
-    id serial primary key,
-    gruppenId uuid NOT NULL,
-    name varchar(50) NOT NULL,
-    beschreibung varchar(200),
-    betrag numeric(15,2) NOT NULL,
-    bezahltVon varchar(50) NOT NULL,
-    foreign key (gruppenId) references GRUPPE(id)
+CREATE TABLE IF NOT EXISTS AUSGABE(
+    ID SERIAL PRIMARY KEY,
+    GRUPPENID UUID NOT NULL,
+    NAME VARCHAR(50) NOT NULL,
+    BESCHREIBUNG VARCHAR(200),
+    BETRAG NUMERIC(15,2) NOT NULL,
+    BEZAHLT_VON VARCHAR(50) NOT NULL,
+    FOREIGN KEY (GRUPPENID) REFERENCES GRUPPE(ID)
 );
-create table if not exists BETEILIGT(
-    ausgabeId serial not null,
-    githubHandle varchar(50) not null,
-    foreign key (ausgabeId) references AUSGABE(id)
+CREATE TABLE IF NOT EXISTS BETEILIGT(
+    AUSGABEID SERIAL NOT NULL,
+    GITHUBHANDLE VARCHAR(50) NOT NULL,
+    FOREIGN KEY (AUSGABEID) REFERENCES AUSGABE(ID)
 );
-create table if not exists MITGLIED(
-    gruppenId uuid not null,
-    githubHandle varchar(50) not null,
-    foreign key (gruppenId) references GRUPPE(id)
+CREATE TABLE IF NOT EXISTS MITGLIED(
+    GRUPPENID UUID NOT NULL,
+    GITHUBHANDLE VARCHAR(50) NOT NULL,
+    FOREIGN KEY (GRUPPENID) REFERENCES GRUPPE(ID)
 );
 
 

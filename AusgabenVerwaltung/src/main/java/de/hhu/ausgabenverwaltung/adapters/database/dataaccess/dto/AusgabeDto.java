@@ -13,15 +13,15 @@ public record AusgabeDto(String name,
                          String beschreibung,
                          BigDecimal betrag,
                          String bezahltVon,
-                         @MappedCollection(idColumn = "ausgabeId", keyColumn = "githubHandle")
-                         List<String> beteiligte) {
+                         @MappedCollection(idColumn = "AUSGABEID")
+                         List<Beteiligt> beteiligte) {
 
   public static AusgabeDto fromAusgabe(Ausgabe ausgabe) {
     return new AusgabeDto(ausgabe.name(),
         ausgabe.beschreibung(),
         ausgabe.betrag(),
         ausgabe.bezahltVon().githubHandle(),
-        ausgabe.beteiligte().stream().map(User::githubHandle).collect(Collectors.toList()));
+        ausgabe.beteiligte().stream().map(User::githubHandle).map(Beteiligt::new).collect(Collectors.toList()));
   }
 
   public Ausgabe toAusgabe() {
@@ -29,7 +29,7 @@ public record AusgabeDto(String name,
         beschreibung,
         betrag,
         new User(bezahltVon),
-        beteiligte.stream().map(User::new).collect(Collectors.toList()));
+        beteiligte.stream().map(Beteiligt::githubhandle).map(User::new).collect(Collectors.toList()));
   }
 
 }

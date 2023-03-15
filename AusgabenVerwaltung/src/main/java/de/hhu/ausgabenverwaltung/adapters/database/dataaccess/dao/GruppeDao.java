@@ -12,11 +12,20 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface GruppeDao extends CrudRepository<GruppeDto, UUID> {
 
-  @Query("SELECT * FROM GRUPPE g JOIN MITGLIED m ON g.id = m.gruppenId WHERE m.githubHandle = :githubHandle")
-  List<GruppeDto> getGruppenvonUser(@Param("githubHandle") String githubHandle);
+ /* @Query("""
+                   SELECT g.id, g.name, g.offen,
+                   array_agg(DISTINCT a.*) AS ausgabe,
+                   array_agg(DISTINCT m.githubHandle) AS mitglied
+            FROM gruppe g
+                     LEFT JOIN ausgabe a ON a.gruppenId = g.id
+                     LEFT JOIN mitglied m ON m.gruppenId = g.id
+            WHERE m.githubhandle = 'lnx00'
+            GROUP BY g.id
+            """)*/
+  @Query("SELECT m.gruppenid FROM MITGLIED m WHERE m.githubhandle= :githubHandle")
+  List<UUID> getGruppenvonUser(@Param("githubHandle") String githubHandle);
 
   //List<GruppeDto> findByMitgliedContaining(String githubHandle);
-
   @Query("SELECT * FROM GRUPPE g JOIN MITGLIED m ON g.id = m.gruppenId WHERE m.githubHandle = :githubHandle AND g.offen IS TRUE")
   List<GruppeDto> getOffeneGruppenVonUser(@Param("githubHandle") String githubHandle);
 
@@ -31,4 +40,5 @@ public interface GruppeDao extends CrudRepository<GruppeDto, UUID> {
   @Modifying
   @Query("INSERT INTO MITGLIED(gruppenId,githubHandle) VALUES (:id,:githubHandle)")
   void insertMITGLIED(@Param("id") UUID id, @Param("githubHandle") String githubHandle);
+
 }

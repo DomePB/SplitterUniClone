@@ -7,6 +7,7 @@ import de.hhu.ausgabenverwaltung.domain.Gruppe;
 import de.hhu.ausgabenverwaltung.domain.User;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Repository;
@@ -29,8 +30,8 @@ public class GruppenRepositoryImp implements GruppenRepository {
 
   @Override
   public List<Gruppe> getGruppenvonUser(User user) {
-    return gruppeDao.getGruppenvonUser(user.githubHandle()).stream().map(GruppeDto::toGruppe)
-        .collect(Collectors.toList());
+    List<UUID> gruppenvonUser = gruppeDao.getGruppenvonUser(user.githubHandle());
+    return gruppenvonUser.stream().map(gruppeDao::findById).map(Optional::get).map(GruppeDto::toGruppe).toList();
     }
 
   @Override

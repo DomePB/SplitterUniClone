@@ -11,17 +11,17 @@ import org.springframework.data.relational.core.mapping.MappedCollection;
 import org.springframework.data.relational.core.mapping.Table;
 
 @Table("GRUPPE")
-public record GruppeDto(@Id UUID uuid,
+public record GruppeDto(@Id UUID id,
                         String name,
                         boolean offen,
-                        @MappedCollection(idColumn = "gruppenId", keyColumn = "id")
+                        @MappedCollection(idColumn = "GRUPPENID", keyColumn = "ID")
                         List<AusgabeDto> ausgabe,
-                        @MappedCollection(idColumn = "gruppenId", keyColumn = "githubHandle")
-                        Set<String> mitglied
+                        @MappedCollection(idColumn = "GRUPPENID")
+                        Set<Mitglied> mitglied
 ) {
   public static GruppeDto fromGruppe(Gruppe gruppe) {
-    Set<String> mitgliederGruppe =
-        gruppe.getMitglieder().stream().map(User::githubHandle).collect(Collectors.toSet());
+    Set<Mitglied> mitgliederGruppe =
+        gruppe.getMitglieder().stream().map(User::githubHandle).map(Mitglied::new).collect(Collectors.toSet());
     return new GruppeDto(gruppe.getId(),
         gruppe.getName(),
         gruppe.istOffen(),
@@ -30,11 +30,11 @@ public record GruppeDto(@Id UUID uuid,
   }
 
   public Gruppe toGruppe() {
-    Set<User> mitgliederGruppe = mitglied.stream().map(User::new).collect(Collectors.toSet());
+    Set<User> mitgliederGruppe = mitglied.stream().map(Mitglied::githubhandle).map(User::new).collect(Collectors.toSet());
     return new Gruppe(name,
         ausgabe.stream().map(AusgabeDto::toAusgabe).collect(Collectors.toList()),
         mitgliederGruppe,
         offen,
-        uuid);
+       id);
   }
 }

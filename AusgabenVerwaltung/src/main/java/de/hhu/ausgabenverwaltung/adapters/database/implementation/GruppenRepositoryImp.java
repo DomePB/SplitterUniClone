@@ -21,8 +21,10 @@ public class GruppenRepositoryImp implements GruppenRepository {
 
   @Override
   public void save(Gruppe gruppe) {
-    GruppeDto gruppeDto = GruppeDto.fromGruppe(gruppe);
-    gruppeDao.save(gruppeDto);
+  //  GruppeDto gruppeDto = GruppeDto.fromGruppe(gruppe);
+   // gruppeDao.save(gruppeDto);
+    gruppeDao.insertGruppe(gruppe.getId(),gruppe.getName(),gruppe.istOffen());
+    gruppeDao.insertMITGLIED(gruppe.getId(),gruppe.getMitglieder().iterator().next().githubHandle());
   }
 
   @Override

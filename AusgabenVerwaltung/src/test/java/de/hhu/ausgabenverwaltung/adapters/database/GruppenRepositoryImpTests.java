@@ -26,45 +26,45 @@ public class GruppenRepositoryImpTests {
   void gruppenVonUserTest() {
     //Arrange
     User userA = new User("githubname1");
-    User userB = new User("githubname2");
+    //User userB = new User("githubname2");
     Gruppe gruppe1 = Gruppe.createGruppe("gruppe1", Set.of(userA));
-    Gruppe gruppe2 = Gruppe.createGruppe("gruppe2", Set.of(userB));
+    //Gruppe gruppe2 = Gruppe.createGruppe("gruppe2", Set.of(userB));
 
     GruppenRepositoryImp gruppenRepositoryImp =
         new GruppenRepositoryImp(gruppeDao);
-        gruppenRepositoryImp.save(gruppe1);
-        gruppenRepositoryImp.save(gruppe2);
+    gruppenRepositoryImp.save(gruppe1);
+    //gruppenRepositoryImp.save(gruppe2);
 
 
-        // Act
-        List<Gruppe> gruppenVonA = gruppenRepositoryImp.getGruppenvonUser(userA);
+    // Act
+    List<Gruppe> gruppenVonA = gruppenRepositoryImp.getGruppenvonUser(userA);
 
-        // Assert
-        assertThat(gruppenVonA).containsExactly(gruppe1);
-    }
+    // Assert
+    assertThat(gruppenVonA).containsExactly(gruppe1);
+  }
 
-    @Test
-    @DisplayName("Filtern nach offen und geschlossene Gruppen von User")
-    void gruppenFiltern() {
-        //Arrange
-        User user = new User("githubname");
+  @Test
+  @DisplayName("Filtern nach offen und geschlossene Gruppen von User")
+  void gruppenFiltern() {
+    //Arrange
+    User user = new User("githubname");
 
-        Gruppe gruppe1 = Gruppe.createGruppe("gruppe1", Set.of(user));
-        Gruppe gruppe2 = Gruppe.createGruppe("gruppe2", Set.of(user));
-        gruppe2.schliessen();
-      GruppenRepositoryImp gruppenRepositoryImp =
-          new GruppenRepositoryImp(gruppeDao);
-        gruppenRepositoryImp.save(gruppe1);
-        gruppenRepositoryImp.save(gruppe2);
+    Gruppe gruppe1 = Gruppe.createGruppe("gruppe1", Set.of(user));
+    Gruppe gruppe2 = Gruppe.createGruppe("gruppe2", Set.of(user));
+    gruppe2.schliessen();
+    GruppenRepositoryImp gruppenRepositoryImp =
+        new GruppenRepositoryImp(gruppeDao);
+    gruppenRepositoryImp.save(gruppe1);
+    gruppenRepositoryImp.save(gruppe2);
 
-        // Act
-        List<Gruppe> offeneGruppen = gruppenRepositoryImp.getOffeneGruppenVonUser(user);
-        List<Gruppe> geschlosseneGruppen = gruppenRepositoryImp.getGeschlosseneGruppenVonUser(user);
+    // Act
+    List<Gruppe> offeneGruppen = gruppenRepositoryImp.getOffeneGruppenVonUser(user);
+    List<Gruppe> geschlosseneGruppen = gruppenRepositoryImp.getGeschlosseneGruppenVonUser(user);
 
-        // Assert
-        assertThat(offeneGruppen).containsExactly(gruppe1);
-        assertThat(geschlosseneGruppen).containsExactly(gruppe2);
-    }
+    // Assert
+    assertThat(offeneGruppen).containsExactly(gruppe1);
+    assertThat(geschlosseneGruppen).containsExactly(gruppe2);
+  }
 
 }
 

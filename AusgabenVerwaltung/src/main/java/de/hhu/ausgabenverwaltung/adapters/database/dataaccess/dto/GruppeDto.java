@@ -15,9 +15,9 @@ public record GruppeDto(@Id UUID uuid,
                         String name,
                         boolean offen,
                         @MappedCollection(idColumn = "gruppenId", keyColumn = "id")
-                        List<AusgabeDto> ausgaben,
+                        List<AusgabeDto> ausgabe,
                         @MappedCollection(idColumn = "gruppenId", keyColumn = "githubHandle")
-                        Set<String> mitglieder
+                        Set<String> mitglied
 ) {
   public static GruppeDto fromGruppe(Gruppe gruppe) {
     Set<String> mitgliederGruppe =
@@ -30,9 +30,9 @@ public record GruppeDto(@Id UUID uuid,
   }
 
   public Gruppe toGruppe() {
-    Set<User> mitgliederGruppe = mitglieder.stream().map(User::new).collect(Collectors.toSet());
+    Set<User> mitgliederGruppe = mitglied.stream().map(User::new).collect(Collectors.toSet());
     return new Gruppe(name,
-        ausgaben.stream().map(AusgabeDto::toAusgabe).collect(Collectors.toList()),
+        ausgabe.stream().map(AusgabeDto::toAusgabe).collect(Collectors.toList()),
         mitgliederGruppe,
         offen,
         uuid);

@@ -13,16 +13,20 @@ import org.springframework.stereotype.Repository;
 public interface GruppeDao extends CrudRepository<GruppeDto, UUID> {
 
   @Query("SELECT * FROM GRUPPE g JOIN MITGLIED m ON g.id = m.gruppenId WHERE m.githubHandle = :githubHandle")
-  List<GruppeDto> getGruppenvonUser(@Param("githubHandle")String githubHandle);
+  List<GruppeDto> getGruppenvonUser(@Param("githubHandle") String githubHandle);
+
+  //List<GruppeDto> findByMitgliedContaining(String githubHandle);
 
   @Query("SELECT * FROM GRUPPE g JOIN MITGLIED m ON g.id = m.gruppenId WHERE m.githubHandle = :githubHandle AND g.offen IS TRUE")
-  List<GruppeDto> getOffeneGruppenVonUser(@Param("githubHandle")String githubHandle);
+  List<GruppeDto> getOffeneGruppenVonUser(@Param("githubHandle") String githubHandle);
 
   @Query("SELECT * FROM GRUPPE g JOIN MITGLIED m ON g.id = m.gruppenId WHERE m.githubHandle = :githubHandle AND g.offen IS FALSE")
-  List<GruppeDto> getGeschlosseneGruppenVonUser(@Param("githubHandle")String githubHandle);
+  List<GruppeDto> getGeschlosseneGruppenVonUser(@Param("githubHandle") String githubHandle);
+
   @Modifying
   @Query("INSERT INTO GRUPPE(id,name,offen) VALUES (:gruppenId,:name,:offen)")
- void insertGruppe(@Param("gruppenId") UUID id, @Param("name")String name,@Param("offen") boolean offen);
+  void insertGruppe(@Param("gruppenId") UUID id, @Param("name") String name,
+                    @Param("offen") boolean offen);
 
   @Modifying
   @Query("INSERT INTO MITGLIED(gruppenId,githubHandle) VALUES (:id,:githubHandle)")

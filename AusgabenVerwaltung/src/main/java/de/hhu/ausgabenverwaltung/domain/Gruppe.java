@@ -30,7 +30,7 @@ public class Gruppe {
 
   public static Gruppe createGruppe(String name, Set<User> mitglieder) {
     return new Gruppe(name, new ArrayList<>(), new HashSet<>(mitglieder), true,
-        UUID.randomUUID());
+        null);
   }
 
   public UUID getId() {

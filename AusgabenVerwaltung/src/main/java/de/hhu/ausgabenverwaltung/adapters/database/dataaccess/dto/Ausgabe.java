@@ -2,23 +2,26 @@ package de.hhu.ausgabenverwaltung.adapters.database.dataaccess.dto;
 
 import de.hhu.ausgabenverwaltung.domain.User;
 import java.math.BigDecimal;
-import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.MappedCollection;
 
-public record Ausgabe(String name,
+public record Ausgabe(@Id long id,
+                      String name,
                       String beschreibung,
                       BigDecimal betrag,
                       String bezahltVon,
                       @MappedCollection(idColumn = "ausgabeid")
-                         List<Beteiligt> beteiligt) {
+                      Set<Beteiligt> beteiligt) {
 
   public static Ausgabe fromAusgabe(de.hhu.ausgabenverwaltung.domain.Ausgabe ausgabe) {
-    return new Ausgabe(ausgabe.name(),
+    return new Ausgabe(0, ausgabe.name(),
         ausgabe.beschreibung(),
         ausgabe.betrag(),
         ausgabe.bezahltVon().githubHandle(),
-        ausgabe.beteiligte().stream().map(User::githubHandle).map(Beteiligt::new).collect(Collectors.toList()));
+        ausgabe.beteiligte().stream().map(User::githubHandle).map(Beteiligt::new)
+            .collect(Collectors.toSet()));
   }
 
   public de.hhu.ausgabenverwaltung.domain.Ausgabe toAusgabe() {

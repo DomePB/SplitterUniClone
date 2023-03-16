@@ -7,7 +7,6 @@ import de.hhu.ausgabenverwaltung.domain.Gruppe;
 import de.hhu.ausgabenverwaltung.domain.User;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Repository;
@@ -16,23 +15,25 @@ import org.springframework.stereotype.Repository;
 public class GruppenRepositoryImp implements GruppenRepository {
 
   private final GruppeDao gruppeDao;
+
   public GruppenRepositoryImp(GruppeDao gruppeDao) {
     this.gruppeDao = gruppeDao;
   }
 
   @Override
   public void save(Gruppe gruppe) {
-  // GruppeDto gruppeDto = GruppeDto.fromGruppe(gruppe);
- //  gruppeDao.save(gruppeDto);
-    gruppeDao.insertGruppe(gruppe.getId(),gruppe.getName(),gruppe.istOffen());
-   gruppeDao.insertMITGLIED(gruppe.getId(),gruppe.getMitglieder().iterator().next().githubHandle());
+    GruppeDto gruppeDto = GruppeDto.fromGruppe(gruppe);
+    gruppeDao.save(gruppeDto);
+    //gruppeDao.insertGruppe(gruppe.getId(), gruppe.getName(), gruppe.istOffen());
+    //gruppeDao.insertMITGLIED(gruppe.getId(), gruppe.getMitglieder().iterator().next().githubHandle());
   }
 
   @Override
   public List<Gruppe> getGruppenvonUser(User user) {
-    return gruppeDao.getGruppenvonUser(user.githubHandle()).stream().map(GruppeDto::toGruppe).toList();
+    return gruppeDao.getGruppenvonUser(user.githubHandle()).stream().map(GruppeDto::toGruppe)
+        .toList();
     //return gruppenvonUser.stream().map(gruppeDao::findById).filter(Optional::isPresent).map(Optional::get).map(GruppeDto::toGruppe).toList();
-    }
+  }
 
   @Override
   public List<Gruppe> getOffeneGruppenVonUser(User user) {

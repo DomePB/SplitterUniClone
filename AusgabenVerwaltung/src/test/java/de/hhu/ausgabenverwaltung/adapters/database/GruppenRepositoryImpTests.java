@@ -72,7 +72,7 @@ public class GruppenRepositoryImpTests {
 
   @Test
   @DisplayName("Ausgabe wird gespeichert")
-  void AusgabeinGruppe() {
+  void ausgabeinGruppe() {
     //Arrange
     User userA = new User("githubname1");
     User userB = new User("githubname2");
@@ -88,5 +88,17 @@ public class GruppenRepositoryImpTests {
     assertThat(byId.getAusgaben()).contains(ausgabe);
   }
 
+  @Test
+  @DisplayName("FindbyId wird getestet.")
+  void findbyIdTest(){
+    //Arrange
+    Gruppe gruppe1 = Gruppe.createGruppe("gruppe1", Set.of());
+    GruppenRepositoryImp gruppenRepositoryImp = new GruppenRepositoryImp(gruppeDao);
+    UUID id = gruppenRepositoryImp.save(gruppe1);
+    //Act
+    Gruppe byId = gruppenRepositoryImp.findById(id);
+    //Assert
+    assertThat(byId).isEqualTo(gruppe1);
+  }
 }
 

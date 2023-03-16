@@ -12,10 +12,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.jdbc.DataJdbcTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 
-@Sql("/db/migration/V1__init_table.sql")
-@DataJdbcTest
+@Sql("/db/migration/Test__init_table.sql")
+@SpringBootTest
 public class GruppenRepositoryImpTests {
 
   @Autowired

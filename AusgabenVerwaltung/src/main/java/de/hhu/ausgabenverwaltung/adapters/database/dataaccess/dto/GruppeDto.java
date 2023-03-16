@@ -15,26 +15,28 @@ public record GruppeDto(@Id UUID id,
                         String name,
                         boolean offen,
                         @MappedCollection(idColumn = "gruppenid", keyColumn = "id")
-                        List<Ausgabe> ausgabe,
+                        List<AusgabeDto> ausgabe,
                         @MappedCollection(idColumn = "gruppenid")
-                        Set<Mitglied> mitglied
+                        Set<MitgliedDto> mitglied
 ) {
   public static GruppeDto fromGruppe(Gruppe gruppe) {
-    Set<Mitglied> mitgliederGruppe =
-        gruppe.getMitglieder().stream().map(User::githubHandle).map(Mitglied::new).collect(Collectors.toSet());
+    Set<MitgliedDto> mitgliederGruppe =
+        gruppe.getMitglieder().stream().map(User::githubHandle).map(MitgliedDto::new)
+            .collect(Collectors.toSet());
     return new GruppeDto(gruppe.getId(),
         gruppe.getName(),
         gruppe.istOffen(),
-        gruppe.getAusgaben().stream().map(Ausgabe::fromAusgabe).collect(Collectors.toList()),
+        gruppe.getAusgaben().stream().map(AusgabeDto::fromAusgabe).collect(Collectors.toList()),
         mitgliederGruppe);
   }
 
   public Gruppe toGruppe() {
-    Set<User> mitgliederGruppe = mitglied.stream().map(Mitglied::githubhandle).map(User::new).collect(Collectors.toSet());
+    Set<User> mitgliederGruppe =
+        mitglied.stream().map(MitgliedDto::githubhandle).map(User::new).collect(Collectors.toSet());
     return new Gruppe(name,
-        ausgabe.stream().map(Ausgabe::toAusgabe).collect(Collectors.toList()),
+        ausgabe.stream().map(AusgabeDto::toAusgabe).collect(Collectors.toList()),
         mitgliederGruppe,
         offen,
-       id);
+        id);
   }
 }

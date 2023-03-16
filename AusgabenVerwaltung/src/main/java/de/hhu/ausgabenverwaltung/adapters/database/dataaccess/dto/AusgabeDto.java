@@ -10,20 +10,20 @@ import org.springframework.data.relational.core.mapping.MappedCollection;
 import org.springframework.data.relational.core.mapping.Table;
 
 @Table("ausgabe")
-public record Ausgabe(@Id UUID id,
-                      String name,
-                      String beschreibung,
-                      BigDecimal betrag,
-                      String bezahltVon,
-                      @MappedCollection(idColumn = "ausgabeid")
-                      Set<Beteiligt> beteiligt) {
+public record AusgabeDto(@Id UUID id,
+                         String name,
+                         String beschreibung,
+                         BigDecimal betrag,
+                         String bezahltVon,
+                         @MappedCollection(idColumn = "ausgabeid")
+                         Set<BeteiligtDto> beteiligt) {
 
-  public static Ausgabe fromAusgabe(de.hhu.ausgabenverwaltung.domain.Ausgabe ausgabe) {
-    return new Ausgabe(UUID.randomUUID(), ausgabe.name(),
+  public static AusgabeDto fromAusgabe(de.hhu.ausgabenverwaltung.domain.Ausgabe ausgabe) {
+    return new AusgabeDto(UUID.randomUUID(), ausgabe.name(),
         ausgabe.beschreibung(),
         ausgabe.betrag(),
         ausgabe.bezahltVon().githubHandle(),
-        ausgabe.beteiligte().stream().map(User::githubHandle).map(Beteiligt::new)
+        ausgabe.beteiligte().stream().map(User::githubHandle).map(BeteiligtDto::new)
             .collect(Collectors.toSet()));
   }
 
@@ -32,7 +32,8 @@ public record Ausgabe(@Id UUID id,
         beschreibung,
         betrag,
         new User(bezahltVon),
-        beteiligt.stream().map(Beteiligt::githubhandle).map(User::new).collect(Collectors.toSet()));
+        beteiligt.stream().map(BeteiligtDto::githubhandle).map(User::new)
+            .collect(Collectors.toSet()));
   }
 
 }

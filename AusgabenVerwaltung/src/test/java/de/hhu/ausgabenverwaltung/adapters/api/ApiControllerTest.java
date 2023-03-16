@@ -8,14 +8,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import de.hhu.ausgabenverwaltung.adapters.controller.api.ApiController;
 import de.hhu.ausgabenverwaltung.adapters.controller.api.models.AuslagenModel;
 import de.hhu.ausgabenverwaltung.adapters.controller.api.models.GruppeModel;
 import de.hhu.ausgabenverwaltung.application.service.GruppenService;
 import de.hhu.ausgabenverwaltung.domain.Gruppe;
 import de.hhu.ausgabenverwaltung.domain.User;
-
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -63,7 +61,7 @@ public class ApiControllerTest {
     @DisplayName("Gruppen von User werden ausgegeben")
     void test_2() throws Exception {
         User user1 = new User("user1");
-        Gruppe gruppe = Gruppe.createGruppe("gruppenName", Set.of(user1));
+      Gruppe gruppe = Gruppe.createGruppe("gruppenName", Set.of(user1), UUID.randomUUID());
 
         when(service.getGruppenVonUser(user1.githubHandle())).thenReturn(List.of(gruppe));
 
@@ -76,8 +74,8 @@ public class ApiControllerTest {
     @Test
     @DisplayName("Gruppen-Info wird ausgegeben")
     void test_3() throws Exception {
-        User user1 = new User("user1");
-        Gruppe gruppe = Gruppe.createGruppe("gruppenName", Set.of(user1));
+      User user1 = new User("user1");
+      Gruppe gruppe = Gruppe.createGruppe("gruppenName", Set.of(user1), UUID.randomUUID());
 
         when(service.findById(gruppe.getId())).thenReturn(gruppe);
 
@@ -90,8 +88,8 @@ public class ApiControllerTest {
     @Test
     @DisplayName("Gruppe wird geschlossen")
     void test_4() throws Exception {
-        User user1 = new User("user1");
-        Gruppe gruppe = Gruppe.createGruppe("gruppenName", Set.of(user1));
+      User user1 = new User("user1");
+      Gruppe gruppe = Gruppe.createGruppe("gruppenName", Set.of(user1), UUID.randomUUID());
 
         doAnswer(invocation -> {
             gruppe.schliessen();
@@ -106,17 +104,18 @@ public class ApiControllerTest {
     @Test
     @DisplayName("Ausgabe in der Gruppe wird ausgelegt")
     void test_5() throws Exception {
-        User user1 = new User("user1");
-        User user2 = new User("user2");
-        AuslagenModel auslagenModel = new AuslagenModel("grund", "user1", 100, Set.of("user2"));
-        String json = new ObjectMapper().writeValueAsString(auslagenModel);
-        Gruppe gruppe = Gruppe.createGruppe("gruppenName", Set.of(user1, user2));
-        when(service.istOffen(gruppe.getId())).thenReturn(true);
-        doNothing().when(service).addAusgabe(any(), any());
-        mockMvc.perform(
-                MockMvcRequestBuilders.post("/api/gruppen/{gruppenId}/auslagen", gruppe.getId())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(json)).andExpect(status().isCreated());
+      User user1 = new User("user1");
+      User user2 = new User("user2");
+      AuslagenModel auslagenModel = new AuslagenModel("grund", "user1", 100, Set.of("user2"));
+      String json = new ObjectMapper().writeValueAsString(auslagenModel);
+      Gruppe gruppe = Gruppe.createGruppe("gruppenName", Set.of(user1, user2), UUID.randomUUID());
+
+      when(service.istOffen(gruppe.getId())).thenReturn(true);
+      doNothing().when(service).addAusgabe(any(), any());
+      mockMvc.perform(
+          MockMvcRequestBuilders.post("/api/gruppen/{gruppenId}/auslagen", gruppe.getId())
+              .contentType(MediaType.APPLICATION_JSON)
+              .content(json)).andExpect(status().isCreated());
     }
 
   @Test
@@ -140,19 +139,20 @@ public class ApiControllerTest {
   void test_7() throws Exception {
     User user1 = new User("user1");
     User user2 = new User("user2");
-    Gruppe gruppe = Gruppe.createGruppe("gruppenName", Set.of(user1, user2));
+    Gruppe gruppe = Gruppe.createGruppe("gruppenName", Set.of(user1, user2), UUID.randomUUID());
+
     when(service.istOffen(gruppe.getId())).thenReturn(true);
     doNothing().when(service).addAusgabe(any(), any());
     mockMvc.perform(
-            MockMvcRequestBuilders.post("/api/gruppen/{gruppenId}/auslagen", gruppe.getId())
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content("")).andExpect(status().isBadRequest());
+        MockMvcRequestBuilders.post("/api/gruppen/{gruppenId}/auslagen", gruppe.getId())
+            .contentType(MediaType.APPLICATION_JSON)
+            .content("")).andExpect(status().isBadRequest());
   }
 
   @Test
   @DisplayName("Ausgleichen Test")
   void test_8() throws Exception {
-    Gruppe gruppe = Gruppe.createGruppe("gruppenName", Set.of());
+    Gruppe gruppe = Gruppe.createGruppe("gruppenName", Set.of(), UUID.randomUUID());
     when(service.berechneTransaktionen(gruppe.getId())).thenReturn(Set.of());
     mockMvc.perform(
             MockMvcRequestBuilders.get("/api/gruppen/{gruppenId}/ausgleich", gruppe.getId()))

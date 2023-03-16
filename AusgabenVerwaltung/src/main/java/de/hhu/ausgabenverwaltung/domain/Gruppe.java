@@ -33,6 +33,11 @@ public class Gruppe {
         null);
   }
 
+  public static Gruppe createGruppe(String name, Set<User> mitglieder, UUID id) {
+    return new Gruppe(name, new ArrayList<>(), new HashSet<>(mitglieder), true,
+        id);
+  }
+
   public UUID getId() {
     return id;
   }

@@ -7,7 +7,9 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.MappedCollection;
+import org.springframework.data.relational.core.mapping.Table;
 
+@Table("ausgabe")
 public record Ausgabe(@Id UUID id,
                       String name,
                       String beschreibung,

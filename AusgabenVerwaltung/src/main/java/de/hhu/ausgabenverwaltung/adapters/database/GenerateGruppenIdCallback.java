@@ -1,5 +1,6 @@
-package de.hhu.ausgabenverwaltung.adapters.database.dataaccess.dto;
+package de.hhu.ausgabenverwaltung.adapters.database;
 
+import de.hhu.ausgabenverwaltung.adapters.database.dataaccess.dto.GruppeDto;
 import java.util.UUID;
 import org.springframework.data.relational.core.mapping.event.BeforeConvertCallback;
 import org.springframework.stereotype.Component;

@@ -13,13 +13,11 @@ import jakarta.validation.Valid;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -93,17 +91,16 @@ public class WebController {
   @PostMapping("/gruppe/ausgaben")
   public String ausgabeHinzufuegen(@RequestParam UUID id, @Valid AusgabeForm ausgabe,
                                    RedirectAttributes attrs) {
+    attrs.addAttribute("id", id);
     try {
-      Gruppe gruppe = service.findById(id);
-
       Ausgabe ausgabe1 = ausgabe.toAusgabe();
       service.addAusgabe(id, ausgabe1);
-
-      attrs.addAttribute("id", gruppe.getId());
-      return "redirect:/gruppe";
     } catch (Exception e) {
-      return "redirect:/gruppe";
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+          "Die Ausgabe konnte nicht hinzugefügt werden");
     }
+
+    return "redirect:/gruppe";
   }
 
   @PostMapping("/gruppe/mitglieder")

@@ -1,5 +1,6 @@
 package de.hhu.ausgabenverwaltung.adapters.database.dataaccess.dto;
 
+import de.hhu.ausgabenverwaltung.domain.Ausgabe;
 import de.hhu.ausgabenverwaltung.domain.User;
 import java.math.BigDecimal;
 import java.util.Set;
@@ -18,7 +19,7 @@ public record AusgabeDto(@Id UUID id,
                          @MappedCollection(idColumn = "ausgabeid")
                          Set<BeteiligtDto> beteiligt) {
 
-  public static AusgabeDto fromAusgabe(de.hhu.ausgabenverwaltung.domain.Ausgabe ausgabe) {
+  public static AusgabeDto fromAusgabe(Ausgabe ausgabe) {
     return new AusgabeDto(UUID.randomUUID(), ausgabe.name(),
         ausgabe.beschreibung(),
         ausgabe.betrag(),
@@ -27,8 +28,8 @@ public record AusgabeDto(@Id UUID id,
             .collect(Collectors.toSet()));
   }
 
-  public de.hhu.ausgabenverwaltung.domain.Ausgabe toAusgabe() {
-    return new de.hhu.ausgabenverwaltung.domain.Ausgabe(name,
+  public Ausgabe toAusgabe() {
+    return new Ausgabe(name,
         beschreibung,
         betrag,
         new User(bezahltVon),

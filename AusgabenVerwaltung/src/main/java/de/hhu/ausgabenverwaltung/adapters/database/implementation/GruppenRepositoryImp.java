@@ -24,15 +24,12 @@ public class GruppenRepositoryImp implements GruppenRepository {
   public UUID save(Gruppe gruppe) {
     GruppeDto gruppeDto = GruppeDto.fromGruppe(gruppe);
     return gruppeDao.save(gruppeDto).id();
-    //gruppeDao.insertGruppe(gruppe.getId(), gruppe.getName(), gruppe.istOffen());
-    //gruppeDao.insertMITGLIED(gruppe.getId(), gruppe.getMitglieder().iterator().next().githubHandle());
   }
 
   @Override
   public List<Gruppe> getGruppenvonUser(User user) {
     return gruppeDao.getGruppenvonUser(user.githubHandle()).stream().map(GruppeDto::toGruppe)
         .toList();
-    //return gruppenvonUser.stream().map(gruppeDao::findById).filter(Optional::isPresent).map(Optional::get).map(GruppeDto::toGruppe).toList();
   }
 
   @Override
@@ -51,7 +48,6 @@ public class GruppenRepositoryImp implements GruppenRepository {
   @Override
   public Gruppe findById(UUID id) throws NoSuchElementException {
     return gruppeDao.findById(id).orElseThrow(NoSuchElementException::new).toGruppe();
-
   }
 
 }

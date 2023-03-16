@@ -3,11 +3,12 @@ package de.hhu.ausgabenverwaltung.adapters.database.dataaccess.dto;
 import de.hhu.ausgabenverwaltung.domain.User;
 import java.math.BigDecimal;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.MappedCollection;
 
-public record Ausgabe(@Id long id,
+public record Ausgabe(@Id UUID id,
                       String name,
                       String beschreibung,
                       BigDecimal betrag,
@@ -16,7 +17,7 @@ public record Ausgabe(@Id long id,
                       Set<Beteiligt> beteiligt) {
 
   public static Ausgabe fromAusgabe(de.hhu.ausgabenverwaltung.domain.Ausgabe ausgabe) {
-    return new Ausgabe(0, ausgabe.name(),
+    return new Ausgabe(UUID.randomUUID(), ausgabe.name(),
         ausgabe.beschreibung(),
         ausgabe.betrag(),
         ausgabe.bezahltVon().githubHandle(),

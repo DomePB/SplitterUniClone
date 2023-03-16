@@ -30,7 +30,7 @@ public record Ausgabe(@Id UUID id,
         beschreibung,
         betrag,
         new User(bezahltVon),
-        beteiligt.stream().map(Beteiligt::githubhandle).map(User::new).collect(Collectors.toList()));
+        beteiligt.stream().map(Beteiligt::githubhandle).map(User::new).collect(Collectors.toSet()));
   }
 
 }

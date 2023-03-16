@@ -29,6 +29,6 @@ public record AusgabeForm(
         ausgabeBeschreibung,
         ausgabeBetrag,
         new User(bezahltVon),
-        beteiligte.stream().map(User::new).collect(Collectors.toList()));
+        beteiligte.stream().map(User::new).collect(Collectors.toSet()));
   }
 }

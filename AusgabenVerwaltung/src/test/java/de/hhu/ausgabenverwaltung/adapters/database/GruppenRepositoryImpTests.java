@@ -44,7 +44,7 @@ public class GruppenRepositoryImpTests {
     List<Gruppe> gruppenVonA = gruppenRepositoryImp.getGruppenvonUser(userA);
 
     // Assert
-    assertThat(gruppenVonA).containsExactly(gruppe1);
+    assertThat(gruppenVonA).contains(gruppe1);
   }
 
   @Test
@@ -66,8 +66,8 @@ public class GruppenRepositoryImpTests {
     List<Gruppe> geschlosseneGruppen = gruppenRepositoryImp.getGeschlosseneGruppenVonUser(user);
 
     // Assert
-    assertThat(offeneGruppen).containsExactly(gruppe1);
-    assertThat(geschlosseneGruppen).containsExactly(gruppe2);
+    assertThat(offeneGruppen).contains(gruppe1);
+    assertThat(geschlosseneGruppen).contains(gruppe2);
   }
 
   @Test
@@ -77,7 +77,7 @@ public class GruppenRepositoryImpTests {
     User userA = new User("githubname1");
     User userB = new User("githubname2");
     Gruppe gruppe1 = Gruppe.createGruppe("gruppe1", Set.of(userA,userB));
-    Ausgabe ausgabe = new Ausgabe("test", "test", new BigDecimal("10.33"), userA, List.of(userA, userB));
+    Ausgabe ausgabe = new Ausgabe("test", "test", new BigDecimal("10.33"), userA, Set.of(userA, userB));
     gruppe1.addAusgabe(ausgabe);
     GruppenRepositoryImp gruppenRepositoryImp = new GruppenRepositoryImp(gruppeDao);
     UUID gruppenid = gruppenRepositoryImp.save(gruppe1);

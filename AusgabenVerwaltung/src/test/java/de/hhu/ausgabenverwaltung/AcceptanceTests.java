@@ -25,9 +25,8 @@ public class AcceptanceTests {
         User userB = new User("B");
 
         Ausgabe
-                ausgabe1 = new Ausgabe("ausgabe1", "Ausgabe1", new BigDecimal(10), userA, new ArrayList<>(
-                List.of(userA, userB)));
-        Ausgabe ausgabe2 = new Ausgabe("ausgabe2", "Ausgabe2", new BigDecimal(20), userA, new ArrayList<>(List.of(userA, userB)));
+                ausgabe1 = new Ausgabe("ausgabe1", "Ausgabe1", new BigDecimal(10), userA, new HashSet<>(Set.of(userA, userB)));
+        Ausgabe ausgabe2 = new Ausgabe("ausgabe2", "Ausgabe2", new BigDecimal(20), userA, new HashSet<>(Set.of(userA, userB)));
 
         Gruppe gruppe = Gruppe.createGruppe("gruppe", Set.of(userA, userB));
         gruppe.addAusgabe(ausgabe1);
@@ -46,8 +45,8 @@ public class AcceptanceTests {
         User userA = new User("A");
         User userB = new User("B");
 
-        Ausgabe ausgabe1 = new Ausgabe("ausgabe1", "Ausgabe1", new BigDecimal(10), userA, new ArrayList<>(List.of(userA, userB)));
-        Ausgabe ausgabe2 = new Ausgabe("ausgabe2", "Ausgabe2", new BigDecimal(20), userB, new ArrayList<>(List.of(userA, userB)));
+        Ausgabe ausgabe1 = new Ausgabe("ausgabe1", "Ausgabe1", new BigDecimal(10), userA, new HashSet<>(Set.of(userA, userB)));
+        Ausgabe ausgabe2 = new Ausgabe("ausgabe2", "Ausgabe2", new BigDecimal(20), userB, new HashSet<>(Set.of(userA, userB)));
 
         Gruppe gruppe = Gruppe.createGruppe("gruppe", Set.of(userA, userB));
         gruppe.addAusgabe(ausgabe1);
@@ -66,8 +65,8 @@ public class AcceptanceTests {
         User userA = new User("A");
         User userB = new User("B");
 
-        Ausgabe ausgabe1 = new Ausgabe("ausgabe1", "Ausgabe1", new BigDecimal(10), userA, new ArrayList<>(List.of(userB)));
-        Ausgabe ausgabe2 = new Ausgabe("ausgabe2", "Ausgabe2", new BigDecimal(20), userA, new ArrayList<>(List.of(userA, userB)));
+        Ausgabe ausgabe1 = new Ausgabe("ausgabe1", "Ausgabe1", new BigDecimal(10), userA, new HashSet<>(Set.of(userB)));
+        Ausgabe ausgabe2 = new Ausgabe("ausgabe2", "Ausgabe2", new BigDecimal(20), userA, new HashSet<>(Set.of(userA, userB)));
 
         Gruppe gruppe = Gruppe.createGruppe("gruppe", Set.of(userA, userB));
         gruppe.addAusgabe(ausgabe1);
@@ -87,9 +86,9 @@ public class AcceptanceTests {
         User userB = new User("B");
         User userC = new User("C");
 
-        Ausgabe ausgabe1 = new Ausgabe("ausgabe1", "Ausgabe1", new BigDecimal(10), userA, new ArrayList<>(List.of(userA, userB)));
-        Ausgabe ausgabe2 = new Ausgabe("ausgabe2", "Ausgabe2", new BigDecimal(10), userB, new ArrayList<>(List.of(userB, userC)));
-        Ausgabe ausgabe3 = new Ausgabe("ausgabe3", "Ausgabe3", new BigDecimal(10), userC, new ArrayList<>(List.of(userA, userC)));
+        Ausgabe ausgabe1 = new Ausgabe("ausgabe1", "Ausgabe1", new BigDecimal(10), userA, new HashSet<>(Set.of(userA, userB)));
+        Ausgabe ausgabe2 = new Ausgabe("ausgabe2", "Ausgabe2", new BigDecimal(10), userB, new HashSet<>(Set.of(userB, userC)));
+        Ausgabe ausgabe3 = new Ausgabe("ausgabe3", "Ausgabe3", new BigDecimal(10), userC, new HashSet<>(Set.of(userA, userC)));
 
         Gruppe gruppe = Gruppe.createGruppe("gruppe", Set.of(userA, userB, userC));
         gruppe.addAusgabe(ausgabe1);
@@ -111,9 +110,9 @@ public class AcceptanceTests {
         User berta = new User("Berta");
         User christian = new User("Christian");
 
-        Ausgabe ausgabe1 = new Ausgabe("ausgabe1", "Ausgabe1", new BigDecimal(60), anton, new ArrayList<>(List.of(anton, berta, christian)));
-        Ausgabe ausgabe2 = new Ausgabe("ausgabe2", "Ausgabe2", new BigDecimal(30), berta, new ArrayList<>(List.of(anton, berta, christian)));
-        Ausgabe ausgabe3 = new Ausgabe("ausgabe3", "Ausgabe3", new BigDecimal(100), christian, new ArrayList<>(List.of(berta, christian)));
+        Ausgabe ausgabe1 = new Ausgabe("ausgabe1", "Ausgabe1", new BigDecimal(60), anton, new HashSet<>(Set.of(anton, berta, christian)));
+        Ausgabe ausgabe2 = new Ausgabe("ausgabe2", "Ausgabe2", new BigDecimal(30), berta, new HashSet<>(Set.of(anton, berta, christian)));
+        Ausgabe ausgabe3 = new Ausgabe("ausgabe3", "Ausgabe3", new BigDecimal(100), christian, new HashSet<>(Set.of(berta, christian)));
 
         Gruppe gruppe = Gruppe.createGruppe("gruppe", Set.of(anton, berta, christian));
         gruppe.addAusgabe(ausgabe1);
@@ -138,12 +137,12 @@ public class AcceptanceTests {
         User userE = new User("E");
         User userF = new User("F");
 
-        Ausgabe ausgabe1 = new Ausgabe("ausgabe1", "Hotelzimmer", new BigDecimal("564"), userA, new ArrayList<>(List.of(userA, userB, userC, userD, userE, userF)));
-        Ausgabe ausgabe2 = new Ausgabe("ausgabe2", "Benzin(Hinweg)", new BigDecimal("38.58"), userB, new ArrayList<>(List.of(userA, userB)));
-        Ausgabe ausgabe3 = new Ausgabe("ausgabe3", "Bezin(Rückweg)", new BigDecimal("38.58"), userB, new ArrayList<>(List.of(userB, userA, userD)));
-        Ausgabe ausgabe4 = new Ausgabe("ausgabe4", "Bezin", new BigDecimal("82.11"), userC, new ArrayList<>(List.of(userC, userE, userF)));
-        Ausgabe ausgabe5 = new Ausgabe("ausgabe5", "Städtetour", new BigDecimal("96"), userD, new ArrayList<>(List.of(userA, userB, userC, userD, userE, userF)));
-        Ausgabe ausgabe6 = new Ausgabe("ausgabe6", "Theatervorstellung", new BigDecimal("95.37"), userF, new ArrayList<>(List.of(userB, userE, userF)));
+        Ausgabe ausgabe1 = new Ausgabe("ausgabe1", "Hotelzimmer", new BigDecimal("564"), userA, new HashSet<>(Set.of(userA, userB, userC, userD, userE, userF)));
+        Ausgabe ausgabe2 = new Ausgabe("ausgabe2", "Benzin(Hinweg)", new BigDecimal("38.58"), userB, new HashSet<>(Set.of(userA, userB)));
+        Ausgabe ausgabe3 = new Ausgabe("ausgabe3", "Bezin(Rückweg)", new BigDecimal("38.58"), userB, new HashSet<>(Set.of(userB, userA, userD)));
+        Ausgabe ausgabe4 = new Ausgabe("ausgabe4", "Bezin", new BigDecimal("82.11"), userC, new HashSet<>(Set.of(userC, userE, userF)));
+        Ausgabe ausgabe5 = new Ausgabe("ausgabe5", "Städtetour", new BigDecimal("96"), userD, new HashSet<>(Set.of(userA, userB, userC, userD, userE, userF)));
+        Ausgabe ausgabe6 = new Ausgabe("ausgabe6", "Theatervorstellung", new BigDecimal("95.37"), userF, new HashSet<>(Set.of(userB, userE, userF)));
 
         Gruppe gruppe =
                 Gruppe.createGruppe("gruppe", Set.of(userA, userB, userC, userD, userE, userF));
@@ -179,14 +178,14 @@ public class AcceptanceTests {
         User userF = new User("F");
         User userG = new User("G");
 
-        Ausgabe ausgabe1 = new Ausgabe("ausgabe1", "Ausgabe1", new BigDecimal("20"), userD, new ArrayList<>(List.of(userD, userF)));
-        Ausgabe ausgabe2 = new Ausgabe("ausgabe2", "Ausgabe2", new BigDecimal("10"), userG, new ArrayList<>(List.of(userB)));
-        Ausgabe ausgabe3 = new Ausgabe("ausgabe3", "Ausgabe3", new BigDecimal("75"), userE, new ArrayList<>(List.of(userA, userC, userE)));
-        Ausgabe ausgabe4 = new Ausgabe("ausgabe4", "Ausgabe4", new BigDecimal("50"), userF, new ArrayList<>(List.of(userA, userF)));
-        Ausgabe ausgabe5 = new Ausgabe("ausgabe5", "Ausgabe5", new BigDecimal("40"), userE, new ArrayList<>(List.of(userD)));
-        Ausgabe ausgabe6 = new Ausgabe("ausgabe6", "Ausgabe6", new BigDecimal("40"), userF, new ArrayList<>(List.of(userB, userF)));
-        Ausgabe ausgabe7 = new Ausgabe("ausgabe7", "Ausgabe7", new BigDecimal("5"), userF, new ArrayList<>(List.of(userC)));
-        Ausgabe ausgabe8 = new Ausgabe("ausgabe8", "Ausgabe8", new BigDecimal("30"), userG, new ArrayList<>(List.of(userA)));
+        Ausgabe ausgabe1 = new Ausgabe("ausgabe1", "Ausgabe1", new BigDecimal("20"), userD, new HashSet<>(Set.of(userD, userF)));
+        Ausgabe ausgabe2 = new Ausgabe("ausgabe2", "Ausgabe2", new BigDecimal("10"), userG, new HashSet<>(Set.of(userB)));
+        Ausgabe ausgabe3 = new Ausgabe("ausgabe3", "Ausgabe3", new BigDecimal("75"), userE, new HashSet<>(Set.of(userA, userC, userE)));
+        Ausgabe ausgabe4 = new Ausgabe("ausgabe4", "Ausgabe4", new BigDecimal("50"), userF, new HashSet<>(Set.of(userA, userF)));
+        Ausgabe ausgabe5 = new Ausgabe("ausgabe5", "Ausgabe5", new BigDecimal("40"), userE, new HashSet<>(Set.of(userD)));
+        Ausgabe ausgabe6 = new Ausgabe("ausgabe6", "Ausgabe6", new BigDecimal("40"), userF, new HashSet<>(Set.of(userB, userF)));
+        Ausgabe ausgabe7 = new Ausgabe("ausgabe7", "Ausgabe7", new BigDecimal("5"), userF, new HashSet<>(Set.of(userC)));
+        Ausgabe ausgabe8 = new Ausgabe("ausgabe8", "Ausgabe8", new BigDecimal("30"), userG, new HashSet<>(Set.of(userA)));
 
         Gruppe gruppe = Gruppe.createGruppe("gruppe",
                 Set.of(userA, userB, userC, userD, userE, userF, userG));

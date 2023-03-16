@@ -8,7 +8,7 @@ import java.util.UUID;
 
 public interface GruppenRepository {
 
-  void save(Gruppe gruppe);
+  UUID save(Gruppe gruppe);
 
   List<Gruppe> getGruppenvonUser(User user);
 

@@ -12,6 +12,8 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface GruppeDao extends CrudRepository<GruppeDto, UUID> {
 
+  GruppeDto save(GruppeDto gruppe);
+
   @Query("SELECT * FROM GRUPPE g JOIN MITGLIED m ON g.ID = m.GRUPPENID WHERE m.GITHUBHANDLE= :githubHandle")
   List<GruppeDto> getGruppenvonUser(@Param("githubHandle") String githubHandle);
 

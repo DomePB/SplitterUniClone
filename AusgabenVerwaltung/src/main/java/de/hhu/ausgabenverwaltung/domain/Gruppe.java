@@ -124,7 +124,8 @@ public class Gruppe {
     return schulden;
   }
 
-  public HashMap<User, BigDecimal> berechneSalden(  // -Betrag bekommt der Nutzer noch, +Betrag muss der Nutzer noch zahlen
+  public HashMap<User, BigDecimal> berechneSalden(
+      // -Betrag bekommt der Nutzer noch, +Betrag muss der Nutzer noch zahlen
       HashMap<User, HashMap<User, BigDecimal>> alleSchulden) {
     HashMap<User, BigDecimal> schuldenSumme = new HashMap<>();
     // Iteriere durch alle Spalten der Tabelle

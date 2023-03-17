@@ -40,7 +40,8 @@ public class WebController {
 
     model.addAttribute("beteiligteTransaktionen", beteiligteTransaktionen);
     model.addAttribute("user", token.getAttribute("login"));
-    model.addAttribute("offeneGruppen", service.getOffeneGruppenVonUser(token.getAttribute("login")));
+    model.addAttribute("offeneGruppen",
+        service.getOffeneGruppenVonUser(token.getAttribute("login")));
     model.addAttribute("geschlosseneGruppen",
         service.getGeschlossenGruppenVonUser(token.getAttribute("login")));
 

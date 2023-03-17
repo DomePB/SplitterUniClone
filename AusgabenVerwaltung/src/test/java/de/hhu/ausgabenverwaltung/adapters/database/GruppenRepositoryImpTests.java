@@ -25,7 +25,19 @@ import org.springframework.test.context.jdbc.Sql;
 public class GruppenRepositoryImpTests {
 
   @Autowired
-  GruppenRepositoryImp repo;
+  GruppenRepositoryImp gruppenRepository;
+
+  @Test
+  @DisplayName("FindbyId wird getestet.")
+  void findbyIdTest(){
+    //Arrange
+    Gruppe gruppe1 = Gruppe.createGruppe("gruppe1", Set.of());
+    UUID id = gruppenRepository.save(gruppe1);
+    //Act
+    Gruppe byId = gruppenRepository.findById(id);
+    //Assert
+    assertThat(byId).isEqualTo(gruppe1);
+  }
 
   @Test
   @DisplayName("Alle Gruppen eines Users werden zurückgegeben")
@@ -36,18 +48,18 @@ public class GruppenRepositoryImpTests {
     Gruppe gruppe1 = Gruppe.createGruppe("gruppe1", Set.of(userA));
     Gruppe gruppe2 = Gruppe.createGruppe("gruppe2", Set.of(userB));
 
-    repo.save(gruppe1);
-    repo.save(gruppe2);
+    gruppenRepository.save(gruppe1);
+    gruppenRepository.save(gruppe2);
 
     // Act
-    List<Gruppe> gruppenVonA = repo.getGruppenvonUser(userA);
+    List<Gruppe> gruppenVonA = gruppenRepository.getGruppenvonUser(userA);
 
     // Assert
     assertThat(gruppenVonA).contains(gruppe1);
   }
 
   @Test
-  @DisplayName("Filtern nach offen und geschlossene Gruppen von User")
+  @DisplayName("Filtern nach offen Gruppen von User")
   void gruppenFiltern() {
     //Arrange
     User user = new User("githubname");
@@ -55,15 +67,32 @@ public class GruppenRepositoryImpTests {
     Gruppe gruppe1 = Gruppe.createGruppe("gruppe1", Set.of(user));
     Gruppe gruppe2 = Gruppe.createGruppe("gruppe2", Set.of(user));
     gruppe2.schliessen();
-    repo.save(gruppe1);
-    repo.save(gruppe2);
+    gruppenRepository.save(gruppe1);
+    gruppenRepository.save(gruppe2);
 
     // Act
-    List<Gruppe> offeneGruppen = repo.getOffeneGruppenVonUser(user);
-    List<Gruppe> geschlosseneGruppen = repo.getGeschlosseneGruppenVonUser(user);
+    List<Gruppe> offeneGruppen = gruppenRepository.getOffeneGruppenVonUser(user);
 
     // Assert
     assertThat(offeneGruppen).contains(gruppe1);
+  }
+
+  @Test
+  @DisplayName("Filtern nach geschlossene Gruppen von User")
+  void gruppenFiltern2() {
+    //Arrange
+    User user = new User("githubname");
+
+    Gruppe gruppe1 = Gruppe.createGruppe("gruppe1", Set.of(user));
+    Gruppe gruppe2 = Gruppe.createGruppe("gruppe2", Set.of(user));
+    gruppe2.schliessen();
+    gruppenRepository.save(gruppe1);
+    gruppenRepository.save(gruppe2);
+
+    // Act
+    List<Gruppe> geschlosseneGruppen = gruppenRepository.getGeschlosseneGruppenVonUser(user);
+
+    // Assert
     assertThat(geschlosseneGruppen).contains(gruppe2);
   }
 
@@ -76,24 +105,14 @@ public class GruppenRepositoryImpTests {
     Gruppe gruppe1 = Gruppe.createGruppe("gruppe1", Set.of(userA,userB));
     Ausgabe ausgabe = new Ausgabe("test", "test", new BigDecimal("10.33"), userA, Set.of(userA, userB));
     gruppe1.addAusgabe(ausgabe);
-    UUID gruppenid = repo.save(gruppe1);
+    UUID gruppenid = gruppenRepository.save(gruppe1);
+
     // Act
-    Gruppe byId = repo.findById(gruppenid);
+    Gruppe byId = gruppenRepository.findById(gruppenid);
 
     // Assert
     assertThat(byId.getAusgaben()).contains(ausgabe);
   }
 
-  @Test
-  @DisplayName("FindbyId wird getestet.")
-  void findbyIdTest(){
-    //Arrange
-    Gruppe gruppe1 = Gruppe.createGruppe("gruppe1", Set.of());
-    UUID id = repo.save(gruppe1);
-    //Act
-    Gruppe byId = repo.findById(id);
-    //Assert
-    assertThat(byId).isEqualTo(gruppe1);
-  }
 }
 

@@ -102,21 +102,21 @@ public class GruppenService {
   }
 
   public Map<Gruppe, Set<Transaktion>> getBeteiligteTransaktionen(String githubHandle) {
-    Map<Gruppe, Set<Transaktion>> userTransaktinen = new HashMap<>();
+    Map<Gruppe, Set<Transaktion>> userTransaktionen = new HashMap<>();
     for (Gruppe gruppe : getGruppenVonUser(githubHandle)) {
       Set<Transaktion> temp = new HashSet<>();
-      Set<Transaktion> groupeTransaktionen =
+      Set<Transaktion> gruppeTransaktionen =
           gruppe.berechneTransaktionen(
               gruppe.berechneSalden(gruppe.alleSchuldenBerechnen()));
-      for (Transaktion t : groupeTransaktionen) {
+      for (Transaktion t : gruppeTransaktionen) {
         if (t.sender().githubHandle().equals(githubHandle)
             || t.empfaenger().githubHandle().equals(githubHandle)) {
           temp.add(t);
         }
       }
-      userTransaktinen.put(gruppe, temp);
+      userTransaktionen.put(gruppe, temp);
     }
-    return userTransaktinen;
+    return userTransaktionen;
   }
 
   public boolean nameIsValid(String githubHandle) throws Exception {

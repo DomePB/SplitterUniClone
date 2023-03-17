@@ -11,13 +11,25 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface GruppeDao extends CrudRepository<GruppeDto, UUID> {
 
-  @Query("SELECT * FROM GRUPPE g JOIN MITGLIED m ON g.ID = m.GRUPPENID WHERE m.GITHUBHANDLE= :githubHandle")
+  @Query("""
+      SELECT *
+      FROM GRUPPE g JOIN MITGLIED m ON g.ID = m.GRUPPENID
+      WHERE m.GITHUBHANDLE= :githubHandle
+      """)
   List<GruppeDto> getGruppenvonUser(@Param("githubHandle") String githubHandle);
 
-  @Query("SELECT * FROM GRUPPE g JOIN MITGLIED m ON g.id = m.gruppenId WHERE m.githubHandle = :githubHandle AND g.offen IS TRUE")
+  @Query("""
+      SELECT *
+      FROM GRUPPE g JOIN MITGLIED m ON g.id = m.gruppenId
+      WHERE m.githubHandle = :githubHandle AND g.offen IS TRUE
+      """)
   List<GruppeDto> getOffeneGruppenVonUser(@Param("githubHandle") String githubHandle);
 
-  @Query("SELECT * FROM GRUPPE g JOIN MITGLIED m ON g.id = m.gruppenId WHERE m.githubHandle = :githubHandle AND g.offen IS FALSE")
+  @Query("""
+      SELECT *
+      FROM GRUPPE g JOIN MITGLIED m ON g.id = m.gruppenId
+      WHERE m.githubHandle = :githubHandle AND g.offen IS FALSE
+      """)
   List<GruppeDto> getGeschlosseneGruppenVonUser(@Param("githubHandle") String githubHandle);
 
 }

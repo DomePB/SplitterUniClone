@@ -40,7 +40,7 @@ public class GruppenService {
     return gruppe;
   }
 
-  public Gruppe createGruppe(String ersteller, String name) throws Exception {//im Test schreiben, dass gruppenRepo.save von vreatGruppe aufgerufen wird
+  public Gruppe createGruppe(String ersteller, String name) throws Exception {
     return createGruppe(new HashSet<>(Set.of(ersteller)), name);
   }
 
@@ -62,7 +62,7 @@ public class GruppenService {
     return gruppenRepo.getOffeneGruppenVonUser(new User(githubHandle));
   }
 
-  public Gruppe findById(UUID gruppenId) throws Exception { //Application Service
+  public Gruppe findById(UUID gruppenId) throws Exception {
     return gruppenRepo.findById(gruppenId);
   }
 
@@ -117,8 +117,6 @@ public class GruppenService {
       }
       return userTransaktinen;
     }
-
-
 
   public boolean nameIsValid(String githubHandle) throws Exception {
     String regex = "(^[a-zA-Z\\d](?:[a-zA-Z\\d]|-(?=[a-zA-Z\\d])){0,38}$)";

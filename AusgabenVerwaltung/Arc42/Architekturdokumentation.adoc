@@ -13,22 +13,22 @@
 
 #### Qualitätsziele:
 
-Es soll möglichst wartbar sein.
-Zudem wollten wir einen gewissen Grad an Accessibility gewährleisten, indem wir die einzelnen Features in der Software möglichst leicht und auffällig beschreiben. +
+Es soll möglichst wartbar sein, zudem wollten wir einen gewissen Grad an Accessibility gewährleisten, indem wir die einzelnen Features in der Software möglichst leicht und auffällig beschreiben. +
 Des Weiteren sollte die Software alle Vorgaben der Stakeholder zufriedenstellen (User können Ausgaben angeben, Gruppen erstellen, Teilnehmer hinzufügen und sollten zudem die möglichst minimal zu tätige Transaktion ausgeben).
 
 ### Beschränkungen/ Bedingungen:
 
-- Transaktionen sollten möglichst minimal sein
-- Als OAuth-Provider benutzen wir GitHub
-- Onion-Architektur als Architekturmuster
+- Transaktionen sollten möglichst minimal sein.
+- Als OAuth-Provider benutzen wir GitHub.
+- Onion-Architektur als Architekturmuster.
 - Die Anwendung soll als Webanwendung mit Spring Boot umgesetzt werden.
 - Die Anwendung soll auf Port 9000 laufen
-- Als Datenbank wird PostgreSQL verwendet. Die Datenbank muss in einem Docker-Container laufen.
+- Als Datenbank wird PostgreSQL verwendet.
+- Die Datenbank muss in einem Docker-Container laufen.
 - Datenbank-Tests werden mit H2 umgesetzt und müssen auch laufen, wenn Docker ausgeschaltet ist.
 - In der Domänenschicht müssen die taktischen DDD-Muster verwendet werden.
-- Google-Styleguides sollen eingehalten werden
-- Als MVP, da straffer Zeitplan (3 Wochen)
+- Google-Styleguides sollen eingehalten werden.
+- Als MVP, da straffer Zeitplan (3 Wochen).
 
 ### Kontextabgrenzung:
 
@@ -119,33 +119,36 @@ Hier: User A überweist User B 2$ und User D überweist User C 6$.
 #### 2. Version: Minimale Ausgabe
 
 Im Vorhinein:
-- Personen zu Gruppen hinzufügen und speichern - Ausgaben speichern und in Tabelle speichern von welcher Person/an welche Person
+
+- Personen zu Gruppen hinzufügen und speichern.
+- Ausgaben speichern und diese in Tabellen speichern welche Person an welche Person was schuldet.
+- Berechnung von Schulden bzw. Einnahmen pro User wie oben beschrieben.
 
 Da es sich hierbei, um ein NP-Vollständiges Problem handelt, könnte dies zu immensen Laufzeitproblemen führen. +
 Hierbei würde man wie gerade eine Matrix im Vorhinein erstellen und dabei die einzelnen Differenzen für jeden User erstellen. +
 Nun vergleicht man aber jede nur mögliche Transaktion miteinander.
-So würde man hierbei 2 Listen machen (Eine für die der Schuldigeren und eine für die der Gläubiger). +
+So würde man hierbei 2 Listen machen (eine für die der Schuldigern und eine für die der Gläubiger). +
 So würde man jede mögliche Kombination der Listen mit jeder möglichen Kombination der anderen Liste vergleichen.
 Falls dabei eine Kombination sich mit einer der anderen Liste ausgleicht, werden diese schon im Vorhinein entfernt.
 
 ### Hierarchische Struktur des Codes:
 
 - Domain: Hier werden Ausgaben, Gruppen (Aggregat), Transaktionen und User geladen.
-Zudem haben wir in dieser Schicht unsere Services für die einzelnen Modelattribute geladen. +
+Zudem haben wir in dieser Schicht unsere Services für die einzelnen Modellattribute geladen. +
 Insgesamt laden wir hier den inneren Teil der Onion-Architektur.
 Hier werden zudem erste Regeln und Standardmethoden deklariert.
 Unser Aggregat hierbei ist die Gruppe und bei Ausgaben, Transaktionen und User handelt es sich um Wertobjekte.
 - Web: Hier wird der Controller gespeichert.
 Leitet Informationen von Aufrufen der Clients an die Geschäftslogik weiter. +
 Greift auf Application und Domain zu.
-- Application: Greift auf die Domain zu.Hier werden Abfragen weitergeleitet durch Methoden von dem Controller an die Domain.
-- Persistenz: Speicherung von Daten.
+- Application: Greift auf die Domain zu. Hier werden Abfragen weitergeleitet durch Methoden von dem Controller an die Domain.
+- Persistenz: Speicherung von Daten in der Datenbank.
 
 ### Laufzeiten: Wie arbeiten Systembausteine mit Nachbarsystemen zusammen? Wie werden diese ausgeführt?
 
 1. Client macht einen Aufruf.
 2. Methode wird im WebController aufgerufen. Jetzt finden erst Checks statt in Form von notwendigen Authentifizierungen.
-3. Nach der Authentifizierung werden einzelne Methoden von der Application-Schicht aufgerufen und der Client  kann beispielsweise neue Ausgaben erstellen, Gruppen hinzufügen, nach Transaktionen fragen etc.
+3. Nach der Authentifizierung werden einzelne Methoden von der Application-Schicht aufgerufen und der Client kann beispielsweise neue Ausgaben erstellen, Gruppen hinzufügen, nach Transaktionen fragen etc.
 
 ### Technische Infrastruktur:
 
@@ -165,29 +168,26 @@ Greift auf Application und Domain zu.
 Alle Ausgaben und Einnahmen werden miteinander zusammengerechnet.
 Es wird versucht, möglichst schnell alle Ausgaben und Einnahmen auszugleichen, um diese auf 0$ zu setzen.
 - Wie können wir alle Ausgaben für die User speichern und möglichst genau zusammenrechnen?
-Alle Werte der Ausgaben werden pro Gruppe gespeichert.
-Dabei haben diese einzelne IDs.
-Rechnungen erfolgen zudem mit BigDecimal.
+Alle Werte der Ausgaben werden pro Gruppe gespeichert, welche dabei einzelne IDs haben.
+Rechnungen erfolgen zudem mit BigDecimal, um Rundungsfehler zu vermeiden.
 - Wie sollten die Gruppen aufgebaut sein?
 Haben uns entschieden, dass jeder Teilnehmer einer Gruppe beliebig viele Teilnehmer hinzufügen kann.
 Dies ist aber auch nur möglich, bis die erste Ausgabe hinzugefügt wird.
 - Wieso haben wir uns für künstliche Schlüssel entschieden?
-Um eindeutige Attribute in der Gruppe zu haben.
-Zudem ist es besser wartbar.
+Um eindeutige Attribute in der Gruppe zu haben, zudem ist es besser wartbar.
 
 ### Qualitätsanforderungen:
 
-- Wartbarkeit: Unser System ist wartbar.
+- Wartbarkeit: Unser System ist wartbar, da wir uns an DDD und SRP gehalten haben.
 - Erweiterbarkeit: Da wir strikt nach der Onion-Architektur vorgegangen sind, müsste das System auch für andere Programmierer leicht erweiterbar sein.
-- Code-Smell: Haben darauf geachtet, keine Code-Smells einzubauen.
-- Testbar: Haben viele Teste geschrieben und sind konsequent nach TDD vorgegangen.
+- Code-Smell: Wir haben darauf geachtet, keine Code-Smells einzubauen.
+- Testbar: Wir haben versucht eine hohe Test-Coverage zu erzielen und das AAA-Muster einzuhalten.
 - Effizienz: Wir haben geschaut, dass unsere Laufzeit nicht zu lange ist.
 So sollte das System zudem auch für schwache Rechner funktionieren.
 - Nutzbarkeit: Wir haben alle einzelnen Aktionen, die die Teilnehmer ausführen können, möglichst einfach versucht darzustellen.
-- Accessibility: Wir haben versucht, die Anwendung auch möglichst klein zuhalten.
-Zudem haben wir versucht, es leicht bedienbar zu halten.
-- Code-Verständlichkeit: Unser Code sollte durch Kommentare, gute Strukturierung und einfache Methodennamen möglichst leicht nachzuvollziehen zu sein.
-- Fehlerhandling: Man sollte durch eine einfache Beschreibung der Fehler erkennen, was falsch sein sollte.
+- Accessibility: Wir haben versucht, die Anwendung auch möglichst kleinzuhalten, zudem haben wir versucht, es leicht bedienbar zu halten.
+- Code-Verständlichkeit: Unser Code sollte durch Kommentare, gute Strukturierung und aussagekräftige Methodennamen möglichst leicht nachzuvollziehen zu sein.
+- Fehlerhandling: Es sollten keine unbehandelten/unerwarteten Fehler auftreten.
 
 ### Schwächen, Risiken, Welche probleme könnte es geben?
 
@@ -195,5 +195,5 @@ Wir haben versucht, dass möglichst wenige Schwierigkeiten auftreten könnten. P
 Jedoch könnte die minimale Transaktionsgröße aber auch Laufzeittechnisch zu enormen Problemen führen (NP-vollständiges Problem).
 
 ### Glossar:
-
-Haben keine schwierigen Begriffe benutzt, weshalb dies keine Probleme darstellen müsste.
+Transaktion: Eine Ausgleichszahlung.
+Wir haben sonst keine schwierigen Begriffe benutzt.

@@ -59,6 +59,19 @@ class WebControllerTest {
                 .andExpect(model().attribute("user", "JoeSchmoe"));
     }
 
+
+    @Test
+    @WithMockOAuth2User(login = "JoeSchmoe")
+    @DisplayName("Exception wird geworfen,falls gruppe nicht ersellt kann ")
+    void checkException() throws Exception {
+        //Arrange
+        when(service.createGruppe("JoeSchmoe", "gruppenName")).thenThrow(new Exception());
+        //Act +Assert
+        mockMvc.perform(
+                        post("/").with(csrf()).param("gruppenName", "gruppenName"))
+                .andExpect(status().isNotAcceptable());
+    }
+
     @Test
     @WithMockOAuth2User(login = "JoeSchmoe")
     @DisplayName("Exception werfen, wenn Gruppe nicht gefundnen wird.")

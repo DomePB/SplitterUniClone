@@ -1,3 +1,7 @@
+logging:
+  level:
+    db: debug
+
 server:
   port: 9000
   error:
@@ -13,3 +17,11 @@ spring:
           github:
             client-id: ${CLIENT_ID}
             client-secret: ${CLIENT_SECRET}
+  datasource:
+    username: dbUser
+    password: dbPassword
+    url: jdbc:postgresql://localhost:5432/Splitter
+  flyway:
+    user: dbUser
+    password: dbPassword
+    url: jdbc:postgresql://localhost:5432/Splitter

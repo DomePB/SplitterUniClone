@@ -119,7 +119,7 @@ class GruppenServiceTest {
         gruppe.addMitglieder(test1);
         gruppe.addMitglieder(test2);
         gruppe.addAusgabe(
-                new Ausgabe("ausgabe1", "ausgabe2", BigDecimal.TEN, test1, List.of(test2)));
+                new Ausgabe("ausgabe1", "ausgabe2", BigDecimal.TEN, test1, Set.of(test2)));
         UUID id = gruppe.getId();
         when(repository.findById(id)).thenReturn(gruppe);
         //Act
@@ -157,7 +157,7 @@ class GruppenServiceTest {
         when(repository.findById(id)).thenReturn(gruppe);
         //Act
         gruppenService.addAusgabe(id,
-                new Ausgabe("ausgabe1", "ausgabe2", BigDecimal.TEN, user, List.of(user)));
+                new Ausgabe("ausgabe1", "ausgabe2", BigDecimal.TEN, user, Set.of(user)));
         //Assert
         assertThat(gruppe.getAusgaben().size()).isEqualTo(1);
         verify(repository).save(gruppe);
@@ -221,7 +221,7 @@ class GruppenServiceTest {
         User userB = new User("githubname2");
 
         Gruppe gruppe1 = Gruppe.createGruppe("gruppe1",Set.of(userA,userB));
-        Ausgabe ausgabe = new Ausgabe("Ausgabe","",BigDecimal.TEN,userA,List.of(userB));
+        Ausgabe ausgabe = new Ausgabe("Ausgabe","",BigDecimal.TEN,userA,Set.of(userB));
         Transaktion transaktion = new Transaktion(userB,userA, new BigDecimal("10.00"));
         gruppe1.addAusgabe(ausgabe);
         when(repository.getGruppenvonUser(userA)).thenReturn(List.of(gruppe1));

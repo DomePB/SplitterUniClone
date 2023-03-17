@@ -25,7 +25,7 @@ public record AuslagenModel(@NotNull String grund, @NotNull String glaeubiger, @
         "",
         new BigDecimal(cent).divide(new BigDecimal(100), 2, RoundingMode.HALF_UP),
         new User(glaeubiger),
-        schuldner.stream().map(User::new).collect(Collectors.toList()));
+        schuldner.stream().map(User::new).collect(Collectors.toSet()));
   }
 
 }

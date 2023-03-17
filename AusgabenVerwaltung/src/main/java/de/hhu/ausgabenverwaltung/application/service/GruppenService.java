@@ -40,7 +40,7 @@ public class GruppenService {
     return gruppe;
   }
 
-  public Gruppe createGruppe(String ersteller, String name) throws Exception {//im Test schreiben, dass gruppenRepo.save von vreatGruppe aufgerufen wird
+  public Gruppe createGruppe(String ersteller, String name) throws Exception {
     return createGruppe(new HashSet<>(Set.of(ersteller)), name);
   }
 
@@ -62,7 +62,7 @@ public class GruppenService {
     return gruppenRepo.getOffeneGruppenVonUser(new User(githubHandle));
   }
 
-  public Gruppe findById(UUID gruppenId) throws Exception { //Application Service
+  public Gruppe findById(UUID gruppenId) throws Exception {
     return gruppenRepo.findById(gruppenId);
   }
 
@@ -102,23 +102,22 @@ public class GruppenService {
   }
 
   public Map<Gruppe, Set<Transaktion>> getBeteiligteTransaktionen(String githubHandle) {
-      Map<Gruppe, Set<Transaktion>> userTransaktinen = new HashMap<>();
-      for (Gruppe gruppe : getGruppenVonUser(githubHandle)) {
-        Set<Transaktion> temp = new HashSet<>();
-          Set<Transaktion> groupeTransaktionen =
-                  gruppe.berechneTransaktionen(
-                          gruppe.berechneSalden(gruppe.alleSchuldenBerechnen()));
-          for (Transaktion t : groupeTransaktionen) {
-            if (t.sender().githubHandle().equals(githubHandle) || t.empfaenger().githubHandle().equals(githubHandle)){
-              temp.add(t);
-            }
-          }
-          userTransaktinen.put(gruppe, temp);
+    Map<Gruppe, Set<Transaktion>> userTransaktionen = new HashMap<>();
+    for (Gruppe gruppe : getGruppenVonUser(githubHandle)) {
+      Set<Transaktion> temp = new HashSet<>();
+      Set<Transaktion> gruppeTransaktionen =
+          gruppe.berechneTransaktionen(
+              gruppe.berechneSalden(gruppe.alleSchuldenBerechnen()));
+      for (Transaktion t : gruppeTransaktionen) {
+        if (t.sender().githubHandle().equals(githubHandle)
+            || t.empfaenger().githubHandle().equals(githubHandle)) {
+          temp.add(t);
+        }
       }
-      return userTransaktinen;
+      userTransaktionen.put(gruppe, temp);
     }
-
-
+    return userTransaktionen;
+  }
 
   public boolean nameIsValid(String githubHandle) throws Exception {
     String regex = "(^[a-zA-Z\\d](?:[a-zA-Z\\d]|-(?=[a-zA-Z\\d])){0,38}$)";

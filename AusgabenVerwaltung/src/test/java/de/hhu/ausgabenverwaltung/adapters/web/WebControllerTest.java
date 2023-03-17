@@ -11,12 +11,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import de.hhu.ausgabenverwaltung.adapters.controller.web.WebController;
 import de.hhu.ausgabenverwaltung.adapters.controller.web.forms.AusgabeForm;
+import de.hhu.ausgabenverwaltung.application.service.GruppenService;
+import de.hhu.ausgabenverwaltung.config.helper.WithMockOAuth2User;
 import de.hhu.ausgabenverwaltung.domain.Gruppe;
 import de.hhu.ausgabenverwaltung.domain.User;
-import de.hhu.ausgabenverwaltung.config.helper.WithMockOAuth2User;
 import java.util.Set;
-import de.hhu.ausgabenverwaltung.application.service.GruppenService;
-
 import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -58,6 +57,19 @@ class WebControllerTest {
         mockMvc.perform(MockMvcRequestBuilders.get("/"))
                 .andExpect(status().isOk())
                 .andExpect(model().attribute("user", "JoeSchmoe"));
+    }
+
+
+    @Test
+    @WithMockOAuth2User(login = "JoeSchmoe")
+    @DisplayName("Exception wird geworfen,falls gruppe nicht ersellt kann ")
+    void checkException() throws Exception {
+        //Arrange
+        when(service.createGruppe("JoeSchmoe", "gruppenName")).thenThrow(new Exception());
+        //Act +Assert
+        mockMvc.perform(
+                        post("/").with(csrf()).param("gruppenName", "gruppenName"))
+                .andExpect(status().isNotAcceptable());
     }
 
     @Test
@@ -127,7 +139,7 @@ class WebControllerTest {
     @DisplayName("Gruppe schliessen, prüft ob das redirect korrekt ist.")
     void test_8() throws Exception {
         User user = new User("githubHandle");
-        Gruppe gruppe = Gruppe.createGruppe("gruppename", Set.of(user));
+        Gruppe gruppe = Gruppe.createGruppe("gruppename", Set.of(user), UUID.randomUUID());
         when(service.createGruppe(user.githubHandle(), "")).thenReturn(gruppe);
 
         mockMvc.perform(post("/gruppe/schliessen")
@@ -142,7 +154,7 @@ class WebControllerTest {
     @DisplayName("Prüfe ob beim Gruppe schliessen man zu /gruppe redirected wird")
     void test_9() throws Exception {
         User user = new User("githubHandle");
-        Gruppe gruppe = Gruppe.createGruppe("gruppename", Set.of(user));
+        Gruppe gruppe = Gruppe.createGruppe("gruppename", Set.of(user), UUID.randomUUID());
         when(service.createGruppe(user.githubHandle(), "")).thenReturn(gruppe);
 
         mockMvc.perform(post("/gruppe/schliessen")

@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
@@ -30,7 +31,12 @@ public class Gruppe {
 
   public static Gruppe createGruppe(String name, Set<User> mitglieder) {
     return new Gruppe(name, new ArrayList<>(), new HashSet<>(mitglieder), true,
-        UUID.randomUUID());
+        null);
+  }
+
+  public static Gruppe createGruppe(String name, Set<User> mitglieder, UUID id) {
+    return new Gruppe(name, new ArrayList<>(), new HashSet<>(mitglieder), true,
+        id);
   }
 
   public UUID getId() {
@@ -118,7 +124,8 @@ public class Gruppe {
     return schulden;
   }
 
-  public HashMap<User, BigDecimal> berechneSalden(  // -Betrag bekommt der Nutzer noch, +Betrag muss der Nutzer noch zahlen
+  public HashMap<User, BigDecimal> berechneSalden(
+      // -Betrag bekommt der Nutzer noch, +Betrag muss der Nutzer noch zahlen
       HashMap<User, HashMap<User, BigDecimal>> alleSchulden) {
     HashMap<User, BigDecimal> schuldenSumme = new HashMap<>();
     // Iteriere durch alle Spalten der Tabelle
@@ -141,76 +148,55 @@ public class Gruppe {
     return schuldenSumme;
   }
 
-
-  public Set<Transaktion> berechneTransaktionen(HashMap<User, BigDecimal> salden) {
+  public Set<Transaktion> berechneTransaktionen(Map<User, BigDecimal> salden) {
     Set<Transaktion> transaktionen = new HashSet<>();
-    for (var empfaengerEntry : salden.entrySet()) {
 
-      for (var senderEntry : salden.entrySet()) {
-        if (empfaengerEntry.getKey().equals(senderEntry.getKey())) {
-          continue;
-        }
+    // Aufteilen in positive und negative Salden
+    Map<User, BigDecimal> posSalden = salden.entrySet().stream()
+        .filter(entry -> entry.getValue().compareTo(BigDecimal.ZERO) > 0)
+        .collect(HashMap::new, (map, entry) -> map.put(entry.getKey(), entry.getValue()),
+            HashMap::putAll);
 
-        // Sind Empfänger und Sender gleich?
-        if (empfaengerEntry.getValue().add(senderEntry.getValue())
-            .equals(BigDecimal.ZERO)) {
-          if (empfaengerEntry.getValue().compareTo(BigDecimal.ZERO) < 0) {
-            transaktionen.add(
-                new Transaktion(senderEntry.getKey(), empfaengerEntry.getKey(),
-                    empfaengerEntry.getValue().multiply(new BigDecimal(-1))));
-          } else if (empfaengerEntry.getValue().compareTo(BigDecimal.ZERO) > 0) {
-            transaktionen.add(
-                new Transaktion(empfaengerEntry.getKey(), senderEntry.getKey(),
-                    senderEntry.getValue().multiply(new BigDecimal(-1))));
-          }
+    Map<User, BigDecimal> negSalden = salden.entrySet().stream()
+        .filter(entry -> entry.getValue().compareTo(BigDecimal.ZERO) < 0)
+        .collect(HashMap::new, (map, entry) -> map.put(entry.getKey(), entry.getValue()),
+            HashMap::putAll);
 
-          salden.put(empfaengerEntry.getKey(), BigDecimal.ZERO);
-          salden.put(senderEntry.getKey(), BigDecimal.ZERO);
+    // Schleife, die so lange läuft, bis alle Salden ausgeglichen sind
+    while (!posSalden.isEmpty() && !negSalden.isEmpty()) {
+      // Suche den Benutzer mit dem höchsten positiven Saldo
+      User maxPositiveUser = null;
+      BigDecimal maxPositiveSalden = BigDecimal.ZERO;
+      for (var entry : posSalden.entrySet()) {
+        if (entry.getValue().compareTo(maxPositiveSalden) > 0) {
+          maxPositiveUser = entry.getKey();
+          maxPositiveSalden = entry.getValue();
         }
       }
-    }
 
-    for (var senderEntry : salden.entrySet()) {
-      // Negative Salden werden ignoriert
-      if (senderEntry.getValue().compareTo(BigDecimal.ZERO) < 0) {
-        continue;
+      // Suche den Benutzer mit dem höchsten negativen Saldo
+      User maxNegativeUser = null;
+      BigDecimal maxNegativeSalden = BigDecimal.valueOf(Integer.MAX_VALUE);
+      for (var entry : negSalden.entrySet()) {
+        if (entry.getValue().compareTo(maxNegativeSalden) < 0) {
+          maxNegativeUser = entry.getKey();
+          maxNegativeSalden = entry.getValue();
+        }
       }
 
-      for (var empfaengerEntry : salden.entrySet()) {
-        // Null-Salden werden ignoriert
-        if (senderEntry.getValue().equals(BigDecimal.ZERO)) {
-          break;
-        }
+      // Berechnung der Transaktion und Anpassung der Salden
+      BigDecimal transactionAmount = maxPositiveSalden.min(maxNegativeSalden.abs());
+      transaktionen.add(new Transaktion(maxPositiveUser, maxNegativeUser, transactionAmount));
+      posSalden.put(maxPositiveUser, maxPositiveSalden.subtract(transactionAmount));
+      negSalden.put(maxNegativeUser, maxNegativeSalden.add(transactionAmount));
 
-        // Nicht mit dem aktuellen User ausgleichen
-        if (senderEntry.getKey().equals(empfaengerEntry.getKey())) {
-          continue;
-        }
+      // Entfernung der Benutzer mit ausgeglichenen Salden
+      if (posSalden.get(maxPositiveUser).compareTo(BigDecimal.ZERO) == 0) {
+        posSalden.remove(maxPositiveUser);
+      }
 
-        // Ignoriere positive Salden
-        if (empfaengerEntry.getValue().compareTo(BigDecimal.ZERO) >= 0) {
-          continue;
-        }
-
-        // Fälle behandeln
-        if (senderEntry.getValue().add(empfaengerEntry.getValue())
-            .compareTo(BigDecimal.ZERO) < 0) {
-          // Schulden von sender sind kleiner als Einnahmen von empfaenger
-          transaktionen.add(
-              new Transaktion(senderEntry.getKey(), empfaengerEntry.getKey(),
-                  senderEntry.getValue()));
-          salden.put(empfaengerEntry.getKey(),
-              senderEntry.getValue().add(empfaengerEntry.getValue()));
-          salden.put(senderEntry.getKey(), BigDecimal.ZERO);
-        } else {
-          // Schulden von sender sind größer als Einnahmen von empfaenger
-          transaktionen.add(
-              new Transaktion(senderEntry.getKey(), empfaengerEntry.getKey(),
-                  empfaengerEntry.getValue().multiply(new BigDecimal(-1))));
-          salden.put(senderEntry.getKey(),
-              senderEntry.getValue().add(empfaengerEntry.getValue()));
-          salden.put(empfaengerEntry.getKey(), BigDecimal.ZERO);
-        }
+      if (negSalden.get(maxNegativeUser).compareTo(BigDecimal.ZERO) == 0) {
+        negSalden.remove(maxNegativeUser);
       }
     }
 

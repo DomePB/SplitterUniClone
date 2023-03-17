@@ -1,6 +1,10 @@
-### Voraussetzungen:
+### Setup:
 
-- Umgebungsvariablen: CLIENT_ID und CLIENT_SECRET für GitHub OAuth
+- `docker compose up` in AusgabenVerwaltung-Ordner ausführen
+- ggf. Datenbank zurücksetzen/löschen, falls flyway-Error auftritt
+- Umgebungsvariablen: `CLIENT_ID` und `CLIENT_SECRET` für GitHub OAuth setzen
+- `gradle bootRun` in AusgabenVerwaltung-Ordner ausführen
+- Die Anwendung läuft auf localhost:9000
 
 ### Einleitung:
 
@@ -26,7 +30,9 @@ Des Weiteren sollte die Software alle Vorgaben der Stakeholder zufriedenstellen 
 - Google-Styleguides sollen eingehalten werden
 - Als MVP, da straffer Zeitplan (3 Wochen)
 
-### Kontextabgrenzungen:
+### Kontextabgrenzung:
+
+image::Fachliche Kontextabgrenzung.png[]
 
 image::Kontextabgrenzung.png[]
 

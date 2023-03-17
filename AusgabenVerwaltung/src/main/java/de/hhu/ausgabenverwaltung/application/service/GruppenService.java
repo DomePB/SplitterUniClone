@@ -35,9 +35,10 @@ public class GruppenService {
 
     Gruppe gruppe = Gruppe.createGruppe(name,
         mitglieder.stream().map(User::new).collect(Collectors.toSet()));
-    gruppenRepo.save(gruppe);
+    UUID id = gruppenRepo.save(gruppe);
 
-    return gruppe;
+    return new Gruppe(gruppe.getName(), gruppe.getAusgaben(), gruppe.getMitglieder(),
+        gruppe.istOffen(), id);
   }
 
   public Gruppe createGruppe(String ersteller, String name) throws Exception {

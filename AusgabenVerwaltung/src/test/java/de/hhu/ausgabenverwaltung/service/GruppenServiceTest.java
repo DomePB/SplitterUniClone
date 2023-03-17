@@ -12,6 +12,7 @@ import de.hhu.ausgabenverwaltung.domain.Transaktion;
 import de.hhu.ausgabenverwaltung.domain.User;
 import java.math.BigDecimal;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -113,8 +114,8 @@ class GruppenServiceTest {
     @DisplayName("Die Salden werden richtig zurueckgegeben")
     void berechneSaldenTest() throws Exception {
         //Arrange
-        Gruppe gruppe = gruppenService.createGruppe("test", "testgruppe");
-        User test1 = new User("test1");
+      Gruppe gruppe = Gruppe.createGruppe("testgruppe", new HashSet<>(Set.of(new User("test"))));
+      User test1 = new User("test1");
         User test2 = new User("test2");
         gruppe.addMitglieder(test1);
         gruppe.addMitglieder(test2);
@@ -167,8 +168,8 @@ class GruppenServiceTest {
     @DisplayName("Mitglieder Check")
     void checkMitglied() throws Exception {
         //Arrange
-        Gruppe gruppe = gruppenService.createGruppe("test", "testgruppe");
-        UUID id = gruppe.getId();
+      Gruppe gruppe = Gruppe.createGruppe("testgruppe", new HashSet<>(Set.of(new User("test"))));
+      UUID id = gruppe.getId();
         User user = new User("test1");
         gruppe.addMitglieder(user);
         when(repository.findById(id)).thenReturn(gruppe);

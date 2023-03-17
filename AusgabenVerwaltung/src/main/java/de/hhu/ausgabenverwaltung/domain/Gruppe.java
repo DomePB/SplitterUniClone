@@ -7,7 +7,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
@@ -86,28 +85,6 @@ public class Gruppe {
         .reduce(BigDecimal.ZERO, BigDecimal::add);
   }
 
-
-  public HashMap<User, BigDecimal> mussBezahlenVonUser(User user) {
-    HashMap<User, BigDecimal> schuldner = new HashMap<>();
-    for (Ausgabe ausgabe : ausgaben) {
-      if (ausgabe.bezahltVon().equals(user)) {
-        for (User useri : ausgabe.beteiligte()
-        ) {
-          if (useri.equals(user)) {
-            continue;
-          }
-          BigDecimal userSumme = schuldner.getOrDefault(useri, BigDecimal.ZERO);
-          userSumme = userSumme.add(
-              ausgabe.betrag().divide(new BigDecimal(ausgabe.beteiligte().size()), 2,
-                  RoundingMode.HALF_UP));
-          schuldner.put(useri, userSumme);
-
-        }
-      }
-    }
-    return schuldner;
-  }
-
   public void schliessen() {
     offen = false;
   }
@@ -116,22 +93,51 @@ public class Gruppe {
     return offen;
   }
 
+  public HashMap<User, BigDecimal> mussBezahlenVonUser(User vonUser) {
+    HashMap<User, BigDecimal> schuldner = new HashMap<>();
+    for (Ausgabe ausgabe : ausgaben) {
+      // Beachte nur Ausgaben, die vom User bezahlt wurden
+      if (!ausgabe.bezahltVon().equals(vonUser)) {
+        continue;
+      }
+
+      // Betrachte die beteiligten
+      for (User anUser : ausgabe.beteiligte()) {
+        // Ignoriere User, die an sich selbst zahlen
+        if (anUser.equals(vonUser)) {
+          continue;
+        }
+
+        // Summe berechnen
+        BigDecimal userSumme = schuldner.getOrDefault(anUser, BigDecimal.ZERO);
+        userSumme = userSumme.add(ausgabe.betrag()
+            .divide(new BigDecimal(ausgabe.beteiligte().size()), 2, RoundingMode.HALF_UP));
+        schuldner.put(anUser, userSumme);
+      }
+    }
+    return schuldner;
+  }
+
   public HashMap<User, HashMap<User, BigDecimal>> alleSchuldenBerechnen() { // in Gruppe
     HashMap<User, HashMap<User, BigDecimal>> schulden = new HashMap<>();
+
     for (User mitglied : mitglieder) {
       schulden.put(mitglied, mussBezahlenVonUser(mitglied));
     }
+
     return schulden;
   }
 
   public HashMap<User, BigDecimal> berechneSalden(
-      // -Betrag bekommt der Nutzer noch, +Betrag muss der Nutzer noch zahlen
       HashMap<User, HashMap<User, BigDecimal>> alleSchulden) {
+    // -Betrag bekommt der Nutzer noch, +Betrag muss der Nutzer noch zahlen
     HashMap<User, BigDecimal> schuldenSumme = new HashMap<>();
+
     // Iteriere durch alle Spalten der Tabelle
     for (var entry : alleSchulden.entrySet()) {
       User aktuellerUser = entry.getKey();
       BigDecimal summe = schuldenSumme.getOrDefault(aktuellerUser, BigDecimal.ZERO);
+
       // Iteriere durch alle Zeilen der Tabelle
       for (var userSchulden : entry.getValue().entrySet()) {
         // Addieren Schulden des Ziel Users
@@ -148,55 +154,78 @@ public class Gruppe {
     return schuldenSumme;
   }
 
-  public Set<Transaktion> berechneTransaktionen(Map<User, BigDecimal> salden) {
+  public Set<Transaktion> berechneTransaktionen(HashMap<User, BigDecimal> salden) {
     Set<Transaktion> transaktionen = new HashSet<>();
 
-    // Aufteilen in positive und negative Salden
-    Map<User, BigDecimal> posSalden = salden.entrySet().stream()
-        .filter(entry -> entry.getValue().compareTo(BigDecimal.ZERO) > 0)
-        .collect(HashMap::new, (map, entry) -> map.put(entry.getKey(), entry.getValue()),
-            HashMap::putAll);
+    // "Perfekte" AusgleichsZahlungen berechnen
+    for (var empfaengerEntry : salden.entrySet()) {
+      for (var senderEntry : salden.entrySet()) {
+        // Ignoriere Sender = Empfänger
+        if (empfaengerEntry.getKey().equals(senderEntry.getKey())) {
+          continue;
+        }
 
-    Map<User, BigDecimal> negSalden = salden.entrySet().stream()
-        .filter(entry -> entry.getValue().compareTo(BigDecimal.ZERO) < 0)
-        .collect(HashMap::new, (map, entry) -> map.put(entry.getKey(), entry.getValue()),
-            HashMap::putAll);
+        // Sind Empfänger und Sender gleich?
+        if (empfaengerEntry.getValue().add(senderEntry.getValue())
+            .compareTo(BigDecimal.ZERO) == 0) {
+          if (empfaengerEntry.getValue().compareTo(BigDecimal.ZERO) < 0) {
+            transaktionen.add(
+                new Transaktion(senderEntry.getKey(), empfaengerEntry.getKey(),
+                    empfaengerEntry.getValue().abs()));
+          } else if (empfaengerEntry.getValue().compareTo(BigDecimal.ZERO) > 0) {
+            transaktionen.add(
+                new Transaktion(empfaengerEntry.getKey(), senderEntry.getKey(),
+                    senderEntry.getValue().abs()));
+          }
 
-    // Schleife, die so lange läuft, bis alle Salden ausgeglichen sind
-    while (!posSalden.isEmpty() && !negSalden.isEmpty()) {
-      // Suche den Benutzer mit dem höchsten positiven Saldo
-      User maxPositiveUser = null;
-      BigDecimal maxPositiveSalden = BigDecimal.ZERO;
-      for (var entry : posSalden.entrySet()) {
-        if (entry.getValue().compareTo(maxPositiveSalden) > 0) {
-          maxPositiveUser = entry.getKey();
-          maxPositiveSalden = entry.getValue();
+          salden.put(empfaengerEntry.getKey(), BigDecimal.ZERO);
+          salden.put(senderEntry.getKey(), BigDecimal.ZERO);
         }
       }
+    }
 
-      // Suche den Benutzer mit dem höchsten negativen Saldo
-      User maxNegativeUser = null;
-      BigDecimal maxNegativeSalden = BigDecimal.valueOf(Integer.MAX_VALUE);
-      for (var entry : negSalden.entrySet()) {
-        if (entry.getValue().compareTo(maxNegativeSalden) < 0) {
-          maxNegativeUser = entry.getKey();
-          maxNegativeSalden = entry.getValue();
+    // Alle Ausgleichs-Zahlungen berechnen
+    for (var senderEntry : salden.entrySet()) {
+      // Negative Salden werden ignoriert
+      if (senderEntry.getValue().compareTo(BigDecimal.ZERO) < 0) {
+        continue;
+      }
+
+      for (var empfaengerEntry : salden.entrySet()) {
+        // Null-Salden werden ignoriert
+        if (senderEntry.getValue().compareTo(BigDecimal.ZERO) == 0) {
+          break;
         }
-      }
 
-      // Berechnung der Transaktion und Anpassung der Salden
-      BigDecimal transactionAmount = maxPositiveSalden.min(maxNegativeSalden.abs());
-      transaktionen.add(new Transaktion(maxPositiveUser, maxNegativeUser, transactionAmount));
-      posSalden.put(maxPositiveUser, maxPositiveSalden.subtract(transactionAmount));
-      negSalden.put(maxNegativeUser, maxNegativeSalden.add(transactionAmount));
+        // Nicht mit dem aktuellen User ausgleichen
+        if (senderEntry.getKey().equals(empfaengerEntry.getKey())) {
+          continue;
+        }
 
-      // Entfernung der Benutzer mit ausgeglichenen Salden
-      if (posSalden.get(maxPositiveUser).compareTo(BigDecimal.ZERO) == 0) {
-        posSalden.remove(maxPositiveUser);
-      }
+        // Ignoriere positive Salden
+        if (empfaengerEntry.getValue().compareTo(BigDecimal.ZERO) >= 0) {
+          continue;
+        }
 
-      if (negSalden.get(maxNegativeUser).compareTo(BigDecimal.ZERO) == 0) {
-        negSalden.remove(maxNegativeUser);
+        // Fälle behandeln
+        if (senderEntry.getValue().add(empfaengerEntry.getValue())
+            .compareTo(BigDecimal.ZERO) < 0) {
+          // Schulden von sender sind kleiner als Einnahmen von empfaenger
+          transaktionen.add(
+              new Transaktion(senderEntry.getKey(), empfaengerEntry.getKey(),
+                  senderEntry.getValue()));
+          salden.put(empfaengerEntry.getKey(),
+              senderEntry.getValue().add(empfaengerEntry.getValue()));
+          salden.put(senderEntry.getKey(), BigDecimal.ZERO);
+        } else {
+          // Schulden von sender sind größer als Einnahmen von empfaenger
+          transaktionen.add(
+              new Transaktion(senderEntry.getKey(), empfaengerEntry.getKey(),
+                  empfaengerEntry.getValue().abs()));
+          salden.put(senderEntry.getKey(),
+              senderEntry.getValue().add(empfaengerEntry.getValue()));
+          salden.put(empfaengerEntry.getKey(), BigDecimal.ZERO);
+        }
       }
     }
 
